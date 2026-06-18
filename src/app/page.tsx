@@ -324,7 +324,7 @@ export default function Home() {
             <button className="nav-link">Industries</button>
             <div className="nav-divider" />
             <button className="btn-hire">I&apos;m hiring</button>
-            <button className="btn-join-nav">Join the Lounge</button>
+            <a href="/onboarding"><button className="btn-join-nav">Join the Lounge</button></a>
           </div>
         </nav>
 
@@ -343,7 +343,7 @@ export default function Home() {
             A private intelligence platform for senior professionals. See who&apos;s hiring for your profile — anonymously — before you decide if you&apos;re even interested. No resume. No exposure. No noise.
           </p>
           <div className="hero-ctas">
-            <button className="btn-gold">Join the Lounge — it&apos;s free →</button>
+            <a href="/onboarding"><button className="btn-gold">Join the Lounge — it&apos;s free →</button></a>
             <button className="btn-outline">I&apos;m hiring talent</button>
           </div>
           <p className="hero-micro">No name. No LinkedIn. No employer. Your market pulse in 14 days.</p>
@@ -372,7 +372,7 @@ export default function Home() {
               <div className="who-list-item"><i className="ti ti-check" style={{ color: "#0369A1" }} aria-hidden="true" />Raise your hand — or don&apos;t. No pressure ever</div>
               <div className="who-list-item"><i className="ti ti-check" style={{ color: "#0369A1" }} aria-hidden="true" />Identity reveals only when both sides agree</div>
             </div>
-            <button className="btn-who-l">Join the Lounge — free →</button>
+            <a href="/onboarding"><button className="btn-who-l">Join the Lounge — free →</button></a>
           </div>
           <div className="who-card gladiator">
             <div className="who-label g">Corporate Gladiators — hiring teams</div>
@@ -537,7 +537,7 @@ export default function Home() {
         <div className="footer-cta">
           <h2 className="footer-h2 syne">Your market is moving.<br />Are you watching?</h2>
           <p className="footer-sub" style={{ maxWidth: "420px", margin: "0 auto 18px" }}>Join the Lounge. Know your number. Stay in control — across any industry, any function, any city.</p>
-          <button className="btn-gold">Join the Lounge — free →</button>
+          <a href="/onboarding"><button className="btn-gold">Join the Lounge — free →</button></a>
           <p className="footer-micro">Invite-only · Senior professionals across India · All industries welcome</p>
         </div>
 
