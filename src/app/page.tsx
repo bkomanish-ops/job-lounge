@@ -1,561 +1,298 @@
-import type { Metadata } from "next";
+﻿'use client'
 
-export const metadata: Metadata = {
-  title: "Job Lounge — Know what you're worth. Without anyone knowing you looked.",
-  description:
-    "A private intelligence platform for senior professionals. See who's hiring for your profile — anonymously — before you decide if you're even interested.",
-};
+import { useEffect, useRef } from 'react'
+import { useRouter } from 'next/navigation'
 
-export default function Home() {
+const TICKER_ITEMS = [
+  "📰 India's Job Portal — Your CV was downloaded 3 times this week. By whom? Unknown. Forwarded where? Unknown.",
+  "🔗 Professional Networking Platform — \"1 person from banking viewed your profile.\" No name. No company. No reason.",
+  "📞 The referral you didn't start — A colleague mentioned your name. Now 3 people know you're looking, including someone who knows your manager.",
+  "📰 India's Job Portal — Their job was done the moment you uploaded. What happens after — that's your problem.",
+  "🔗 Professional Networking Platform — You were evaluated, shortlisted or passed over. The platform decided that's none of your business.",
+  "📞 The referral you didn't start — You didn't start this. You can't stop it. That's how it works everywhere. Until now.",
+]
+
+const ID_LAYERS = [
+  { label: 'Step 1 — You stay anonymous', labelColor: '#93c5fd', who: 'Join with just your professional profile', desc: 'No resume. No name. No employer. Domain, experience, location — that\'s enough for the matching engine to surface your market.', tags: [{ t: 'Domain ✓', g: true }, { t: 'Experience ✓', g: true }, { t: 'Location ✓', g: true }, { t: 'Name hidden', g: false }, { t: 'Employer hidden', g: false }] },
+  { label: 'Step 2 — Opportunities come to you', labelColor: '#6ee7b7', who: 'See who\'s hiring before they see you', desc: 'Peers and Recruiters post verified briefs. You see the role, salary band, and company type. They see your anonymous profile. No names cross — yet.', tags: [{ t: 'Role visible ✓', g: true }, { t: 'Salary visible ✓', g: true }, { t: 'Your name hidden', g: false }, { t: 'No CV sent', g: false }] },
+  { label: 'Step 3 — You choose when to connect', labelColor: '#93c5fd', who: 'Request a company reveal before engaging', desc: 'Before responding to any requirement, you can ask Job Lounge to confirm the company. If it\'s your own employer — you simply don\'t engage. No trace left. No one notified.', tags: [{ t: 'Company reveal on request', g: true }, { t: 'Mutual consent required', g: true }, { t: 'Your employer never knows', g: false }] },
+]
+
+const SIGNALS = [
+  { icon: '🏦', org: 'Mid-size private bank', desc: 'Digital lending expansion — team formation next month.', time: '2 min ago' },
+  { icon: '🏢', org: 'Large Fintech', desc: 'Risk Analytics — internal referrals now open.', time: '7 min ago' },
+  { icon: '🌐', org: 'Global Capability Centre', desc: 'GRC transformation approved. Phased hiring begins.', time: '14 min ago' },
+  { icon: '📈', org: 'NBFC — Risk team', desc: 'IT Audit Head — peer confirmed urgency. 22 days open.', time: '19 min ago' },
+]
+
+export default function HomePage() {
+  const router = useRouter()
+  const trackRef = useRef<HTMLDivElement>(null)
+  const ip0 = useRef<HTMLDivElement>(null)
+  const ip1 = useRef<HTMLDivElement>(null)
+  const ip2 = useRef<HTMLDivElement>(null)
+
+  const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+
+  useEffect(() => {
+    const H = 180
+    let cur = 0
+    const ips = [ip0.current, ip1.current, ip2.current]
+    const goTo = (i: number) => {
+      cur = i
+      if (trackRef.current) trackRef.current.style.transform = `translateY(-${i * H}px)`
+      ips.forEach((d, j) => {
+        if (d) { d.style.background = j === i ? '#93c5fd' : 'rgba(255,255,255,0.12)'; d.style.flex = j === i ? '2' : '1' }
+      })
+    }
+    const t = setInterval(() => goTo((cur + 1) % ID_LAYERS.length), 8000)
+    return () => clearInterval(t)
+  }, [])
+
   return (
     <>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@300;400;500;600&display=swap');
-        @import url('https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css');
-
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-        :root {
-          --amber: #f59e0b;
-          --amber-d: #d97706;
-          --amber-l: #fde68a;
-          --navy: #0a0f1e;
-          --navy-m: #1e3a5f;
-          --off: #f8fafc;
-          --slate: #64748b;
-          --slate-l: #94a3b8;
-          --border: #e2e8f0;
-        }
-
-        body {
-          font-family: 'Inter', sans-serif;
-          color: var(--navy);
-          background: #fff;
-          -webkit-font-smoothing: antialiased;
-        }
-
-        .syne { font-family: 'Syne', sans-serif; }
-
-        .sr-only {
-          position: absolute; width: 1px; height: 1px;
-          padding: 0; margin: -1px; overflow: hidden;
-          clip: rect(0,0,0,0); border: 0;
-        }
-
-        /* PULSE ANIMATION */
-        .pulse-dot {
-          display: inline-block;
-          width: 7px; height: 7px;
-          border-radius: 50%;
-          background: var(--amber);
-          animation: pulse-anim 1.8s ease-in-out infinite;
-          vertical-align: middle;
-          margin-right: 6px;
-        }
-        @keyframes pulse-anim {
-          0%, 100% { opacity: 1; transform: scale(1); }
-          50% { opacity: .35; transform: scale(.6); }
-        }
-
-        /* PAGE WRAPPER */
-        .page-wrap {
-          max-width: 780px;
-          margin: 0 auto;
-          padding: 0 24px;
-        }
-
-        /* NAV */
-        .nav {
-          display: flex; align-items: center; justify-content: space-between;
-          padding: 1.2rem 0 1rem;
-          border-bottom: .5px solid var(--border);
-        }
-        .logo {
-          font-family: 'Syne', sans-serif;
-          font-size: 18px; font-weight: 800; color: var(--navy);
-          display: flex; align-items: center; gap: 8px;
-          text-decoration: none;
-        }
-        .logo-icon {
-          width: 32px; height: 32px;
-          background: linear-gradient(135deg, var(--amber), #f97316);
-          border-radius: 9px;
-          display: flex; align-items: center; justify-content: center;
-        }
-        .nav-links { display: flex; align-items: center; gap: 6px; }
-        .nav-link {
-          font-size: 12.5px; color: var(--slate);
-          cursor: pointer; background: none; border: none;
-          padding: 6px 10px; font-family: 'Inter', sans-serif;
-          border-radius: 8px;
-        }
-        .nav-link:hover { background: var(--off); }
-        .nav-divider { width: 1px; height: 16px; background: var(--border); margin: 0 4px; }
-        .btn-hire {
-          font-size: 12.5px; padding: 7px 18px;
-          border-radius: 8px; border: .5px solid var(--border);
-          cursor: pointer; background: #fff; color: var(--navy);
-          font-family: 'Inter', sans-serif;
-        }
-        .btn-join-nav {
-          font-size: 12.5px; padding: 7px 18px;
-          border-radius: 8px; border: none;
-          cursor: pointer;
-          background: linear-gradient(135deg, var(--amber), #f97316);
-          color: #fff; font-family: 'Inter', sans-serif; font-weight: 600;
-        }
-
-        /* HERO */
-        .hero { padding: 52px 0 44px; border-bottom: .5px solid var(--border); }
-        .hero-tag {
-          display: inline-flex; align-items: center;
-          background: #FEF3C7; border: .5px solid #FDE68A;
-          border-radius: 20px; padding: 5px 14px; margin-bottom: 22px;
-        }
-        .hero-tag-txt {
-          font-size: 11px; font-weight: 700; color: #92400E;
-          letter-spacing: 1.5px; text-transform: uppercase;
-        }
-        .hero-h1 {
-          font-family: 'Syne', sans-serif;
-          font-size: 44px; font-weight: 800; color: var(--navy);
-          line-height: 1.1; letter-spacing: -.8px; margin-bottom: 16px;
-        }
-        .hero-h1 .grad {
-          background: linear-gradient(90deg, var(--amber), #f97316);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-        }
-        .hero-sub {
-          font-size: 16px; color: var(--slate);
-          line-height: 1.75; max-width: 520px; margin-bottom: 28px;
-        }
-        .hero-ctas { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
-        .btn-gold {
-          font-size: 14px; padding: 12px 28px;
-          border-radius: 22px; border: none; cursor: pointer;
-          background: linear-gradient(135deg, var(--amber), #f97316);
-          color: #fff; font-family: 'Inter', sans-serif; font-weight: 600;
-        }
-        .btn-outline {
-          font-size: 14px; padding: 12px 28px;
-          border-radius: 22px; border: .5px solid var(--border);
-          cursor: pointer; background: #fff; color: var(--navy);
-          font-family: 'Inter', sans-serif;
-        }
-        .btn-outline:hover { background: var(--off); }
-        .hero-micro { font-size: 12px; color: var(--slate-l); }
-        .hero-social {
-          display: flex; align-items: center; gap: 8px;
-          margin-top: 24px; padding-top: 24px;
-          border-top: .5px solid var(--border);
-        }
-        .sp-av {
-          width: 28px; height: 28px; border-radius: 50%;
-          display: flex; align-items: center; justify-content: center;
-          font-size: 9px; font-weight: 600;
-          margin-right: -8px; border: 2px solid #fff;
-        }
-        .sp-txt { font-size: 12px; color: var(--slate); margin-left: 16px; }
-
-        /* DIVIDER LABEL */
-        .divider-row { display: flex; align-items: center; gap: 14px; margin: 36px 0 28px; }
-        .divider-line { flex: 1; height: .5px; background: var(--border); }
-        .divider-txt {
-          font-size: 11px; font-weight: 700; color: var(--slate-l);
-          letter-spacing: 1.5px; text-transform: uppercase; white-space: nowrap;
-        }
-
-        /* WHO GRID */
-        .who-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 36px; }
-        .who-card { border-radius: 14px; padding: 24px; border: .5px solid var(--border); }
-        .who-card.lounger { background: #F0F9FF; }
-        .who-card.gladiator { background: #FFFBEB; }
-        .who-label { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; }
-        .who-label.l { color: #0369A1; }
-        .who-label.g { color: #92400E; }
-        .who-title {
-          font-family: 'Syne', sans-serif;
-          font-size: 17px; font-weight: 800; color: var(--navy);
-          margin-bottom: 8px; line-height: 1.25;
-        }
-        .who-desc { font-size: 12.5px; color: var(--slate); line-height: 1.65; margin-bottom: 16px; }
-        .who-list { display: flex; flex-direction: column; gap: 7px; margin-bottom: 18px; }
-        .who-list-item { display: flex; align-items: flex-start; gap: 8px; font-size: 12px; color: var(--navy); }
-        .who-list-item i { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
-        .btn-who-l {
-          font-size: 13px; padding: 9px 20px; border-radius: 20px;
-          border: none; cursor: pointer;
-          background: #0369A1; color: #fff;
-          font-family: 'Inter', sans-serif; font-weight: 500;
-        }
-        .btn-who-g {
-          font-size: 13px; padding: 9px 20px; border-radius: 20px;
-          border: none; cursor: pointer;
-          background: linear-gradient(135deg, var(--amber), #f97316);
-          color: #fff; font-family: 'Inter', sans-serif; font-weight: 500;
-        }
-
-        /* INDUSTRIES */
-        .industry-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 36px; }
-        .ind-tag {
-          font-size: 12px; padding: 6px 14px;
-          border-radius: 20px; border: .5px solid var(--border);
-          color: var(--slate); background: #fff;
-        }
-        .ind-tag.hot { background: #FEF3C7; border-color: #FDE68A; color: #92400E; }
-
-        /* SECTIONS */
-        .section { padding: 0 0 36px; }
-        .section-label {
-          font-size: 10px; font-weight: 700; color: var(--amber-d);
-          letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px;
-        }
-        .section-h2 {
-          font-family: 'Syne', sans-serif;
-          font-size: 27px; font-weight: 800; color: var(--navy);
-          line-height: 1.18; letter-spacing: -.4px; margin-bottom: 10px;
-        }
-        .section-sub { font-size: 13.5px; color: var(--slate); line-height: 1.75; margin-bottom: 22px; max-width: 540px; }
-
-        /* PROBLEM CARDS */
-        .two-col-p { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .p-card { border-radius: 12px; padding: 16px; border: .5px solid var(--border); background: #fff; }
-        .p-card-title { font-size: 13px; font-weight: 600; color: var(--navy); margin-bottom: 4px; display: flex; align-items: center; gap: 7px; }
-        .p-card-text { font-size: 12px; color: var(--slate); line-height: 1.6; }
-
-        /* STEPS */
-        .steps-list { display: flex; flex-direction: column; }
-        .step { display: flex; gap: 16px; padding: 14px 0; border-bottom: .5px solid var(--border); }
-        .step:last-child { border-bottom: none; }
-        .step-n {
-          width: 28px; height: 28px; border-radius: 50%;
-          background: #FEF3C7; color: #92400E;
-          font-size: 12px; font-weight: 700;
-          display: flex; align-items: center; justify-content: center;
-          flex-shrink: 0; margin-top: 2px;
-        }
-        .step-title { font-size: 13.5px; font-weight: 600; color: var(--navy); margin-bottom: 3px; }
-        .step-desc { font-size: 12px; color: var(--slate); line-height: 1.6; }
-
-        /* MARKET TEST */
-        .market-test {
-          background: linear-gradient(135deg, #FFFBEB, #FEF3C7);
-          border: .5px solid #FDE68A; border-radius: 18px;
-          padding: 34px 36px; margin-bottom: 36px; text-align: center;
-        }
-        .mt-eyebrow { font-size: 10px; font-weight: 700; color: #92400E; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; }
-        .mt-h2 { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 800; color: var(--navy); line-height: 1.25; margin-bottom: 8px; }
-        .mt-sub { font-size: 13px; color: var(--slate); line-height: 1.7; margin-bottom: 20px; max-width: 400px; margin-left: auto; margin-right: auto; }
-        .mt-form { display: flex; gap: 8px; max-width: 380px; margin: 0 auto 10px; }
-        .mt-input {
-          flex: 1; font-size: 13px; padding: 9px 14px;
-          border-radius: 18px; border: .5px solid #FCD34D;
-          background: #fff; color: var(--navy);
-          font-family: 'Inter', sans-serif; outline: none;
-        }
-        .mt-btn {
-          font-size: 13px; padding: 9px 18px; border-radius: 18px;
-          border: none; cursor: pointer;
-          background: linear-gradient(135deg, var(--amber), #f97316);
-          color: #fff; font-family: 'Inter', sans-serif; font-weight: 600;
-          white-space: nowrap;
-        }
-        .mt-micro { font-size: 11px; color: #92400E; opacity: .6; }
-
-        /* TESTIMONIALS */
-        .testi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 36px; }
-        .testi-card { background: #fff; border: .5px solid var(--border); border-radius: 14px; padding: 18px; }
-        .testi-quote { font-size: 13px; color: var(--navy); line-height: 1.75; margin-bottom: 12px; font-style: italic; }
-        .testi-av {
-          width: 26px; height: 26px; border-radius: 50%;
-          display: flex; align-items: center; justify-content: center;
-          font-size: 9px; font-weight: 600;
-        }
-        .testi-name { font-size: 12px; font-weight: 600; color: var(--navy); }
-        .testi-role { font-size: 11px; color: var(--slate-l); }
-
-        /* STATS */
-        .stats-strip { display: flex; border: .5px solid var(--border); border-radius: 12px; overflow: hidden; background: #fff; margin-bottom: 36px; }
-        .stat-cell { flex: 1; padding: 14px; text-align: center; border-right: .5px solid var(--border); }
-        .stat-cell:last-child { border-right: none; }
-        .stat-v { font-size: 20px; font-weight: 700; }
-        .stat-l { font-size: 11px; color: var(--slate-l); margin-top: 3px; }
-
-        /* FOOTER CTA */
-        .footer-cta { text-align: center; padding: 8px 0 32px; }
-        .footer-h2 { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 800; color: var(--navy); margin-bottom: 8px; }
-        .footer-sub { font-size: 13px; color: var(--slate); margin-bottom: 18px; }
-        .footer-micro { font-size: 11px; color: var(--slate-l); margin-top: 8px; }
-        .footer-bar {
-          border-top: .5px solid var(--border); padding: 16px 0;
-          display: flex; align-items: center; justify-content: space-between;
-        }
-        .footer-links { display: flex; gap: 16px; }
-        .footer-link { font-size: 11px; color: var(--slate-l); cursor: pointer; }
-
-        /* RESPONSIVE */
-        @media (max-width: 640px) {
-          .hero-h1 { font-size: 30px; }
-          .who-grid { grid-template-columns: 1fr; }
-          .two-col-p { grid-template-columns: 1fr; }
-          .testi-grid { grid-template-columns: 1fr; }
-          .stats-strip { flex-wrap: wrap; }
-          .stat-cell { flex: 1 1 45%; border-right: none; border-bottom: .5px solid var(--border); }
-          .nav-link { display: none; }
-          .mt-form { flex-direction: column; }
-        }
-      `}</style>
-
-      <div className="page-wrap">
-        <h1 className="sr-only">Job Lounge — anonymous market intelligence platform connecting professionals with hiring teams across industries</h1>
-
-        {/* NAV */}
-        <nav className="nav">
-          <a href="/" className="logo">
-            <div className="logo-icon">
-              <i className="ti ti-radar" style={{ fontSize: "14px", color: "#fff" }} aria-hidden="true" />
-            </div>
-            Job Lounge
-          </a>
-          <div className="nav-links">
-            <button className="nav-link">How it works</button>
-            <button className="nav-link">Industries</button>
-            <div className="nav-divider" />
-            <button className="btn-hire">I&apos;m hiring</button>
-            <a href="/onboarding"><button className="btn-join-nav">Join the Lounge</button></a>
-          </div>
-        </nav>
-
-        {/* HERO */}
-        <div className="hero">
-          <div className="hero-tag">
-            <span className="pulse-dot" />
-            <span className="hero-tag-txt">Invite-only · Now open across industries</span>
-          </div>
-          <h2 className="hero-h1">
-            Know what you&apos;re worth.<br />
-            <span className="grad">Without anyone knowing</span><br />
-            you looked.
-          </h2>
-          <p className="hero-sub">
-            A private intelligence platform for senior professionals. See who&apos;s hiring for your profile — anonymously — before you decide if you&apos;re even interested. No resume. No exposure. No noise.
-          </p>
-          <div className="hero-ctas">
-            <a href="/onboarding"><button className="btn-gold">Join the Lounge — it&apos;s free →</button></a>
-            <button className="btn-outline">I&apos;m hiring talent</button>
-          </div>
-          <p className="hero-micro">No name. No LinkedIn. No employer. Your market pulse in 14 days.</p>
-          <div className="hero-social">
-            <div className="sp-av" style={{ background: "#E6F1FB", color: "#0C447C" }}>AM</div>
-            <div className="sp-av" style={{ background: "#E1F5EE", color: "#085041" }}>RS</div>
-            <div className="sp-av" style={{ background: "#EEEDFE", color: "#3C3489" }}>VP</div>
-            <div className="sp-av" style={{ background: "#FAEEDA", color: "#633806" }}>NJ</div>
-            <span className="sp-txt">Growing community of senior professionals across Finance, Risk, Tech, Legal, Strategy &amp; more</span>
-          </div>
+      {/* STOCK TICKER */}
+      <div style={{background:'#0d0f16',borderBottom:'1px solid rgba(255,255,255,0.08)',height:36,overflow:'hidden',display:'flex',alignItems:'center'}}>
+        <div style={{flexShrink:0,padding:'0 18px',fontSize:10,fontWeight:800,letterSpacing:'2px',textTransform:'uppercase',color:'#fbbf24',borderRight:'1px solid rgba(255,255,255,0.1)',height:'100%',display:'flex',alignItems:'center',whiteSpace:'nowrap',background:'#0d0f16',zIndex:2,position:'relative',gap:8}}>
+          <span style={{display:'inline-block',width:6,height:6,borderRadius:'50%',background:'#fbbf24',animation:'dotPulse 1.4s ease-in-out infinite',flexShrink:0}}/>
+          WHAT THEY DON&apos;T TELL YOU
         </div>
-
-        {/* WHO IS THIS FOR */}
-        <div className="divider-row">
-          <div className="divider-line" /><div className="divider-txt">Who is this for</div><div className="divider-line" />
-        </div>
-
-        <div className="who-grid">
-          <div className="who-card lounger">
-            <div className="who-label l">Job Loungers — professionals</div>
-            <div className="who-title">You&apos;re good at what you do. You&apos;re just not sure you&apos;re being paid for it.</div>
-            <div className="who-desc">Quietly explore your market value without updating your LinkedIn or floating a resume anywhere.</div>
-            <div className="who-list">
-              <div className="who-list-item"><i className="ti ti-check" style={{ color: "#0369A1" }} aria-hidden="true" />Anonymous profile — no name, no employer</div>
-              <div className="who-list-item"><i className="ti ti-check" style={{ color: "#0369A1" }} aria-hidden="true" />See your live match score &amp; salary benchmark</div>
-              <div className="who-list-item"><i className="ti ti-check" style={{ color: "#0369A1" }} aria-hidden="true" />Raise your hand — or don&apos;t. No pressure ever</div>
-              <div className="who-list-item"><i className="ti ti-check" style={{ color: "#0369A1" }} aria-hidden="true" />Identity reveals only when both sides agree</div>
-            </div>
-            <a href="/onboarding"><button className="btn-who-l">Join the Lounge — free →</button></a>
-          </div>
-          <div className="who-card gladiator">
-            <div className="who-label g">Corporate Gladiators — hiring teams</div>
-            <div className="who-title">The right hire never applies openly. That&apos;s why you can&apos;t find them.</div>
-            <div className="who-desc">Access a pre-qualified, quietly-open talent bench — no recruiter taking 8.33%, no JD floating in public.</div>
-            <div className="who-list">
-              <div className="who-list-item"><i className="ti ti-check" style={{ color: "#92400E" }} aria-hidden="true" />Post a 3-line flash brief in under 4 minutes</div>
-              <div className="who-list-item"><i className="ti ti-check" style={{ color: "#92400E" }} aria-hidden="true" />See match-scored candidates instantly</div>
-              <div className="who-list-item"><i className="ti ti-check" style={{ color: "#92400E" }} aria-hidden="true" />Signal directly — avg first response in 18h</div>
-              <div className="who-list-item"><i className="ti ti-check" style={{ color: "#92400E" }} aria-hidden="true" />Zero recruiter fee</div>
-            </div>
-            <button className="btn-who-g">Request Gladiator access →</button>
-          </div>
-        </div>
-
-        {/* INDUSTRIES */}
-        <div className="divider-row">
-          <div className="divider-line" /><div className="divider-txt">Open across industries</div><div className="divider-line" />
-        </div>
-
-        <div className="section" style={{ paddingBottom: "28px" }}>
-          <h2 className="section-h2">Senior talent, across every domain.</h2>
-          <p className="section-sub">Job Lounge is built for any professional senior enough to know their market — and senior enough to risk being seen looking. Any industry. Any function.</p>
-          <div className="industry-tags">
-            {["Finance & Banking", "Risk & Compliance", "IT Audit"].map(t => (
-              <span key={t} className="ind-tag hot">{t}</span>
+        <div style={{overflow:'hidden',flex:1}}>
+          <div style={{display:'flex',animation:'tickerScroll 50s linear infinite',width:'max-content'}}>
+            {[...TICKER_ITEMS,...TICKER_ITEMS].map((item,i) => (
+              <span key={i} style={{fontSize:12.5,color:'#cbd5e1',whiteSpace:'nowrap',padding:'0 36px',borderRight:'1px solid rgba(255,255,255,0.07)'}}>
+                {item}
+              </span>
             ))}
-            {["Strategy & Consulting", "Technology & Product", "Legal & Regulatory", "Insurance", "Fintech", "Healthcare", "FMCG & Retail", "Manufacturing", "Real Estate"].map(t => (
-              <span key={t} className="ind-tag">{t}</span>
-            ))}
-            <span className="ind-tag" style={{ color: "var(--slate-l)", fontStyle: "italic" }}>+ any domain</span>
-          </div>
-        </div>
-
-        {/* PROBLEM */}
-        <div className="divider-row">
-          <div className="divider-line" /><div className="divider-txt">The problem</div><div className="divider-line" />
-        </div>
-
-        <div className="section">
-          <h2 className="section-h2">You&apos;re too exposed to even test the market.</h2>
-          <p className="section-sub">LinkedIn shows your employer who you&apos;re talking to. Naukri feels junior. Headhunters brief your office by accident. The senior professional has no private way to understand their own value — until now.</p>
-          <div className="two-col-p">
-            <div className="p-card">
-              <div className="p-card-title"><i className="ti ti-eye" style={{ color: "#993C1D", fontSize: "15px" }} aria-hidden="true" />LinkedIn exposes you</div>
-              <div className="p-card-text">Profile views and connection requests are visible to anyone — including your current employer or team.</div>
-            </div>
-            <div className="p-card">
-              <div className="p-card-title"><i className="ti ti-mood-sad" style={{ color: "#854F0B", fontSize: "15px" }} aria-hidden="true" />Job boards feel junior</div>
-              <div className="p-card-text">Built for volume. A VP-level professional doesn&apos;t want to sit next to a fresher résumé in a recruiter&apos;s stack.</div>
-            </div>
-            <div className="p-card">
-              <div className="p-card-title"><i className="ti ti-phone-off" style={{ color: "#712B13", fontSize: "15px" }} aria-hidden="true" />Recruiters are noisy</div>
-              <div className="p-card-text">8.33% of your first year&apos;s salary — and they sometimes brief your employer before you&apos;ve decided anything.</div>
-            </div>
-            <div className="p-card">
-              <div className="p-card-title"><i className="ti ti-help" style={{ color: "#3C3489", fontSize: "15px" }} aria-hidden="true" />You don&apos;t know your number</div>
-              <div className="p-card-text">What are people with your profile actually earning right now? Glassdoor is stale. Peers won&apos;t say.</div>
-            </div>
-          </div>
-        </div>
-
-        {/* HOW IT WORKS */}
-        <div className="divider-row">
-          <div className="divider-line" /><div className="divider-txt">How it works</div><div className="divider-line" />
-        </div>
-
-        <div className="section">
-          <h2 className="section-h2">Your market, on your terms.</h2>
-          <div className="steps-list">
-            <div className="step">
-              <div className="step-n">1</div>
-              <div>
-                <div className="step-title">Build your anonymous profile — 5 minutes, no resume</div>
-                <div className="step-desc">Function, industry, experience, location, salary expectation. No name, no company, no LinkedIn. Your market fingerprint, not your CV.</div>
-              </div>
-            </div>
-            <div className="step">
-              <div className="step-n">2</div>
-              <div>
-                <div className="step-title">Your market pulse goes live in 14 days</div>
-                <div className="step-desc">We match you against live requirements from Corporate Gladiators. Match score, salary benchmark, who&apos;s circling — all completely private to you.</div>
-              </div>
-            </div>
-            <div className="step">
-              <div className="step-n">3</div>
-              <div>
-                <div className="step-title">Gladiators signal you — you decide if you&apos;re interested</div>
-                <div className="step-desc">A 3-line flash brief arrives. You raise your hand anonymously — or you don&apos;t. No pressure, no follow-up unless you choose it.</div>
-              </div>
-            </div>
-            <div className="step">
-              <div className="step-n">4</div>
-              <div>
-                <div className="step-title">Identity reveals only when both sides agree</div>
-                <div className="step-desc">Mutual opt-in, always. Your employer is never notified. Your name stays yours until you decide otherwise — even if you raise your hand ten times.</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* MARKET TEST */}
-        <div className="market-test">
-          <div className="mt-eyebrow">The anonymous market test</div>
-          <h2 className="mt-h2 syne">Curious what you&apos;re worth right now?<br />A private read in 14 days.</h2>
-          <p className="mt-sub">No resume. No exposure. Just your function and experience — and we&apos;ll show you exactly where you sit in the current market.</p>
-          <div className="mt-form">
-            <input className="mt-input" type="email" placeholder="Your email (private — never shared)" />
-            <button className="mt-btn">Request access</button>
-          </div>
-          <p className="mt-micro">Invite-only · 48hr confirmation · Never shared with employers or Gladiators</p>
-        </div>
-
-        {/* TESTIMONIALS */}
-        <div className="section">
-          <div className="section-label">Early Loungers</div>
-          <h2 className="section-h2">What the first members are saying.</h2>
-          <div className="testi-grid">
-            <div className="testi-card">
-              <div className="testi-quote">&ldquo;Found out a company had been searching for someone with my exact profile for over a month. I didn&apos;t even know that seat existed.&rdquo;</div>
-              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                <div className="testi-av" style={{ background: "#E6F1FB", color: "#0C447C" }}>AM</div>
-                <div><div className="testi-name">Audit Manager</div><div className="testi-role">9 yrs experience · Mumbai</div></div>
-              </div>
-            </div>
-            <div className="testi-card">
-              <div className="testi-quote">&ldquo;The salary benchmark alone was worth it. I was 18% below market. I didn&apos;t even need to move — I used it in my appraisal conversation.&rdquo;</div>
-              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                <div className="testi-av" style={{ background: "#E1F5EE", color: "#085041" }}>RS</div>
-                <div><div className="testi-name">Risk &amp; Assurance Lead</div><div className="testi-role">11 yrs experience · Pune</div></div>
-              </div>
-            </div>
-            <div className="testi-card">
-              <div className="testi-quote">&ldquo;LinkedIn always felt like my manager was watching. This is the first time I checked my market without anxiety.&rdquo;</div>
-              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                <div className="testi-av" style={{ background: "#EEEDFE", color: "#3C3489" }}>VP</div>
-                <div><div className="testi-name">VP — Financial Services</div><div className="testi-role">13 yrs experience · Mumbai</div></div>
-              </div>
-            </div>
-            <div className="testi-card">
-              <div className="testi-quote">&ldquo;Raised my hand for two roles. No awkward calls, no resume floating around. One turned into a conversation. That&apos;s the first time a job search felt dignified.&rdquo;</div>
-              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                <div className="testi-av" style={{ background: "#FAEEDA", color: "#633806" }}>NJ</div>
-                <div><div className="testi-name">Compliance Lead</div><div className="testi-role">14 yrs experience · Pune</div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* STATS */}
-        <div className="divider-row">
-          <div className="divider-line" /><div className="divider-txt">The numbers</div><div className="divider-line" />
-        </div>
-        <div className="stats-strip">
-          <div className="stat-cell"><div className="stat-v" style={{ color: "#185FA5" }}>14</div><div className="stat-l">Avg matched profiles per requirement</div></div>
-          <div className="stat-cell"><div className="stat-v" style={{ color: "#0F6E56" }}>18h</div><div className="stat-l">Avg time to first response</div></div>
-          <div className="stat-cell"><div className="stat-v" style={{ color: "#854F0B" }}>₹0</div><div className="stat-l">Recruiter fee for Gladiators</div></div>
-          <div className="stat-cell"><div className="stat-v" style={{ color: "#3C3489" }}>100%</div><div className="stat-l">Anonymous until you choose otherwise</div></div>
-        </div>
-
-        {/* FOOTER CTA */}
-        <div className="footer-cta">
-          <h2 className="footer-h2 syne">Your market is moving.<br />Are you watching?</h2>
-          <p className="footer-sub" style={{ maxWidth: "420px", margin: "0 auto 18px" }}>Join the Lounge. Know your number. Stay in control — across any industry, any function, any city.</p>
-          <a href="/onboarding"><button className="btn-gold">Join the Lounge — free →</button></a>
-          <p className="footer-micro">Invite-only · Senior professionals across India · All industries welcome</p>
-        </div>
-
-        <div className="footer-bar">
-          <div className="logo" style={{ fontSize: "14px" }}>
-            <div className="logo-icon" style={{ width: "26px", height: "26px", borderRadius: "7px" }}>
-              <i className="ti ti-radar" style={{ fontSize: "12px", color: "#fff" }} aria-hidden="true" />
-            </div>
-            Job Lounge
-          </div>
-          <div className="footer-links">
-            <span className="footer-link">Privacy</span>
-            <span className="footer-link">How it works</span>
-            <span className="footer-link">For Gladiators</span>
-            <span className="footer-link">Contact</span>
           </div>
         </div>
       </div>
+
+      {/* NAV */}
+      <nav style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'0 48px',height:56,background:'rgba(26,29,39,0.97)',backdropFilter:'blur(16px)',borderBottom:'1px solid rgba(255,255,255,0.08)',position:'sticky',top:0,zIndex:100}}>
+        <div style={{display:'flex',alignItems:'center',gap:10,fontSize:16,fontWeight:700,color:'#fff'}}>
+          <div style={{width:30,height:30,background:'linear-gradient(135deg,#3b82f6,#1d4ed8)',borderRadius:8,display:'flex',alignItems:'center',justifyContent:'center',fontSize:12,fontWeight:800,color:'#fff'}}>JL</div>
+          Job Lounge
+        </div>
+        <div style={{display:'flex',alignItems:'center',gap:2}}>
+          {['How it works','For Loungers','For Peers','For Recruiters'].map((l,i) => (
+            <button key={l} onClick={() => scrollTo(i===0?'how':'personas')} style={{fontSize:13,color:'#94a3b8',padding:'6px 12px',borderRadius:7,background:'none',border:'none',fontFamily:'inherit'}}>{l}</button>
+          ))}
+        </div>
+        <div style={{display:'flex',gap:8}}>
+          <button onClick={() => router.push('/login')} style={{fontSize:13,padding:'7px 18px',borderRadius:20,background:'rgba(52,211,153,0.15)',color:'#6ee7b7',border:'1px solid rgba(52,211,153,0.3)',fontFamily:'inherit',fontWeight:500}}>Log in</button>
+          <button onClick={() => router.push('/request-access')}
+ style={{fontSize:13,padding:'8px 22px',borderRadius:20,background:'linear-gradient(135deg,#3b82f6,#1d4ed8)',color:'#fff',border:'none',fontFamily:'inherit',fontWeight:600}}>Request access →</button>
+        </div>
+      </nav>
+
+      {/* HERO */}
+      <section style={{padding:'48px 48px 52px',display:'grid',gridTemplateColumns:'1fr 400px',gap:48,alignItems:'start',background:'#1e2235'}}>
+        <div>
+          <div style={{display:'inline-flex',alignItems:'center',gap:8,background:'rgba(147,197,253,0.1)',border:'1px solid rgba(147,197,253,0.25)',borderRadius:20,padding:'5px 16px',marginBottom:22}}>
+            <div style={{width:6,height:6,borderRadius:'50%',background:'#93c5fd',animation:'pulse 1.8s ease-in-out infinite',flexShrink:0}}/>
+            <span style={{fontSize:11,fontWeight:700,color:'#93c5fd',letterSpacing:'1.5px',textTransform:'uppercase'}}>Opportunity First. Identity Later.</span>
+          </div>
+
+          <h1 style={{marginBottom:22}}>
+            <span className="serif" style={{display:'block',fontSize:36,fontWeight:400,lineHeight:1.22,color:'#f1f5f9',marginBottom:2}}>Verified by us.</span>
+            <span className="serif" style={{display:'block',fontSize:36,fontWeight:400,lineHeight:1.22,color:'#f1f5f9',marginBottom:2}}>Hidden from everyone else.</span>
+            <span style={{display:'block',lineHeight:1.22}}><span className="serif" style={{fontSize:36,fontWeight:400,fontStyle:'italic',background:'linear-gradient(90deg,#93c5fd,#c4b5fd)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',backgroundClip:'text'}}>Until you choose otherwise.</span></span>
+          </h1>
+
+          <p style={{fontSize:15,color:'#94a3b8',lineHeight:1.75,marginBottom:24,maxWidth:460}}>Job Lounge is a verified opportunity network. See live opportunities and recruiter intent — before sharing your name, resume, or employer. Identity reveals only when you choose.</p>
+
+          <div style={{display:'flex',flexWrap:'wrap',gap:8,marginBottom:28}}>
+            {['Identity protected','Everyone verified','No CVs without consent','No employer alerts'].map(t => (
+              <div key={t} style={{display:'inline-flex',alignItems:'center',gap:6,fontSize:12,fontWeight:500,color:'#f1f5f9',background:'rgba(110,231,183,0.1)',border:'1px solid rgba(110,231,183,0.25)',borderRadius:20,padding:'5px 14px'}}>
+                <span style={{color:'#6ee7b7',fontWeight:700}}>✓</span>{t}
+              </div>
+            ))}
+          </div>
+
+          <div style={{display:'flex',gap:10,alignItems:'center',marginBottom:22}}>
+            <button onClick={() => router.push('/request-access')}
+ style={{fontSize:14,padding:'11px 28px',borderRadius:22,background:'linear-gradient(135deg,#3b82f6,#1d4ed8)',color:'#fff',border:'none',fontFamily:'inherit',fontWeight:600}}>Request access →</button>
+            <button onClick={() => scrollTo('how')} style={{fontSize:14,padding:'11px 18px',borderRadius:22,background:'transparent',color:'#94a3b8',border:'1px solid rgba(255,255,255,0.15)',fontFamily:'inherit',display:'flex',alignItems:'center',gap:6}}>▶ See how it works</button>
+          </div>
+
+          <div style={{display:'flex',alignItems:'center',gap:10}}>
+            <div style={{display:'flex'}}>
+              {[['#1e3a8a','#93c5fd','SA'],['#14532d','#86efac','RK'],['#78350f','#fde68a','PM'],['#3b0764','#d8b4fe','VN']].map(([bg,col,init]) => (
+                <div key={init} style={{width:24,height:24,borderRadius:'50%',border:'2px solid #1e2235',fontSize:8,fontWeight:700,display:'flex',alignItems:'center',justifyContent:'center',marginLeft:-7,background:bg,color:col}}>{init}</div>
+              ))}
+            </div>
+            <span style={{fontSize:12,color:'#94a3b8'}}>Invite-only. <strong style={{color:'#f1f5f9',fontWeight:600}}>Currently accepting requests.</strong></span>
+          </div>
+        </div>
+
+        {/* RIGHT COLUMN */}
+        <div style={{display:'flex',flexDirection:'column',gap:12}}>
+          <div style={{background:'rgba(255,255,255,0.05)',border:'1px solid rgba(255,255,255,0.12)',borderRadius:14,overflow:'hidden'}}>
+            <div style={{padding:'10px 16px',borderBottom:'1px solid rgba(255,255,255,0.08)',display:'flex',alignItems:'center',justifyContent:'space-between',background:'rgba(255,255,255,0.04)'}}>
+              <span style={{fontSize:10,fontWeight:700,letterSpacing:'1.5px',textTransform:'uppercase',color:'#cbd5e1'}}>How your identity is protected</span>
+              <span style={{fontSize:10,padding:'2px 8px',borderRadius:20,background:'rgba(147,197,253,0.15)',color:'#93c5fd',border:'1px solid rgba(147,197,253,0.3)',fontWeight:600}}>3 steps</span>
+            </div>
+            <div style={{height:180,overflow:'hidden'}}>
+              <div ref={trackRef} style={{display:'flex',flexDirection:'column',transition:'transform 0.7s cubic-bezier(.4,0,.2,1)'}}>
+                {ID_LAYERS.map((layer,i) => (
+                  <div key={i} style={{flexShrink:0,padding:'14px 16px 12px',height:180}}>
+                    <div style={{fontSize:10,fontWeight:700,letterSpacing:'1px',textTransform:'uppercase',marginBottom:5,color:layer.labelColor}}>{layer.label}</div>
+                    <div style={{fontSize:13,fontWeight:600,color:'#f1f5f9',marginBottom:4}}>{layer.who}</div>
+                    <div style={{fontSize:11.5,color:'#94a3b8',lineHeight:1.55,marginBottom:8}}>{layer.desc}</div>
+                    <div style={{display:'flex',flexWrap:'wrap',gap:4}}>
+                      {layer.tags.map(tag => (
+                        <span key={tag.t} style={{fontSize:10,padding:'2px 8px',borderRadius:20,fontWeight:500,
+                          background: tag.g ? 'rgba(110,231,183,0.12)' : 'rgba(148,163,184,0.12)',
+                          color: tag.g ? '#6ee7b7' : '#94a3b8',
+                          border: `1px solid ${tag.g ? 'rgba(110,231,183,0.25)' : 'rgba(148,163,184,0.2)'}`}}>{tag.t}</span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div style={{display:'flex',gap:4,padding:'7px 16px 12px',background:'rgba(255,255,255,0.04)',borderTop:'1px solid rgba(255,255,255,0.08)'}}>
+              {[ip0,ip1,ip2].map((r,i) => (
+                <div key={i} ref={r} style={{height:3,flex:i===0?2:1,borderRadius:2,background:i===0?'#93c5fd':'rgba(255,255,255,0.12)',transition:'all .3s'}}/>
+              ))}
+            </div>
+          </div>
+
+          {/* Live signals */}
+          <div style={{background:'rgba(255,255,255,0.04)',border:'1px solid rgba(255,255,255,0.12)',borderRadius:14,padding:'14px 16px'}}>
+            <div style={{display:'flex',alignItems:'center',gap:7,marginBottom:12}}>
+              <div style={{width:7,height:7,borderRadius:'50%',background:'#6ee7b7',flexShrink:0,animation:'lpulse 2s ease-in-out infinite'}}/>
+              <span style={{fontSize:10,fontWeight:700,letterSpacing:'1.5px',textTransform:'uppercase',color:'#cbd5e1',flex:1}}>Live opportunity signals</span>
+              <span onClick={() => router.push('/request-access')}
+ style={{fontSize:11,color:'#93c5fd',fontWeight:600,cursor:'pointer'}}>View all →</span>
+            </div>
+            {SIGNALS.map((sig,i) => (
+              <div key={i} style={{display:'flex',alignItems:'flex-start',gap:8,padding:'7px 0',borderBottom:i<SIGNALS.length-1?'1px solid rgba(255,255,255,0.07)':'none'}}>
+                <div style={{width:26,height:26,borderRadius:6,background:'rgba(255,255,255,0.07)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:13,flexShrink:0}}>{sig.icon}</div>
+                <div style={{flex:1,minWidth:0}}>
+                  <div style={{fontSize:12.5,fontWeight:600,color:'#f1f5f9'}}>{sig.org}</div>
+                  <div style={{fontSize:11.5,color:'#94a3b8',marginTop:2,lineHeight:1.4}}>{sig.desc}</div>
+                  <div style={{display:'flex',alignItems:'center',gap:4,fontSize:10,color:'#64748b',marginTop:3}}>
+                    <div style={{width:4,height:4,borderRadius:'50%',background:'#6ee7b7',flexShrink:0}}/>{sig.time}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* HOW IT WORKS */}
+      <section id="how" style={{background:'#13151f',padding:'56px 48px'}}>
+        <div style={{textAlign:'center',marginBottom:40}}>
+          <div style={{fontSize:10,fontWeight:700,letterSpacing:'2px',textTransform:'uppercase',color:'#93c5fd',marginBottom:10}}>The difference</div>
+          <h2 className="serif" style={{fontSize:32,fontWeight:400,color:'#f1f5f9',marginBottom:12,lineHeight:1.25}}>Why the order of information changes everything</h2>
+          <p style={{fontSize:15,color:'#94a3b8',lineHeight:1.75,maxWidth:540,margin:'0 auto'}}>On every other platform, you reveal yourself first. Here, the opportunity appears first.</p>
+        </div>
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:20}}>
+          {[
+            {label:'Every other platform',dot:'#94a3b8',vbg:'rgba(148,163,184,0.08)',vc:'#cbd5e1',vb:'rgba(148,163,184,0.15)',verdict:'Everything about you is known before anything about the opportunity.',steps:[['You reveal yourself first','Upload resume, share name, phone and email — before knowing anything.'],['You become visible to everyone','Your employer, colleagues, any recruiter with a subscription can see you.'],['Screening happens without you','Rejected or shortlisted by people you cannot identify.'],['Opportunity — if you are lucky','After passing filters you did not know existed.']]},
+            {label:'Job Lounge',dot:'#6ee7b7',vbg:'rgba(110,231,183,0.08)',vc:'#6ee7b7',vb:'rgba(110,231,183,0.2)',verdict:'Everything about the opportunity is known before anything about you.',steps:[['Opportunity appears first','You see the role, salary band, and peer signal. Anonymously.'],['Evaluate with full context','Peer signals. Recruiter intent. Verified company. Salary benchmark.'],['Express interest — still protected','Raise your hand. No CV sent. No name shared.'],['Reveal identity — when you choose','Mutual consent. Both parties agree before names cross.']]},
+          ].map(col => (
+            <div key={col.label} style={{borderRadius:14,padding:24,background:'rgba(255,255,255,0.03)',border:'1px solid rgba(255,255,255,0.09)'}}>
+              <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:16}}>
+                <div style={{width:8,height:8,borderRadius:'50%',background:col.dot}}/>
+                <span style={{fontSize:12,fontWeight:700,color:'#f1f5f9'}}>{col.label}</span>
+              </div>
+              {col.steps.map(([t,d],i) => (
+                <div key={i} style={{display:'flex',alignItems:'flex-start',gap:10,padding:'8px 0',borderBottom:'1px solid rgba(255,255,255,0.07)'}}>
+                  <div style={{width:18,height:18,borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',fontSize:9,fontWeight:700,flexShrink:0,marginTop:2,background:col.vbg,color:col.vc}}>{i+1}</div>
+                  <div>
+                    <span style={{fontSize:12.5,fontWeight:600,color:'#f1f5f9',display:'block',marginBottom:2}}>{t}</span>
+                    <span style={{fontSize:11.5,color:'#94a3b8',lineHeight:1.5}}>{d}</span>
+                  </div>
+                </div>
+              ))}
+              <div style={{marginTop:12,fontSize:12,padding:'9px 13px',borderRadius:7,fontWeight:500,background:col.vbg,color:col.vc,border:`1px solid ${col.vb}`}}>{col.verdict}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* PERSONAS */}
+      <section id="personas" style={{background:'#1e2235',padding:'56px 48px'}}>
+        <div style={{textAlign:'center',marginBottom:8}}>
+          <div style={{fontSize:10,fontWeight:700,letterSpacing:'2px',textTransform:'uppercase',color:'#93c5fd',marginBottom:10}}>Who is this for</div>
+          <h2 className="serif" style={{fontSize:32,fontWeight:400,color:'#f1f5f9',marginBottom:10,lineHeight:1.25}}>Which door is yours?</h2>
+          <p style={{fontSize:15,color:'#94a3b8',lineHeight:1.75,maxWidth:480,margin:'0 auto 32px'}}>Everyone on Job Lounge is here for a reason. Tell us yours.</p>
+        </div>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:18}}>
+          {[
+            {icon:'🔍',eyebrow:'Lounger',ec:'#93c5fd',title:"Show me what I'm worth",desc:"You're employed. Not applying anywhere. But you want to know what the market is paying for your exact profile — right now, without anyone knowing you looked.",points:['See live opportunities before revealing anything','Your employer is never notified — by design','Raise your hand only when you choose to'],cta:'Request access →',cb:'rgba(147,197,253,0.12)',cc:'#93c5fd'},
+            {icon:'🤝',eyebrow:'Peer',ec:'#fcd34d',title:'Help me find my missing piece',desc:"In your organisation, you know a seat is open — or you have the power to refer. The right person is not on any job board. They are here, quietly available. Your referral could change someone's career.",points:['Post a 220-character flash brief in 4 minutes','Matched Loungers surface — identity hidden until both consent','Be the connection that changes someone\'s trajectory'],cta:'Request access →',cb:'rgba(252,211,77,0.12)',cc:'#fcd34d'},
+            {icon:'🎯',eyebrow:'Recruiter',ec:'#c4b5fd',title:'Take me to the hidden talent',desc:"The professionals you need are not missing — they just do not surface on open platforms. They are here, verified, and quietly open.",points:['Verified access — every brief reviewed before matches shown','Pre-scored anonymous profiles matched to your brief','No CV changes hands without mutual consent'],cta:'Request verified access →',cb:'rgba(196,181,253,0.12)',cc:'#c4b5fd'},
+          ].map(p => (
+            <div key={p.eyebrow} onClick={() => router.push('/onboarding')}
+              style={{borderRadius:14,padding:'24px 20px',border:'1px solid rgba(255,255,255,0.09)',background:'rgba(255,255,255,0.03)',cursor:'pointer',transition:'border-color .2s,background .2s'}}
+              onMouseEnter={e => { const el = e.currentTarget as HTMLDivElement; el.style.background='rgba(255,255,255,0.06)'; el.style.borderColor='rgba(255,255,255,0.16)' }}
+              onMouseLeave={e => { const el = e.currentTarget as HTMLDivElement; el.style.background='rgba(255,255,255,0.03)'; el.style.borderColor='rgba(255,255,255,0.09)' }}>
+              <div style={{fontSize:24,marginBottom:10}}>{p.icon}</div>
+              <div style={{fontSize:10,fontWeight:700,letterSpacing:'2px',textTransform:'uppercase',color:p.ec,marginBottom:5}}>{p.eyebrow}</div>
+              <div className="serif" style={{fontSize:18,fontWeight:400,color:'#f1f5f9',marginBottom:7,lineHeight:1.25}}>{p.title}</div>
+              <div style={{fontSize:12,color:'#94a3b8',lineHeight:1.65,marginBottom:14}}>{p.desc}</div>
+              <div style={{display:'flex',flexDirection:'column',gap:5,marginBottom:18}}>
+                {p.points.map(pt => <div key={pt} style={{display:'flex',alignItems:'flex-start',gap:6,fontSize:12,color:'#cbd5e1'}}><span style={{color:p.ec,fontWeight:700,flexShrink:0}}>✓</span>{pt}</div>)}
+              </div>
+              <button style={{fontSize:12,padding:'6px 16px',borderRadius:20,border:'none',fontFamily:'inherit',fontWeight:600,background:p.cb,color:p.cc}}>{p.cta}</button>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* VERIFY */}
+      <section style={{background:'#13151f',padding:'56px 48px'}}>
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:48,alignItems:'start'}}>
+          <div>
+            <div style={{fontSize:10,fontWeight:700,letterSpacing:'2px',textTransform:'uppercase',color:'#93c5fd',marginBottom:10}}>Why you can trust what you see</div>
+            <h2 className="serif" style={{fontSize:30,fontWeight:400,color:'#f1f5f9',marginBottom:12,lineHeight:1.25}}>Every signal is real.<br/>Every company is genuine.</h2>
+            <p style={{fontSize:14,color:'#94a3b8',lineHeight:1.75,marginBottom:18}}>Job Lounge is not an open platform. Every Lounger, Peer, and Recruiter is verified before they can participate.</p>
+            <div style={{fontSize:13,padding:'12px 16px',borderRadius:8,fontWeight:500,background:'rgba(110,231,183,0.08)',color:'#6ee7b7',border:'1px solid rgba(110,231,183,0.2)',lineHeight:1.6}}>&ldquo;Verified by Job Lounge. Hidden from everyone else — until you choose otherwise.&rdquo;</div>
+          </div>
+          <div style={{display:'flex',flexDirection:'column',gap:10}}>
+            {[
+              {icon:'🔍',title:'Loungers join anonymously',desc:'No resume, no name, no employer needed. Domain, experience, location — that is enough. Everything else stays hidden until you choose otherwise.'},
+              {icon:'🤝',title:'Peers are verified employees',desc:'Company email confirmed before posting. Their company is verified but shown as "Large Private Bank" unless they choose to disclose. Real signals, controlled visibility.'},
+              {icon:'🎯',title:'Recruiters are founder-reviewed',desc:'Every recruiter brief is reviewed before matches are shown. Company verified internally. No bulk access. No ghost recruiters.'},
+              {icon:'🛡️',title:'A Lounger is never exposed to their own company',desc:'Before engaging with any requirement, a Lounger can request a verified company reveal. If it matches their employer, they simply do not engage — no one is notified, no trace left.'},
+            ].map(v => (
+              <div key={v.title} style={{background:'rgba(255,255,255,0.04)',border:'1px solid rgba(255,255,255,0.09)',borderRadius:10,padding:'12px 14px',display:'flex',alignItems:'flex-start',gap:10}}>
+                <span style={{fontSize:16,flexShrink:0,marginTop:2}}>{v.icon}</span>
+                <div>
+                  <span style={{fontSize:12.5,fontWeight:600,color:'#f1f5f9',display:'block',marginBottom:3}}>{v.title}</span>
+                  <span style={{fontSize:11.5,color:'#94a3b8',lineHeight:1.6}}>{v.desc}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FOUNDER */}
+      <section style={{background:'#1e2235',padding:'56px 48px'}}>
+        <div style={{maxWidth:700,margin:'0 auto',background:'rgba(255,255,255,0.04)',border:'1px solid rgba(255,255,255,0.09)',borderRadius:16,padding:'36px 40px'}}>
+          <div style={{fontSize:52,color:'rgba(147,197,253,0.2)',lineHeight:.8,marginBottom:16,fontFamily:'Georgia,serif'}}>&ldquo;</div>
+          <p style={{fontSize:15,color:'#94a3b8',lineHeight:1.9}}>
+            I spent two decades watching talented professionals get exposed before they were ready. A resume forwarded without permission. A LinkedIn view that reached their manager&apos;s desk. A referral that became a rumour.<br/><br/>
+            <strong style={{color:'#f1f5f9',fontWeight:600}}>I built Job Lounge because I wanted a platform where the professional is always in control — and where that control is not a toggle in settings, but a fact of how the system is built.</strong><br/><br/>
+            Everyone on this platform is verified. No fake companies. No ghost recruiters. But your identity, your company, your resume — those belong to you. They travel only with your consent. That&apos;s not a feature. That&apos;s the architecture.
+          </p>
+          <div style={{marginTop:20,paddingTop:16,borderTop:'1px solid rgba(255,255,255,0.08)',fontSize:12,color:'#64748b',fontStyle:'italic'}}>Founder, Job Lounge &middot; 20 years in the industry</div>
+        </div>
+      </section>
+
+      {/* FOOTER */}
+      <footer style={{background:'#0d0f16',padding:'24px 48px',display:'flex',alignItems:'center',justifyContent:'space-between',borderTop:'1px solid rgba(255,255,255,0.07)'}}>
+        <div style={{fontSize:14,fontWeight:700,color:'#64748b'}}>Job Lounge</div>
+        <div style={{fontSize:12,color:'#475569',fontStyle:'italic'}}>&ldquo;Opportunity First. Identity Later.&rdquo;</div>
+        <button onClick={() => router.push('/request-access')}
+ style={{fontSize:13,padding:'7px 18px',borderRadius:20,background:'linear-gradient(135deg,#3b82f6,#1d4ed8)',color:'#fff',border:'none',fontFamily:'inherit',fontWeight:600}}>Request access →</button>
+      </footer>
     </>
-  );
+  )
 }
