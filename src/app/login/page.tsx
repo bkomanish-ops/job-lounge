@@ -27,7 +27,6 @@ export default function LoginPage() {
     setLoading(true)
     setErrorMsg('')
 
-    // Check waitlist status
     const { data: waitlistEntry } = await supabase
       .from('waitlist')
       .select('status')
@@ -52,12 +51,9 @@ export default function LoginPage() {
       return
     }
 
-    // Status is approved — send OTP
     const { error } = await supabase.auth.signInWithOtp({
       email: trimmed,
-      options: {
-        shouldCreateUser: true,
-      },
+      options: { shouldCreateUser: true },
     })
 
     setLoading(false)
@@ -93,14 +89,28 @@ export default function LoginPage() {
       return
     }
 
-    // Route based on roles
-    const { data: userData } = await supabase
-      .from('users')
-      .select('roles, onboarding_done')
-      .eq('id', data.user.id)
-      .maybeSingle()
+    // Wait for handle_new_auth_user trigger to create the public.users row
+    // Retry up to 5 times with 500ms delay
+    let userData = null
+    for (let i = 0; i < 5; i++) {
+      const { data: row } = await supabase
+        .from('users')
+        .select('roles, onboarding_done')
+        .eq('id', data.user.id)
+        .maybeSingle()
+
+      if (row) {
+        userData = row
+        break
+      }
+
+      await new Promise(res => setTimeout(res, 500))
+    }
 
     setLoading(false)
+
+    console.log('USER ID:', data.user.id)
+    console.log('USER DATA:', JSON.stringify(userData))
 
     if (!userData || !userData.roles || userData.roles.length === 0 || !userData.onboarding_done) {
       router.push('/onboarding')
