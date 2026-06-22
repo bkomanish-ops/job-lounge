@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 
 type WaitlistEntry = {
@@ -26,13 +27,43 @@ const STATUS_META = {
 }
 
 export default function AdminPage() {
+  const router = useRouter()
+  const [authChecked, setAuthChecked] = useState(false)
   const [allEntries, setAllEntries] = useState<WaitlistEntry[]>([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<'pending' | 'approved' | 'held' | 'all'>('pending')
   const [actionLoading, setActionLoading] = useState<string | null>(null)
   const [toast, setToast] = useState<{ msg: string; ok: boolean } | null>(null)
 
-  useEffect(() => { fetchAll() }, [])
+  // ── Auth guard ──
+  useEffect(() => {
+    async function checkAdmin() {
+      const { data: { session } } = await supabase.auth.getSession()
+
+      console.log('SESSION:', session?.user?.email ?? 'NO SESSION')
+
+      if (!session) {
+        router.replace('/login')
+        return
+      }
+
+      const { data: userData, error } = await supabase
+        .from('users')
+        .select('is_admin')
+        .eq('id', session.user.id)
+        .single()
+
+      if (error || !userData?.is_admin) {
+        router.replace('/login')
+        return
+      }
+
+      setAuthChecked(true)
+      fetchAll()
+    }
+
+    checkAdmin()
+  }, [router])
 
   async function fetchAll() {
     setLoading(true)
@@ -67,7 +98,6 @@ export default function AdminPage() {
       return
     }
 
-    // Update local state immediately — no refetch needed
     setAllEntries(prev =>
       prev.map(e =>
         e.id === id
@@ -91,7 +121,6 @@ export default function AdminPage() {
     setTimeout(() => setToast(null), 3000)
   }
 
-  // ── Counts always from full list ──
   const counts = {
     pending:  allEntries.filter(e => e.status === 'pending').length,
     approved: allEntries.filter(e => e.status === 'approved').length,
@@ -104,6 +133,15 @@ export default function AdminPage() {
     : filter === 'held'
     ? allEntries.filter(e => e.status === 'held' || e.status === 'rejected')
     : allEntries.filter(e => e.status === filter)
+
+  // ── Blank screen while auth check runs ──
+  if (!authChecked) {
+    return (
+      <div style={{ minHeight: '100vh', background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <span style={{ fontSize: 13, color: '#94a3b8', fontFamily: 'Inter, sans-serif' }}>Checking access…</span>
+      </div>
+    )
+  }
 
   return (
     <div style={{ minHeight: '100vh', background: '#f8fafc', fontFamily: 'Inter, sans-serif' }}>
@@ -185,7 +223,7 @@ export default function AdminPage() {
                       : '3px solid #e2e8f0',
                   }}
                 >
-                  {/* Top row — email + status + time */}
+                  {/* Top row */}
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
                     <span style={{ fontSize: 14, fontWeight: 500, color: '#0f172a' }}>
                       {entry.email}
@@ -198,7 +236,7 @@ export default function AdminPage() {
                     </div>
                   </div>
 
-                  {/* Role they selected — clearly visible */}
+                  {/* Role requested */}
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: entry.status === 'pending' ? 14 : 0 }}>
                     <span style={{ fontSize: 12, color: '#64748b' }}>Requested as:</span>
                     <span style={{ fontSize: 12, fontWeight: 600, padding: '3px 10px', borderRadius: 20, background: roleMeta.bg, color: roleMeta.color }}>
@@ -211,7 +249,7 @@ export default function AdminPage() {
                     </span>
                   </div>
 
-                  {/* Approved role override info */}
+                  {/* Approved role override */}
                   {entry.status === 'approved' && entry.approved_role && entry.approved_role !== entry.role_requested && (
                     <div style={{ fontSize: 12, color: '#64748b', marginTop: 6 }}>
                       Approved as:{' '}
@@ -222,12 +260,10 @@ export default function AdminPage() {
                     </div>
                   )}
 
-                  {/* Actions — only for pending */}
+                  {/* Actions — pending */}
                   {entry.status === 'pending' && (
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
                       <span style={{ fontSize: 11, color: '#94a3b8', marginRight: 4 }}>Approve as:</span>
-
-                      {/* Approve as each role */}
                       {(['lounger', 'peer', 'recruiter'] as const).map(r => {
                         const rm = ROLE_META[r]
                         const isRequested = r === entry.role_requested
@@ -237,24 +273,19 @@ export default function AdminPage() {
                             onClick={() => updateStatus(entry.id, 'approved', r)}
                             disabled={isActing}
                             style={{
-                              fontSize: 12,
-                              fontWeight: isRequested ? 700 : 500,
-                              padding: '6px 14px',
-                              borderRadius: 7,
+                              fontSize: 12, fontWeight: isRequested ? 700 : 500,
+                              padding: '6px 14px', borderRadius: 7,
                               border: isRequested ? 'none' : `1px solid ${rm.color}`,
                               cursor: isActing ? 'not-allowed' : 'pointer',
                               background: isRequested ? rm.color : rm.bg,
                               color: isRequested ? '#fff' : rm.color,
-                              fontFamily: 'Inter, sans-serif',
-                              opacity: isActing ? 0.6 : 1,
+                              fontFamily: 'Inter, sans-serif', opacity: isActing ? 0.6 : 1,
                             }}
                           >
                             {isActing ? '…' : rm.label}{isRequested ? ' ✓' : ''}
                           </button>
                         )
                       })}
-
-                      {/* Hold */}
                       <button
                         onClick={() => updateStatus(entry.id, 'held')}
                         disabled={isActing}
@@ -270,7 +301,7 @@ export default function AdminPage() {
                     </div>
                   )}
 
-                  {/* Held — approve now option */}
+                  {/* Actions — held/rejected */}
                   {(entry.status === 'held' || entry.status === 'rejected') && (
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginTop: 10 }}>
                       <span style={{ fontSize: 11, color: '#94a3b8', marginRight: 4 }}>Approve as:</span>
