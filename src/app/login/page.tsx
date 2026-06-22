@@ -109,15 +109,8 @@ export default function LoginPage() {
 
     setLoading(false)
 
-    console.log('USER ID:', data.user.id)
-    console.log('USER DATA:', JSON.stringify(userData))
-
-    if (!userData || !userData.roles || userData.roles.length === 0 || !userData.onboarding_done) {
-      router.push('/onboarding')
-      return
-    }
-
-    router.push(`/dashboard/${userData.roles[0]}`)
+    // DEBUG — show on screen instead of redirecting
+    setErrorMsg(`UID:${data.user.id} | DATA:${JSON.stringify(userData)}`)
   }
 
   async function handleResend() {
