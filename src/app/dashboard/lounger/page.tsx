@@ -12,7 +12,7 @@ interface LoungerProfile {
   certifications: string[];
   experience_years: string;
   current_city: string;
-  pulse_score_label: 'HIGH' | 'MEDIUM' | 'LOW' | null;
+  pulse_label: 'HIGH' | 'MEDIUM' | 'LOW' | null;
   salary_min_paise: number;
   salary_max_paise: number;
   jl_id: string;
@@ -49,7 +49,7 @@ export default function LoungerDashboard() {
 
       const { data: profileData, error: profileErr } = await supabase
         .from('lounger_profiles')
-        .select('user_id, domain, certifications, experience_years, current_city, pulse_score_label, salary_min_paise, salary_max_paise, jl_id')
+        .select('user_id, domain, certifications, experience_years, current_city, pulse_label, salary_min_paise, salary_max_paise, jl_id')
         .eq('user_id', user.id)
         .single();
 
@@ -90,7 +90,7 @@ export default function LoungerDashboard() {
 
   if (!profile) return null;
 
-  const pulse = getPulseLabel(profile.pulse_score_label);
+  const pulse = getPulseLabel(profile.pulse_label);
   const greetingHour = new Date().getHours();
   const greeting = greetingHour < 12 ? 'Good morning' : greetingHour < 17 ? 'Good afternoon' : 'Good evening';
   const profileLabel = `${profile.domain?.[0] ?? 'Professional'} · ${profile.current_city}`;
