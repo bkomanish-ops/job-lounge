@@ -94,9 +94,17 @@ export default function LoungerDashboard() {
   const pulse = getPulseLabel(profile.pulse_label);
   const greetingHour = new Date().getHours();
   const greeting = greetingHour < 12 ? 'Good morning' : greetingHour < 17 ? 'Good afternoon' : 'Good evening';
-  const domainArr = Array.isArray(profile.domain) ? profile.domain : (typeof profile.domain === 'string' ? [profile.domain] : []);
-  const skillsArr = Array.isArray(profile.skills) ? profile.skills : [];
-  const certsArr = Array.isArray(profile.certifications) ? profile.certifications : [];
+  function toArr(val: any): string[] {
+    if (Array.isArray(val)) return val;
+    if (typeof val === 'string') {
+      try { const p = JSON.parse(val); return Array.isArray(p) ? p : [val]; } catch { return [val]; }
+    }
+    return [];
+  }
+
+  const domainArr = toArr(profile.domain);
+  const skillsArr = toArr(profile.skills);
+  const certsArr = toArr(profile.certifications);
   const profileLabel = `${domainArr[0] ?? 'Professional'} · ${profile.current_city}`;
 
   return (
