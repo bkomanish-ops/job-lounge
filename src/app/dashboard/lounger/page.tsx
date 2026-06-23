@@ -16,6 +16,7 @@ interface LoungerProfile {
   salary_min_paise: number;
   salary_max_paise: number;
   jl_id: string;
+  skills: string[];
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -49,7 +50,7 @@ export default function LoungerDashboard() {
 
       const { data: profileData, error: profileErr } = await supabase
         .from('lounger_profiles')
-        .select('user_id, domain, certifications, experience_years, current_city, pulse_label, salary_min_paise, salary_max_paise, jl_id')
+        .select('user_id, domain, certifications, skills, experience_years, current_city, pulse_label, salary_min_paise, salary_max_paise, jl_id')
         .eq('user_id', user.id)
         .single();
 
@@ -170,11 +171,11 @@ export default function LoungerDashboard() {
               <div style={{ fontSize: 13, color: '#0f172a' }}>{profile.current_city}</div>
             </div>
           </div>
-          {profile.skills && (profile as any).skills?.length > 0 && (
+          {Array.isArray(profile.skills) && profile.skills.length > 0 && (
             <div style={{ marginTop: 16 }}>
               <div style={{ fontSize: 11, color: '#94a3b8', marginBottom: 6 }}>Skills</div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                {(profile as any).skills.slice(0, 6).map((s: string) => (
+                {profile.skills.slice(0, 6).map((s: string) => (
                   <span key={s} style={{ fontSize: 12, padding: '3px 10px', borderRadius: 20, background: '#f1f5f9', color: '#475569' }}>{s}</span>
                 ))}
               </div>
