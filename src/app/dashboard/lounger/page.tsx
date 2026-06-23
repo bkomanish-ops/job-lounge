@@ -94,7 +94,10 @@ export default function LoungerDashboard() {
   const pulse = getPulseLabel(profile.pulse_label);
   const greetingHour = new Date().getHours();
   const greeting = greetingHour < 12 ? 'Good morning' : greetingHour < 17 ? 'Good afternoon' : 'Good evening';
-  const profileLabel = `${profile.domain?.[0] ?? 'Professional'} · ${profile.current_city}`;
+  const domainArr = Array.isArray(profile.domain) ? profile.domain : (typeof profile.domain === 'string' ? [profile.domain] : []);
+  const skillsArr = Array.isArray(profile.skills) ? profile.skills : [];
+  const certsArr = Array.isArray(profile.certifications) ? profile.certifications : [];
+  const profileLabel = `${domainArr[0] ?? 'Professional'} · ${profile.current_city}`;
 
   return (
     <div style={{ minHeight: '100vh', background: '#f8fafc', fontFamily: 'Inter, sans-serif' }}>
@@ -151,7 +154,7 @@ export default function LoungerDashboard() {
             <div>
               <div style={{ fontSize: 11, color: '#94a3b8', marginBottom: 4 }}>Industry</div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                {profile.domain?.map(d => (
+                {domainArr.map(d => (
                   <span key={d} style={{ fontSize: 12, padding: '3px 10px', borderRadius: 20, background: '#E6F1FB', color: '#0C447C' }}>{d}</span>
                 ))}
               </div>
@@ -171,11 +174,11 @@ export default function LoungerDashboard() {
               <div style={{ fontSize: 13, color: '#0f172a' }}>{profile.current_city}</div>
             </div>
           </div>
-          {Array.isArray(profile.skills) && profile.skills.length > 0 && (
+          {skillsArr.length > 0 && (
             <div style={{ marginTop: 16 }}>
               <div style={{ fontSize: 11, color: '#94a3b8', marginBottom: 6 }}>Skills</div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                {profile.skills.slice(0, 6).map((s: string) => (
+                {skillsArr.slice(0, 6).map((s: string) => (
                   <span key={s} style={{ fontSize: 12, padding: '3px 10px', borderRadius: 20, background: '#f1f5f9', color: '#475569' }}>{s}</span>
                 ))}
               </div>
