@@ -110,7 +110,7 @@ export default function LoginPage() {
     setLoading(false)
 
     // DEBUG — show on screen instead of redirecting
-    setErrorMsg(`UID:${data.user.id} | DATA:${JSON.stringify(userData)}`)
+    router.push(`/dashboard/${userData.roles[0]}`)
   }
 
   async function handleResend() {
