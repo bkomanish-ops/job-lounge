@@ -4,36 +4,45 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 
-// ─── Types ───────────────────────────────────────────────────────────────────
-
 interface LoungerProfile {
   user_id: string;
   domain: string[];
   certifications: string[];
+  skills: string[];
   experience_years: string;
   current_city: string;
-  pulse_label: 'HIGH' | 'MEDIUM' | 'LOW' | null;
+  pulse_label: 'HIGH' | 'MEDIUM' | 'LOW' | 'Calculating' | null;
   salary_min_paise: number;
   salary_max_paise: number;
   jl_id: string;
-  skills: string[];
 }
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
-
-function getPulseLabel(label: string | null): { text: string; color: string; arrow: string } {
-  switch (label) {
-    case 'HIGH':   return { text: 'High demand', color: '#fff', arrow: '↑' };
-    case 'MEDIUM': return { text: 'Growing',     color: '#fff', arrow: '→' };
-    default:       return { text: 'Steady',      color: '#B5D4F4', arrow: '–' };
+function toArr(val: any): string[] {
+  if (Array.isArray(val)) return val;
+  if (typeof val === 'string') {
+    try { const p = JSON.parse(val); return Array.isArray(p) ? p : [val]; } catch { return [val]; }
   }
+  return [];
 }
 
 function formatLakh(paise: number): string {
   return `₹${(paise / 10_000_000).toFixed(0)}L`;
 }
 
-// ─── Component ───────────────────────────────────────────────────────────────
+function getPulse(label: string | null): { text: string; arrow: string } {
+  switch (label) {
+    case 'HIGH':   return { text: 'High demand', arrow: '↑' };
+    case 'MEDIUM': return { text: 'Growing',     arrow: '→' };
+    default:       return { text: 'Steady',      arrow: '–' };
+  }
+}
+
+const AVATAR_COLORS = [
+  { bg: '#E6F1FB', color: '#0C447C' },
+  { bg: '#E1F5EE', color: '#085041' },
+  { bg: '#FAEEDA', color: '#633806' },
+  { bg: '#EEEDFE', color: '#3C3489' },
+];
 
 export default function LoungerDashboard() {
   const router = useRouter();
@@ -48,20 +57,16 @@ export default function LoungerDashboard() {
       const { data: { user }, error: userErr } = await supabase.auth.getUser();
       if (userErr || !user) { router.push('/login'); return; }
 
-      const { data: profileData, error: profileErr } = await supabase
+      const { data, error: profileErr } = await supabase
         .from('lounger_profiles')
         .select('user_id, domain, certifications, skills, experience_years, current_city, pulse_label, salary_min_paise, salary_max_paise, jl_id')
         .eq('user_id', user.id)
         .single();
 
-      if (profileErr || !profileData) {
-        router.push('/onboarding/lounger');
-        return;
-      }
+      if (profileErr || !data) { router.push('/onboarding/lounger'); return; }
 
-      setProfile(profileData);
+      setProfile(data);
     } catch (err) {
-      console.error('Dashboard load error:', err);
       setError('Failed to load dashboard. Please refresh.');
     } finally {
       setLoading(false);
@@ -73,39 +78,42 @@ export default function LoungerDashboard() {
     router.push('/');
   }
 
-  if (loading) {
-    return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Inter, sans-serif', color: '#64748b' }}>
-        Loading your dashboard…
-      </div>
-    );
-  }
+  if (loading) return (
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Inter, sans-serif', color: '#64748b' }}>
+      Loading your dashboard…
+    </div>
+  );
 
-  if (error) {
-    return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Inter, sans-serif', color: '#e24b4a' }}>
-        {error}
-      </div>
-    );
-  }
+  if (error) return (
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Inter, sans-serif', color: '#e24b4a' }}>
+      {error}
+    </div>
+  );
 
   if (!profile) return null;
-
-  const pulse = getPulseLabel(profile.pulse_label);
-  const greetingHour = new Date().getHours();
-  const greeting = greetingHour < 12 ? 'Good morning' : greetingHour < 17 ? 'Good afternoon' : 'Good evening';
-  function toArr(val: any): string[] {
-    if (Array.isArray(val)) return val;
-    if (typeof val === 'string') {
-      try { const p = JSON.parse(val); return Array.isArray(p) ? p : [val]; } catch { return [val]; }
-    }
-    return [];
-  }
 
   const domainArr = toArr(profile.domain);
   const skillsArr = toArr(profile.skills);
   const certsArr = toArr(profile.certifications);
-  const profileLabel = `${domainArr[0] ?? 'Professional'} · ${profile.current_city}`;
+  const pulse = getPulse(profile.pulse_label);
+
+  const profileSubtitle = [
+    certsArr[0] ?? domainArr[0] ?? 'Professional',
+    profile.current_city,
+  ].filter(Boolean).join(' · ');
+
+  const salaryMin = profile.salary_min_paise;
+  const salaryMax = profile.salary_max_paise;
+  // Placeholder market bands based on profile salary (until matching engine runs)
+  const marketP50Min = Math.round(salaryMax * 1.05);
+  const marketP50Max = Math.round(salaryMax * 1.2);
+  const topMatchMin  = Math.round(salaryMax * 1.2);
+  const topMatchMax  = Math.round(salaryMax * 1.5);
+  const p90Min       = Math.round(salaryMax * 1.5);
+  const p90Max       = Math.round(salaryMax * 1.8);
+  const maxBand      = p90Max;
+
+  const bandWidth = (val: number) => `${Math.round((val / maxBand) * 92)}%`;
 
   return (
     <div style={{ minHeight: '100vh', background: '#f8fafc', fontFamily: 'Inter, sans-serif' }}>
@@ -114,8 +122,8 @@ export default function LoungerDashboard() {
       <nav style={{ background: '#fff', borderBottom: '0.5px solid #e2e8f0', padding: '0 24px', height: 52, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <span style={{ fontWeight: 600, fontSize: 15, color: '#0f172a', letterSpacing: '-0.01em' }}>Job Lounge</span>
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-          <span style={{ fontSize: 12, color: '#64748b' }}>{profile.jl_id}</span>
-          <button onClick={handleSignOut} style={{ fontSize: 12, color: '#64748b', background: 'none', border: 'none', cursor: 'pointer', padding: '4px 0' }}>
+          <span style={{ fontSize: 12, color: '#94a3b8' }}>{profile.jl_id}</span>
+          <button onClick={handleSignOut} style={{ fontSize: 12, color: '#64748b', background: 'none', border: 'none', cursor: 'pointer' }}>
             Sign out
           </button>
         </div>
@@ -126,11 +134,11 @@ export default function LoungerDashboard() {
         {/* Top bar */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
           <div>
-            <div style={{ fontSize: 13, color: '#64748b' }}>{greeting}</div>
-            <div style={{ fontSize: 17, fontWeight: 500, color: '#0f172a', marginTop: 2 }}>{profileLabel}</div>
+            <div style={{ fontSize: 13, color: '#64748b' }}>Welcome onboard!</div>
+            <div style={{ fontSize: 17, fontWeight: 500, color: '#0f172a', marginTop: 2 }}>{profileSubtitle}</div>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#0C447C', background: '#E6F1FB', borderRadius: 20, padding: '5px 12px', border: '0.5px solid #B5D4F4' }}>
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
             Fully anonymous
           </div>
         </div>
@@ -139,11 +147,13 @@ export default function LoungerDashboard() {
         <div style={{ background: '#042C53', borderRadius: 14, padding: '20px 24px', marginBottom: 18, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
             <span style={{ fontSize: 11, color: '#85B7EB', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Your market pulse</span>
-            <div style={{ fontSize: 30, fontWeight: 500, color: pulse.color, display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ fontSize: 30, fontWeight: 500, color: '#fff', display: 'flex', alignItems: 'center', gap: 10 }}>
               {pulse.text}
               <span style={{ fontSize: 20, color: '#5DCAA5' }}>{pulse.arrow}</span>
             </div>
-            <span style={{ fontSize: 13, color: '#B5D4F4' }}>Matching engine runs nightly. Check back tomorrow for live matches.</span>
+            <span style={{ fontSize: 13, color: '#B5D4F4', maxWidth: 320 }}>
+              Matching engine runs nightly. Check back tomorrow for live matches.
+            </span>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
             <div style={{ display: 'flex', alignItems: 'flex-end', gap: 5, height: 52 }}>
@@ -155,54 +165,78 @@ export default function LoungerDashboard() {
           </div>
         </div>
 
-        {/* Profile summary */}
-        <div style={{ background: '#fff', border: '0.5px solid #e2e8f0', borderRadius: 14, padding: '20px 24px', marginBottom: 18 }}>
-          <div style={{ fontSize: 13, fontWeight: 500, color: '#64748b', marginBottom: 16 }}>Your anonymous profile</div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-            <div>
-              <div style={{ fontSize: 11, color: '#94a3b8', marginBottom: 4 }}>Industry</div>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                {domainArr.map(d => (
-                  <span key={d} style={{ fontSize: 12, padding: '3px 10px', borderRadius: 20, background: '#E6F1FB', color: '#0C447C' }}>{d}</span>
-                ))}
-              </div>
+        {/* 4 metrics */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10, marginBottom: 18 }}>
+          {[
+            { label: 'Signals circling', value: '—', sub: 'After first match run', subColor: '#94a3b8' },
+            { label: 'Profile views',    value: '—', sub: 'Last 30 days',          subColor: '#94a3b8' },
+            { label: 'Top match score',  value: '—', sub: 'No matches yet',        subColor: '#94a3b8' },
+            { label: 'Salary delta',     value: '—', sub: 'vs your current band',  subColor: '#94a3b8' },
+          ].map((m, i) => (
+            <div key={i} style={{ background: '#f8fafc', borderRadius: 10, padding: '14px 16px', border: '0.5px solid #e2e8f0' }}>
+              <div style={{ fontSize: 12, color: '#64748b', marginBottom: 6 }}>{m.label}</div>
+              <div style={{ fontSize: 22, fontWeight: 500, color: '#0f172a' }}>{m.value}</div>
+              <div style={{ fontSize: 11, marginTop: 4, color: m.subColor }}>{m.sub}</div>
             </div>
-            <div>
-              <div style={{ fontSize: 11, color: '#94a3b8', marginBottom: 4 }}>Experience</div>
-              <div style={{ fontSize: 13, color: '#0f172a' }}>{profile.experience_years}</div>
-            </div>
-            <div>
-              <div style={{ fontSize: 11, color: '#94a3b8', marginBottom: 4 }}>Salary band</div>
-              <div style={{ fontSize: 13, color: '#0f172a' }}>
-                {formatLakh(profile.salary_min_paise)} – {formatLakh(profile.salary_max_paise)}
-              </div>
-            </div>
-            <div>
-              <div style={{ fontSize: 11, color: '#94a3b8', marginBottom: 4 }}>Location</div>
-              <div style={{ fontSize: 13, color: '#0f172a' }}>{profile.current_city}</div>
-            </div>
-          </div>
-          {skillsArr.length > 0 && (
-            <div style={{ marginTop: 16 }}>
-              <div style={{ fontSize: 11, color: '#94a3b8', marginBottom: 6 }}>Skills</div>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                {skillsArr.slice(0, 6).map((s: string) => (
-                  <span key={s} style={{ fontSize: 12, padding: '3px 10px', borderRadius: 20, background: '#f1f5f9', color: '#475569' }}>{s}</span>
-                ))}
-              </div>
-            </div>
-          )}
+          ))}
         </div>
 
-        {/* Coming soon panels */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-          <div style={{ background: '#fff', border: '0.5px solid #e2e8f0', borderRadius: 14, padding: '20px 24px', textAlign: 'center' }}>
-            <div style={{ fontSize: 13, fontWeight: 500, color: '#0f172a', marginBottom: 6 }}>Signals</div>
-            <div style={{ fontSize: 12, color: '#94a3b8' }}>Who's circling your profile will appear here after the first matching run.</div>
+        {/* Two col */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 18 }}>
+
+          {/* Who's circling */}
+          <div style={{ background: '#fff', border: '0.5px solid #e2e8f0', borderRadius: 14, padding: '16px 18px' }}>
+            <div style={{ fontSize: 13, fontWeight: 500, color: '#64748b', marginBottom: 12, display: 'flex', alignItems: 'center', gap: 6 }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+              Who's circling (anonymous)
+            </div>
+            <div style={{ fontSize: 13, color: '#94a3b8', padding: '16px 0', textAlign: 'center' }}>
+              No signals yet. Appears after the nightly engine runs.
+            </div>
           </div>
-          <div style={{ background: '#fff', border: '0.5px solid #e2e8f0', borderRadius: 14, padding: '20px 24px', textAlign: 'center' }}>
-            <div style={{ fontSize: 13, fontWeight: 500, color: '#0f172a', marginBottom: 6 }}>Top matches</div>
-            <div style={{ fontSize: 12, color: '#94a3b8' }}>Your best-fit requirements will appear here once the engine runs.</div>
+
+          {/* Top matches */}
+          <div style={{ background: '#fff', border: '0.5px solid #e2e8f0', borderRadius: 14, padding: '16px 18px' }}>
+            <div style={{ fontSize: 13, fontWeight: 500, color: '#64748b', marginBottom: 12, display: 'flex', alignItems: 'center', gap: 6 }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+              Your top matches
+            </div>
+            <div style={{ fontSize: 13, color: '#94a3b8', padding: '16px 0', textAlign: 'center' }}>
+              Best-fit requirements appear here once the engine runs.
+            </div>
+          </div>
+
+        </div>
+
+        {/* Salary reflection */}
+        <div style={{ background: '#fff', border: '0.5px solid #e2e8f0', borderRadius: 14, padding: '16px 18px' }}>
+          <div style={{ fontSize: 13, fontWeight: 500, color: '#64748b', marginBottom: 4, display: 'flex', alignItems: 'center', gap: 6 }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+            Salary reflection — your profile vs live market
+          </div>
+          <div style={{ fontSize: 11, color: '#94a3b8', marginBottom: 14 }}>Estimated bands — live data populates after first matching run</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {[
+              { label: 'Your current', min: salaryMin,    max: salaryMax,    color: '#B5D4F4' },
+              { label: 'Market P50',   min: marketP50Min, max: marketP50Max, color: '#5DCAA5' },
+              { label: 'Top matches',  min: topMatchMin,  max: topMatchMax,  color: '#378ADD' },
+              { label: 'P90 ceiling',  min: p90Min,       max: p90Max,       color: '#7F77DD' },
+            ].map((b, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <span style={{ fontSize: 12, color: '#64748b', minWidth: 80 }}>{b.label}</span>
+                <div style={{ flex: 1, height: 10, background: '#f1f5f9', borderRadius: 5, position: 'relative' }}>
+                  <div style={{ position: 'absolute', left: 0, height: 10, borderRadius: 5, background: b.color, width: bandWidth(b.max) }} />
+                </div>
+                <span style={{ fontSize: 12, fontWeight: 500, color: '#0f172a', minWidth: 72, textAlign: 'right' }}>
+                  {formatLakh(b.min)}–{formatLakh(b.max)}
+                </span>
+              </div>
+            ))}
+          </div>
+          <div style={{ marginTop: 12, paddingTop: 10, borderTop: '0.5px solid #f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <span style={{ fontSize: 12, color: '#94a3b8' }}>
+              Based on your profile · {domainArr[0] ?? 'BFSI'} · {profile.current_city || 'India'}
+            </span>
           </div>
         </div>
 
