@@ -62,7 +62,6 @@ const INDUSTRY_CERTIFICATIONS: Record<string, string[]> = {
   'Consulting': ['PMP','CFA','MBA','Six Sigma'],
   'Data & AI': ['AWS ML Specialty','Google ML','Azure AI','Databricks','TensorFlow Developer'],
   'FinTech': ['CFA','FRM','AWS','PMP','CAMS'],
-  'Cybersecurity': ['CISSP','CISM','CEH','CISA','OSCP'],
   'Government / Public Sector': ['CSS','IAS','UPSC','PMP'],
   'BPO / KPO': ['Six Sigma','ITIL','PMP','COPC'],
 }
@@ -76,6 +75,13 @@ const CONTRIBUTION_TYPES = [
 ]
 
 const EXP_BANDS = ['0–3 yrs','3–6 yrs','6–10 yrs','10–15 yrs','15–20 yrs','20+ yrs']
+
+const CITIES = [
+  'Mumbai','Delhi NCR','Bangalore','Pune','Chennai',
+  'Hyderabad','Kolkata','Ahmedabad','Surat','Jaipur',
+  'Lucknow','Chandigarh','Bhopal','Nagpur','Indore',
+  'Kochi','Coimbatore','Visakhapatnam','Other',
+]
 
 const STEPS = ['Welcome','Industry','Skills','Certifications','Contribution','Exp & Salary','Done']
 
@@ -146,7 +152,6 @@ function CustomAdder({ placeholder, onAdd, category }: { placeholder: string; on
     if (!trimmed) return
     onAdd(trimmed)
     setVal('')
-    // Save to custom_options table for future auto-population
     await supabase.from('custom_options').upsert({ category, value: trimmed }, { onConflict: 'category,value' })
   }
 
@@ -160,7 +165,7 @@ function CustomAdder({ placeholder, onAdd, category }: { placeholder: string; on
         placeholder={placeholder}
         style={{ ...inputStyle, flex: 1, marginBottom: 0 }}
       />
-      <button onClick={handleAdd} style={{ fontSize: 12, fontWeight: 600, padding: '8px 16px', borderRadius: 8, border: 'none', cursor: 'pointer', background: '#185FA5', color: '#fff', fontFamily: 'Inter, sans-serif', whiteSpace: 'nowrap' }}>
+      <button onClick={handleAdd} style={{ fontSize: 12, fontWeight: 600, padding: '8px 16px', borderRadius: 8, border: 'none', cursor: 'pointer', background: '#185FA5', color: '#fff', fontFamily: 'Inter, sans-serif', whiteSpace: 'nowrap' as const }}>
         + Add
       </button>
     </div>
@@ -176,17 +181,16 @@ export default function LoungerOnboardingPage() {
   const [error, setError] = useState('')
   const [jlId, setJlId] = useState('')
 
-  // Dynamic lists from custom_options table
   const [extraIndustries, setExtraIndustries] = useState<string[]>([])
   const [extraSkills, setExtraSkills] = useState<string[]>([])
   const [extraCerts, setExtraCerts] = useState<string[]>([])
 
-  // Form state
   const [industry, setIndustry] = useState('')
   const [skills, setSkills] = useState<string[]>([])
   const [certifications, setCertifications] = useState<string[]>([])
   const [contribution, setContribution] = useState('')
   const [expBand, setExpBand] = useState('')
+  const [city, setCity] = useState('')
   const [currentSalary, setCurrentSalary] = useState('')
   const [expectedSalary, setExpectedSalary] = useState('')
 
@@ -237,6 +241,11 @@ export default function LoungerOnboardingPage() {
       return
     }
 
+    if (!city) {
+      setError('Please select your current city.')
+      return
+    }
+
     setSaving(true)
     setError('')
 
@@ -257,11 +266,10 @@ export default function LoungerOnboardingPage() {
         salary_min_paise: Math.round(curL * 100000 * 100),
         salary_max_paise: Math.round(expL * 100000 * 100),
         jl_id: uniqueId,
-        current_city: '',
+        current_city: city,
       }, { onConflict: 'user_id' })
 
     if (profileErr) {
-      console.error('Profile error:', profileErr)
       setError(`Failed to save: ${profileErr.message}`)
       setSaving(false)
       return
@@ -348,7 +356,7 @@ export default function LoungerOnboardingPage() {
             <div style={sub}>Select the sector that best describes your current organisation.</div>
             <PrivacyBadge />
 
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 16 }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: 8, marginBottom: 16 }}>
               {allIndustries.map(ind => (
                 <Chip key={ind} label={ind} selected={industry === ind} onClick={() => { setIndustry(ind); setSkills([]); setCertifications([]) }} />
               ))}
@@ -386,7 +394,7 @@ export default function LoungerOnboardingPage() {
             <PrivacyBadge />
 
             {allSkills.length > 0 && (
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 12 }}>
+              <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: 8, marginBottom: 12 }}>
                 {allSkills.map(s => (
                   <Chip key={s} label={s} selected={skills.includes(s)} onClick={() => toggleItem(skills, setSkills, s)} />
                 ))}
@@ -429,7 +437,7 @@ export default function LoungerOnboardingPage() {
             <PrivacyBadge />
 
             {allCerts.length > 0 && (
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 12 }}>
+              <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: 8, marginBottom: 12 }}>
                 {allCerts.map(c => (
                   <Chip key={c} label={c} selected={certifications.includes(c)} onClick={() => toggleItem(certifications, setCertifications, c)} />
                 ))}
@@ -511,12 +519,19 @@ export default function LoungerOnboardingPage() {
         {/* ── Step 5: Experience & Salary ── */}
         {step === 5 && (
           <div style={card}>
-            <div style={title}>Experience & salary</div>
+            <div style={title}>Experience, location & salary</div>
             <div style={sub}>Helps calibrate your market pulse. Salary is never shown to anyone on the platform.</div>
             <PrivacyBadge />
 
+            <label style={labelStyle}>Current city</label>
+            <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: 8, marginBottom: 20 }}>
+              {CITIES.map(c => (
+                <Chip key={c} label={c} selected={city === c} onClick={() => setCity(c)} />
+              ))}
+            </div>
+
             <label style={labelStyle}>Total years of experience</label>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 20 }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: 8, marginBottom: 20 }}>
               {EXP_BANDS.map(b => (
                 <Chip key={b} label={b} selected={expBand === b} onClick={() => setExpBand(b)} />
               ))}
@@ -558,8 +573,8 @@ export default function LoungerOnboardingPage() {
               <button onClick={() => setStep(4)} style={backBtn}>← Back</button>
               <button
                 onClick={handleFinish}
-                disabled={saving || !expBand || !currentSalary || !expectedSalary}
-                style={{ ...nextBtn, background: saving || !expBand || !currentSalary || !expectedSalary ? '#cbd5e1' : '#185FA5', opacity: saving ? 0.7 : 1 }}
+                disabled={saving || !expBand || !city || !currentSalary || !expectedSalary}
+                style={{ ...nextBtn, background: saving || !expBand || !city || !currentSalary || !expectedSalary ? '#cbd5e1' : '#185FA5', opacity: saving ? 0.7 : 1 }}
               >
                 {saving ? 'Saving…' : 'Complete setup →'}
               </button>
@@ -569,7 +584,7 @@ export default function LoungerOnboardingPage() {
 
         {/* ── Step 6: Done ── */}
         {step === 6 && (
-          <div style={{ ...card, textAlign: 'center' }}>
+          <div style={{ ...card, textAlign: 'center' as const }}>
             <div style={{ width: 56, height: 56, borderRadius: '50%', background: '#E1F5EE', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
               <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0F6E56" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <polyline points="20 6 9 17 4 12" />
@@ -586,12 +601,14 @@ export default function LoungerOnboardingPage() {
               </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 24, textAlign: 'left' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 24, textAlign: 'left' as const }}>
               {[
                 { label: 'Industry', value: industry },
+                { label: 'Location', value: city },
                 { label: 'Skills', value: `${skills.length} selected` },
-                { label: 'Certifications', value: certifications.length > 0 ? `${certifications.length} selected` : 'None' },
                 { label: 'Experience', value: expBand },
+                { label: 'Certifications', value: certifications.length > 0 ? `${certifications.length} selected` : 'None' },
+                { label: 'Salary band', value: `₹${currentSalary}L – ₹${expectedSalary}L` },
               ].map(stat => (
                 <div key={stat.label} style={{ background: '#f8fafc', borderRadius: 8, padding: '10px 14px' }}>
                   <div style={{ fontSize: 11, color: '#94a3b8', marginBottom: 2 }}>{stat.label}</div>
@@ -620,7 +637,7 @@ const card: React.CSSProperties = { background: '#fff', border: '0.5px solid #e2
 const title: React.CSSProperties = { fontSize: 16, fontWeight: 600, color: '#0f172a', marginBottom: 4 }
 const sub: React.CSSProperties = { fontSize: 13, color: '#64748b', marginBottom: 20, lineHeight: 1.5 }
 const labelStyle: React.CSSProperties = { fontSize: 12, fontWeight: 500, color: '#475569', display: 'block', marginBottom: 8 }
-const inputStyle: React.CSSProperties = { width: '100%', padding: '10px 14px', fontSize: 14, border: '0.5px solid #e2e8f0', borderRadius: 8, outline: 'none', fontFamily: 'Inter, sans-serif', color: '#0f172a', boxSizing: 'border-box', display: 'block', marginBottom: 16 }
+const inputStyle: React.CSSProperties = { width: '100%', padding: '10px 14px', fontSize: 14, border: '0.5px solid #e2e8f0', borderRadius: 8, outline: 'none', fontFamily: 'Inter, sans-serif', color: '#0f172a', boxSizing: 'border-box' as const, display: 'block', marginBottom: 16 }
 const btnRow: React.CSSProperties = { display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 4 }
 const backBtn: React.CSSProperties = { fontSize: 13, color: '#64748b', background: 'none', border: 'none', cursor: 'pointer', padding: '6px 0', fontFamily: 'Inter, sans-serif' }
 const nextBtn: React.CSSProperties = { fontSize: 13, fontWeight: 600, padding: '8px 24px', borderRadius: 20, border: 'none', cursor: 'pointer', color: '#fff', fontFamily: 'Inter, sans-serif', transition: 'background 0.15s' }
