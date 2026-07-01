@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Job Lounge â€” Opportunity First. Identity Later.</title>
+<title>Job Lounge — Opportunity First. Identity Later.</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -29,7 +29,7 @@
 html { scroll-behavior: smooth; }
 body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
 
-/* â•â• NAV â•â• */
+/* ══ NAV ══ */
 nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 200;
   height: 58px; display: flex; align-items: center; justify-content: space-between;
@@ -45,11 +45,11 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
 .n-access { font-size: 13px; font-weight: 600; color: white; background: var(--navy); padding: 8px 18px; border-radius: 6px; text-decoration: none; transition: background 0.2s, transform 0.15s; }
 .n-access:hover { background: var(--navy-m); transform: translateY(-1px); }
 
-/* â•â• PROGRESS â•â• */
+/* ══ PROGRESS ══ */
 #progress-bar { position: fixed; top: 58px; left: 0; right: 0; z-index: 190; height: 2px; background: transparent; }
 #progress-fill { height: 100%; background: linear-gradient(to right, var(--blue), var(--amber-w)); width: 0%; transition: width 0.3s ease; }
 
-/* â•â• CHAPTER DOTS â•â• */
+/* ══ CHAPTER DOTS ══ */
 #chapter-dots { position: fixed; right: 24px; top: 50%; transform: translateY(-50%); z-index: 190; display: flex; flex-direction: column; gap: 9px; }
 .cdot { width: 7px; height: 7px; border-radius: 50%; background: rgba(4,44,83,0.12); border: 1.5px solid rgba(4,44,83,0.2); transition: all 0.3s; cursor: pointer; position: relative; }
 .cdot:hover { background: var(--amber-w); border-color: var(--amber-w); }
@@ -57,11 +57,11 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
 .cdot-tip { position: absolute; right: 18px; top: 50%; transform: translateY(-50%); background: var(--navy); color: white; font-size: 10px; font-weight: 500; padding: 4px 10px; border-radius: 4px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
 .cdot:hover .cdot-tip { opacity: 1; }
 
-/* â•â• CHAPTER â•â• */
+/* ══ CHAPTER ══ */
 .chapter { min-height: 100vh; display: flex; align-items: center; position: relative; overflow: hidden; padding: 80px 0; }
 .ch-inner { max-width: 1120px; margin: 0 auto; padding: 0 72px; width: 100%; }
 
-/* â•â• SCROLL CUE â•â• */
+/* ══ SCROLL CUE ══ */
 .scroll-cue {
   position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%);
   display: flex; flex-direction: column; align-items: center; gap: 7px;
@@ -74,20 +74,20 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
 .scroll-cue-line { width: 1px; height: 32px; background: linear-gradient(to bottom, var(--navy), transparent); opacity: 0.3; animation: scroll-line 1.8s ease-in-out infinite; }
 @keyframes scroll-line { 0%{transform:scaleY(0);transform-origin:top;opacity:0} 50%{transform:scaleY(1);transform-origin:top;opacity:1} 100%{transform:scaleY(1);transform-origin:bottom;opacity:0} }
 
-/* â•â• REVEAL â•â• */
+/* ══ REVEAL ══ */
 .rv { opacity: 0; transform: translateY(22px); transition: opacity 0.7s ease, transform 0.7s ease; }
 .rv.d1 { transition-delay: 0.1s; } .rv.d2 { transition-delay: 0.2s; } .rv.d3 { transition-delay: 0.3s; }
 .rv.in { opacity: 1; transform: translateY(0); }
 
-/* â•â• SHARED TEXT â•â• */
+/* ══ SHARED TEXT ══ */
 .ch-label { font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--amber); margin-bottom: 16px; }
 .ch-head { font-family: 'DM Serif Display', serif; font-size: clamp(32px,4vw,54px); line-height: 1.1; letter-spacing: -0.025em; color: var(--navy); margin-bottom: 20px; }
 .ch-head em { font-style: italic; color: var(--amber); }
 .ch-body { font-size: 16px; line-height: 1.85; color: #374151; }
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-   CH0: HERO â€” canvas BG + particles
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* ════════════════════════════════════
+   CH0: HERO — canvas BG + particles
+════════════════════════════════════ */
 #ch0 {
   background: var(--bg);
   padding-top: 58px;
@@ -99,7 +99,7 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
   overflow: hidden;
 }
 
-/* â”€â”€ HERO LEFT â”€â”€ */
+/* ── HERO LEFT ── */
 .hero-left-panel {
   padding: 80px 48px 80px 72px;
   position: relative; z-index: 10;
@@ -123,7 +123,7 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
 .trust-item { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--soft); }
 .trust-check { width: 16px; height: 16px; border-radius: 50%; background: rgba(4,44,83,0.07); display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 700; color: var(--navy); }
 
-/* â”€â”€ HERO RIGHT â€” card stack â”€â”€ */
+/* ── HERO RIGHT — card stack ── */
 .hero-right-panel {
   position: relative;
   display: flex; flex-direction: column;
@@ -143,14 +143,14 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
   pointer-events: none;
 }
 
-/* Card stack â€” 3 cards fanned */
+/* Card stack — 3 cards fanned */
 .hero-card-stack {
   position: relative;
   width: 320px; height: 400px;
   margin-bottom: 24px;
 }
 
-/* All cards absolutely positioned â€” JS drives all transforms */
+/* All cards absolutely positioned — JS drives all transforms */
 .hcard {
   position: absolute;
   top: 0; left: 0;
@@ -160,7 +160,7 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
   border-radius: 18px;
   padding: 24px 22px;
   box-shadow: 0 8px 32px rgba(0,0,0,0.08);
-  /* JS sets transform/opacity/z-index â€” transition for smooth movement */
+  /* JS sets transform/opacity/z-index — transition for smooth movement */
   transition: transform 0.9s cubic-bezier(0.22,0.61,0.36,1),
               opacity 0.7s ease,
               box-shadow 0.7s ease;
@@ -202,7 +202,7 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
 /* Consent bar */
 .hero-consent-bar { display: none; }
 
-/* â”€â”€ Narrator strip â”€â”€ */
+/* ── Narrator strip ── */
 .hero-narrator {
   width: 100%; max-width: 320px;
   position: relative; z-index: 10;
@@ -245,9 +245,9 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
 
 @keyframes fu { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-   CH1: THE PROBLEM â€” animated cards
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* ════════════════════════════════════
+   CH1: THE PROBLEM — animated cards
+════════════════════════════════════ */
 #ch1 { background: var(--white); }
 
 /* Subtle SVG wave background */
@@ -265,9 +265,9 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
 .prob-text { font-size: 14px; line-height: 1.65; color: var(--text); }
 .prob-text strong { display: block; font-size: 14px; font-weight: 600; margin-bottom: 3px; }
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-   CH2: THE IDEA â€” dark, particle bg
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* ════════════════════════════════════
+   CH2: THE IDEA — dark, particle bg
+════════════════════════════════════ */
 #ch2 { background: var(--navy); position: relative; }
 #ch2-canvas { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
 
@@ -296,9 +296,9 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
 .idea-stat-num { font-family: 'DM Serif Display', serif; font-size: 44px; color: white; line-height: 1; margin-bottom: 6px; letter-spacing: -0.02em; }
 .idea-stat-label { font-size: 12px; color: rgba(255,255,255,0.35); line-height: 1.55; }
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* ════════════════════════════════════
    CH3.5: WHICH ONE IS YOURS (persona tabs)
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+════════════════════════════════════ */
 .personas-section { background: var(--white); }
 
 .tab-bar { display: flex; gap: 4px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 5px; width: fit-content; margin-bottom: 40px; }
@@ -351,7 +351,7 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
 }
 .tab-cta:hover { background: var(--navy-mid); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(4,44,83,0.25); }
 
-/* â”€â”€ RIGHT SIDE visual card wrapper â”€â”€ */
+/* ── RIGHT SIDE visual card wrapper ── */
 .tab-visual {
   background: var(--bg); border: 1px solid var(--border);
   border-radius: 18px; padding: 28px;
@@ -361,7 +361,7 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
 }
 .tab-panel.active .tab-visual { opacity: 1; transform: translateY(0); }
 
-/* â”€â”€ MARKET VALUE CARD â€” light theme â”€â”€ */
+/* ── MARKET VALUE CARD — light theme ── */
 .mvc {
   background: white; border: 1px solid var(--border);
   border-radius: 14px; padding: 26px 26px 20px;
@@ -448,7 +448,7 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
 .mvc-shortlist em { font-style: italic; color: var(--navy); font-weight: 600; }
 .mvc-verified { font-size: 9px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--soft); }
 
-/* â”€â”€ PEER search results â”€â”€ */
+/* ── PEER search results ── */
 .search-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--soft); margin-bottom: 10px; }
 .search-query { font-size: 13px; color: var(--muted); font-style: italic; margin-bottom: 14px; padding: 10px 14px; background: var(--card); border-radius: 8px; border: 1px solid var(--border); }
 .search-result {
@@ -466,9 +466,9 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
 .sr-tag.blue  { background: rgba(55,138,221,0.08); color: var(--blue); }
 
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* ════════════════════════════════════
    CH3: WHO IS THIS FOR
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+════════════════════════════════════ */
 #ch3 { background: var(--bg); }
 /* Subtle dot grid */
 #ch3::before { content: ''; position: absolute; inset: 0; background-image: radial-gradient(rgba(4,44,83,0.07) 1px, transparent 1px); background-size: 32px 32px; pointer-events: none; z-index: 0; }
@@ -488,9 +488,9 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
 .who-quote { font-size: 12px; font-style: italic; color: var(--muted); margin-bottom: 12px; padding-left: 12px; border-left: 2px solid var(--amber-w); line-height: 1.6; }
 .who-body { font-size: 13px; line-height: 1.7; color: #4B5563; flex: 1; }
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* ════════════════════════════════════
    CH4: WHY NOT OTHERS
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+════════════════════════════════════ */
 #ch4 { background: var(--white); }
 .compare-table { width: 100%; border-collapse: separate; border-spacing: 0; border-radius: 16px; overflow: hidden; border: 1px solid var(--border); }
 .compare-table th { padding: 15px 20px; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; text-align: left; background: var(--card); color: var(--muted); }
@@ -507,9 +507,9 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
 .cross { color: #D1D5DB; font-size: 16px; }
 .partial { color: var(--amber); font-size: 12px; font-weight: 500; }
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* ════════════════════════════════════
    CH5: IDENTITY REVEAL
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+════════════════════════════════════ */
 #ch5 { background: var(--bg); }
 #ch5::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 70% 60% at 80% 50%, rgba(55,138,221,0.06) 0%, transparent 70%); pointer-events: none; }
 
@@ -552,9 +552,9 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
 .ic-btn:hover { background: var(--navy-m); transform: translateY(-1px); }
 .ic-small-note { font-size: 11px; color: var(--soft); text-align: center; margin-top: 10px; line-height: 1.5; }
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* ════════════════════════════════════
    CH6: SALARY BENCHMARK
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+════════════════════════════════════ */
 #ch6 { background: var(--white); }
 #ch6::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 70% at 10% 50%, rgba(239,159,39,0.05) 0%, transparent 70%); pointer-events: none; }
 
@@ -594,9 +594,9 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
 .source-verdict.amber { color: var(--amber); }
 .source-verdict.green { color: var(--green); }
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* ════════════════════════════════════
    CH7: HUMAN SEARCH
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+════════════════════════════════════ */
 #ch7 { background: var(--bg); }
 #ch7::before { content: ''; position: absolute; inset: 0; background-image: radial-gradient(rgba(55,138,221,0.06) 1px, transparent 1px); background-size: 28px 28px; pointer-events: none; z-index: 0; }
 
@@ -624,9 +624,9 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
 .sf-text { font-size: 14px; line-height: 1.65; color: #374151; }
 .sf-text strong { display: block; font-weight: 600; color: var(--text); margin-bottom: 2px; }
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-   CH8: COMPANY FIREWALL â€” animated
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* ════════════════════════════════════
+   CH8: COMPANY FIREWALL — animated
+════════════════════════════════════ */
 #ch8 { background: var(--white); }
 #ch8::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 70% 80% at 70% 50%, rgba(4,44,83,0.03) 0%, transparent 70%); pointer-events: none; }
 
@@ -645,9 +645,9 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
 .fw-feature-text { font-size: 14px; line-height: 1.65; color: #374151; }
 .fw-feature-text strong { display: block; font-weight: 600; color: var(--text); margin-bottom: 2px; }
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-   CH9: REQUEST ACCESS â€” grand finale
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* ════════════════════════════════════
+   CH9: REQUEST ACCESS — grand finale
+════════════════════════════════════ */
 #ch9 { background: var(--navy); position: relative; }
 #ch9-canvas { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
 
@@ -673,7 +673,7 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
 .cta-trust-item { display: flex; align-items: center; gap: 7px; font-size: 12px; color: rgba(255,255,255,0.28); }
 .cta-trust-check { width: 16px; height: 16px; border-radius: 50%; background: rgba(255,255,255,0.07); display: flex; align-items: center; justify-content: center; font-size: 8px; color: rgba(255,255,255,0.5); font-weight: 700; }
 
-/* â”€â”€ Closing CTA strip (end of journey) â”€â”€ */
+/* ── Closing CTA strip (end of journey) ── */
 .final-cta {
   margin-top: 56px;
   display: flex; align-items: center; justify-content: space-between;
@@ -688,6 +688,172 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
   transition: opacity 0.2s, transform 0.15s; white-space: nowrap;
 }
 .final-cta-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+
+/* ═══════════════════════════════
+   MODAL OVERLAY — Login & Onboarding
+═══════════════════════════════ */
+.jl-modal-backdrop {
+  display: none;
+  position: fixed; inset: 0; z-index: 500;
+  background: rgba(4,44,83,0.55);
+  backdrop-filter: blur(4px);
+  align-items: flex-end; justify-content: center;
+}
+.jl-modal-backdrop.open { display: flex; animation: bd-in 0.25s ease; }
+@keyframes bd-in { from{opacity:0} to{opacity:1} }
+
+.jl-modal-sheet {
+  width: 100%; max-width: 560px;
+  max-height: 92vh; overflow-y: auto;
+  background: #f8fafc;
+  border-radius: 18px 18px 0 0;
+  animation: sheet-up 0.32s cubic-bezier(0.22,0.61,0.36,1);
+  position: relative;
+  font-family: 'Inter', sans-serif;
+}
+@keyframes sheet-up { from{transform:translateY(48px);opacity:0} to{transform:translateY(0);opacity:1} }
+
+.jl-modal-close {
+  position: sticky; top: 12px; float: right; margin: 12px 16px 0 0;
+  width: 32px; height: 32px; border-radius: 50%;
+  background: rgba(0,0,0,0.07); border: none; cursor: pointer;
+  font-size: 15px; color: #64748b;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 10;
+}
+.jl-modal-close:hover { background: rgba(0,0,0,0.12); }
+
+.jl-modal-body { padding: 0 0 40px; clear: both; }
+
+/* ── Modal inner card ── */
+.mc { background: #fff; border: 0.5px solid #e2e8f0; border-radius: 14px; padding: 24px; margin: 16px 20px; }
+.mc-title { font-size: 17px; font-weight: 600; color: #0f172a; margin: 0 0 6px; text-align: center; }
+.mc-sub   { font-size: 13px; color: #64748b; margin: 0 0 20px; line-height: 1.55; text-align: center; }
+.mc-label { font-size: 12px; font-weight: 500; color: #475569; display: block; margin-bottom: 8px; }
+.mc-input {
+  width: 100%; padding: 10px 14px; font-size: 14px;
+  border: 1px solid #cbd5e1; border-radius: 8px; outline: none;
+  color: #0f172a; background: #fff;
+  box-sizing: border-box; font-family: 'Inter',sans-serif;
+  display: block; margin-bottom: 16px;
+}
+.mc-input:focus { border-color: #185FA5; }
+.mc-btn-primary {
+  width: 100%; padding: 12px 0; font-size: 14px; font-weight: 600;
+  color: #fff; background: #185FA5; border: none; border-radius: 8px;
+  cursor: pointer; font-family: 'Inter',sans-serif;
+  transition: background 0.2s; display: block;
+}
+.mc-btn-primary:hover { background: #0D4B8C; }
+.mc-btn-primary:disabled { background: #cbd5e1; cursor: default; }
+.mc-ghost { font-size: 12px; color: #64748b; background: none; border: none; cursor: pointer; padding: 4px 0; font-family: 'Inter',sans-serif; }
+.mc-error { font-size: 12px; color: #e24b4a; margin: -8px 0 12px; }
+.mc-success { font-size: 12px; color: #0F6E56; margin: -8px 0 12px; }
+.mc-row { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; }
+.mc-footer { font-size: 12px; color: #94a3b8; text-align: center; margin-top: 16px; }
+.mc-link { color: #185FA5; cursor: pointer; text-decoration: underline; }
+
+/* Privacy badge */
+.mc-privacy {
+  display: flex; align-items: flex-start; gap: 10px;
+  background: #E6F1FB; border: 0.5px solid #B5D4F4;
+  border-radius: 10px; padding: 12px 14px; margin-bottom: 18px;
+  font-size: 12px; color: #0C447C; line-height: 1.6;
+}
+
+/* Progress bar */
+.mc-progress { height: 3px; background: #f1f5f9; border-radius: 2px; margin-bottom: 16px; }
+.mc-progress-fill { height: 3px; border-radius: 2px; background: #185FA5; transition: width 0.3s; }
+
+/* Chip */
+.mc-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+.mc-chip {
+  font-size: 12px; padding: 6px 14px; border-radius: 20px; cursor: pointer;
+  border: 0.5px solid #e2e8f0; background: #fff; color: #475569;
+  font-family: 'Inter',sans-serif; transition: all 0.15s;
+}
+.mc-chip.sel {
+  border: 1px solid #B5D4F4; background: #E6F1FB;
+  color: #0C447C; font-weight: 600;
+}
+
+/* Dropdown */
+.mc-select {
+  width: 100%; padding: 10px 14px; font-size: 13px;
+  border: 0.5px solid #e2e8f0; border-radius: 8px; outline: none;
+  color: #0f172a; background: #fff; font-family: 'Inter',sans-serif;
+  display: block; margin-bottom: 16px; cursor: pointer;
+  -webkit-appearance: none; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%2394a3b8' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 12px center;
+  padding-right: 32px;
+}
+.mc-select:focus { border-color: #185FA5; }
+.mc-select[multiple] { height: auto; background-image: none; }
+
+/* Tag pills for multi-select */
+.mc-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; margin-bottom: 8px; }
+.mc-tag {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11px; font-weight: 500; padding: 3px 10px;
+  background: #E6F1FB; color: #0C447C;
+  border: 1px solid #B5D4F4; border-radius: 12px;
+}
+.mc-tag-x { cursor: pointer; opacity: 0.6; font-size: 12px; }
+.mc-tag-x:hover { opacity: 1; }
+
+/* Step nav */
+.mc-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
+.mc-back { font-size: 13px; color: #64748b; background: none; border: none; cursor: pointer; padding: 6px 0; font-family: 'Inter',sans-serif; }
+.mc-next { font-size: 13px; font-weight: 600; padding: 9px 24px; border-radius: 20px; border: none; cursor: pointer; color: #fff; background: #185FA5; font-family: 'Inter',sans-serif; transition: background 0.15s; }
+.mc-next:disabled { background: #cbd5e1; cursor: default; }
+.mc-next:not(:disabled):hover { background: #0D4B8C; }
+
+/* OTP input */
+.mc-otp {
+  font-size: 24px; font-weight: 600; letter-spacing: 10px;
+  text-align: center;
+}
+
+/* Done screen */
+.mc-done-id {
+  background: #042C53; border-radius: 12px; padding: 20px 24px;
+  text-align: center; margin-bottom: 16px;
+}
+.mc-id-label { font-size: 11px; color: #85B7EB; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+.mc-id-value { font-size: 32px; font-weight: 700; color: #5DCAA5; letter-spacing: 6px; margin-bottom: 8px; }
+.mc-id-sub   { font-size: 12px; color: #B5D4F4; line-height: 1.6; }
+
+.mc-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+.mc-summary-cell { background: #f8fafc; border-radius: 8px; padding: 10px 14px; }
+.mc-summary-label { font-size: 11px; color: #94a3b8; margin-bottom: 2px; }
+.mc-summary-value { font-size: 13px; font-weight: 500; color: #0f172a; }
+
+/* Contribution radio */
+.mc-radio {
+  padding: 12px 14px; border-radius: 8px; cursor: pointer; margin-bottom: 8px;
+  border: 0.5px solid #e2e8f0; background: #fff; display: flex; align-items: center; gap: 12px;
+  transition: all 0.15s;
+}
+.mc-radio.sel { border: 1.5px solid #185FA5; background: #E6F1FB; }
+.mc-radio-dot {
+  width: 16px; height: 16px; border-radius: 50%; flex-shrink: 0;
+  border: 1.5px solid #cbd5e1; transition: all 0.15s;
+}
+.mc-radio.sel .mc-radio-dot { border: 5px solid #185FA5; }
+.mc-radio-label { font-size: 13px; color: #0f172a; }
+.mc-radio.sel .mc-radio-label { font-weight: 600; color: #0C447C; }
+.mc-radio-desc { font-size: 11px; color: #64748b; margin-top: 2px; }
+
+/* Salary input */
+.mc-salary-wrap { position: relative; margin-bottom: 16px; }
+.mc-salary-sym { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 13px; color: #64748b; }
+.mc-salary-unit { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 12px; color: #94a3b8; }
+.mc-salary-input { padding-left: 26px !important; padding-right: 70px !important; }
+
+/* Warning box */
+.mc-warn { background: #FEF3C7; border: 1px solid #D97706; border-radius: 8px; padding: 12px 14px; margin-bottom: 14px; font-size: 13px; color: #854F0B; line-height: 1.6; }
+
 </style>
 </head>
 <body>
@@ -697,7 +863,7 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
   <a href="#ch0" class="logo"><div class="logo-mark">JL</div>Job Lounge</a>
   <div class="nav-r">
     <a href="/login" class="n-login">Log in</a>
-    <a href="#ch8" class="n-access">Request access â†’</a>
+    <a href="#ch8" class="n-access">Request access →</a>
   </div>
 </nav>
 <div id="progress-bar"><div id="progress-fill"></div></div>
@@ -713,25 +879,25 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
   <div class="cdot" data-ch="ch5"><span class="cdot-tip">Identity reveal</span></div>
   <div class="cdot" data-ch="ch6"><span class="cdot-tip">Salary benchmark</span></div>
   <div class="cdot" data-ch="ch7"><span class="cdot-tip">Human search</span></div>
-  <div class="cdot" data-ch="ch8"><span class="cdot-tip">Firewall Â· Access</span></div>
+  <div class="cdot" data-ch="ch8"><span class="cdot-tip">Firewall · Access</span></div>
 </div>
 
-<!-- â•â• CH0: HERO â•â• -->
+<!-- ══ CH0: HERO ══ -->
 <section class="chapter" id="ch0" style="flex-direction:row;justify-content:space-between;align-items:center;padding:0;">
 
   <!-- LEFT: headline -->
   <div class="hero-left-panel">
-    <div class="hero-eyebrow"><span class="hero-pulse"></span>Verified Â· Anonymous Â· India's Professional Trust Network</div>
+    <div class="hero-eyebrow"><span class="hero-pulse"></span>Verified · Anonymous · India's Professional Trust Network</div>
     <h1 class="hero-h1">The referral that<br>changed careers<br>was never on a<br>job board.<br><em>Until now.</em></h1>
-    <p class="hero-sub">Whether you're working, studying, or returning â€” your skills have a value the market hasn't told you yet. Find out, without anyone knowing you looked.</p>
+    <p class="hero-sub">Whether you're working, studying, or returning — your skills have a value the market hasn't told you yet. Find out, without anyone knowing you looked.</p>
     <div class="hero-btns">
-      <a href="#ch1" class="btn-primary">See how it works â†“</a>
-      <a href="#ch8" class="btn-ghost-sm">Skip to access â†’</a>
+      <a href="#ch1" class="btn-primary">See how it works ↓</a>
+      <a href="#ch8" class="btn-ghost-sm">Skip to access →</a>
     </div>
     <div class="hero-trust">
-      <div class="trust-item"><div class="trust-check">âœ“</div>Identity protected</div>
-      <div class="trust-item"><div class="trust-check">âœ“</div>Everyone verified</div>
-      <div class="trust-item"><div class="trust-check">âœ“</div>No CVs without consent</div>
+      <div class="trust-item"><div class="trust-check">✓</div>Identity protected</div>
+      <div class="trust-item"><div class="trust-check">✓</div>Everyone verified</div>
+      <div class="trust-item"><div class="trust-check">✓</div>No CVs without consent</div>
     </div>
   </div>
 
@@ -739,14 +905,14 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
   <div class="hero-right-panel">
     <div class="hero-card-stack">
 
-      <!-- Card 3 â€” Recruiter (back) -->
+      <!-- Card 3 — Recruiter (back) -->
       <div class="hcard hcard-3" id="hcard-recruiter">
         <div class="hcard-inner-before" id="hcard-recruiter-before">
           <div class="hcard-persona-badge" style="background:rgba(83,74,183,0.1);color:#534AB7">Recruiter</div>
-          <div class="hcard-avatar">ðŸ›¡</div>
+          <div class="hcard-avatar">🛡</div>
           <div class="hcard-id">Mandate active</div>
-          <div class="hcard-domain">GRC Head Â· FinTech</div>
-          <div class="hcard-city">Bangalore Â· Senior</div>
+          <div class="hcard-domain">GRC Head · FinTech</div>
+          <div class="hcard-city">Bangalore · Senior</div>
           <div class="hcard-frosted-row">
             <div class="hcard-frost-block" style="width:55%;background:rgba(83,74,183,0.1)"></div>
             <div class="hcard-frost-block" style="width:38%;height:8px;background:rgba(83,74,183,0.07)"></div>
@@ -757,23 +923,23 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
           </div>
         </div>
         <div class="hcard-inner-after" id="hcard-recruiter-after">
-          <div class="hcard-persona-badge" style="background:rgba(22,163,74,0.1);color:#16A34A">âœ“ Matched</div>
-          <div class="hcard-avatar">ðŸ›¡</div>
+          <div class="hcard-persona-badge" style="background:rgba(22,163,74,0.1);color:#16A34A">✓ Matched</div>
+          <div class="hcard-avatar">🛡</div>
           <div class="hcard-reveal-name">2 profiles found</div>
-          <div class="hcard-reveal-role">GRC Head Â· FinTech mandate</div>
-          <div class="hcard-reveal-company">Bangalore Â· Senior level</div>
+          <div class="hcard-reveal-role">GRC Head · FinTech mandate</div>
+          <div class="hcard-reveal-company">Bangalore · Senior level</div>
           <div class="hcard-reveal-email" style="color:#534AB7">Not 200 results. Exactly 2.</div>
         </div>
       </div>
 
-      <!-- Card 2 â€” Peer (middle) -->
+      <!-- Card 2 — Peer (middle) -->
       <div class="hcard hcard-2" id="hcard-peer">
         <div class="hcard-inner-before" id="hcard-peer-before">
           <div class="hcard-persona-badge" style="background:rgba(186,117,23,0.1);color:#BA7517">Peer</div>
-          <div class="hcard-avatar">ðŸ’¼</div>
+          <div class="hcard-avatar">💼</div>
           <div class="hcard-id">Open seat</div>
-          <div class="hcard-domain">Risk Head Â· Private Banking</div>
-          <div class="hcard-city">Mumbai Â· Urgent</div>
+          <div class="hcard-domain">Risk Head · Private Banking</div>
+          <div class="hcard-city">Mumbai · Urgent</div>
           <div class="hcard-frosted-row">
             <div class="hcard-frost-block" style="width:60%;background:rgba(186,117,23,0.12)"></div>
             <div class="hcard-frost-block" style="width:40%;height:8px;background:rgba(186,117,23,0.08)"></div>
@@ -784,23 +950,23 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
           </div>
         </div>
         <div class="hcard-inner-after" id="hcard-peer-after">
-          <div class="hcard-persona-badge" style="background:rgba(22,163,74,0.1);color:#16A34A">âœ“ Revealed</div>
-          <div class="hcard-avatar">ðŸ’¼</div>
+          <div class="hcard-persona-badge" style="background:rgba(22,163,74,0.1);color:#16A34A">✓ Revealed</div>
+          <div class="hcard-avatar">💼</div>
           <div class="hcard-reveal-name">Ankit Mehta</div>
           <div class="hcard-reveal-role">Risk Head</div>
-          <div class="hcard-reveal-company">Kotak Mahindra Bank Â· Mumbai</div>
+          <div class="hcard-reveal-company">Kotak Mahindra Bank · Mumbai</div>
           <div class="hcard-reveal-email">ankitm@joblounge.com</div>
         </div>
       </div>
 
-      <!-- Card 1 â€” Lounger (front) -->
+      <!-- Card 1 — Lounger (front) -->
       <div class="hcard hcard-1" id="hcard-lounger">
         <div class="hcard-inner-before" id="hcard-lounger-before">
           <div class="hcard-persona-badge" style="background:rgba(55,138,221,0.1);color:#378ADD">Lounger</div>
-          <div class="hcard-avatar">ðŸ‘¤</div>
+          <div class="hcard-avatar">👤</div>
           <div class="hcard-id">JL-R83Z7Z</div>
-          <div class="hcard-domain">Senior IT Auditor Â· BFSI</div>
-          <div class="hcard-city">Pune Â· 6â€“10 yrs</div>
+          <div class="hcard-domain">Senior IT Auditor · BFSI</div>
+          <div class="hcard-city">Pune · 6–10 yrs</div>
           <div class="hcard-frosted-row">
             <div class="hcard-frost-block"></div>
             <div class="hcard-frost-block" style="width:45%;height:8px"></div>
@@ -811,11 +977,11 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
           </div>
         </div>
         <div class="hcard-inner-after" id="hcard-lounger-after">
-          <div class="hcard-persona-badge" style="background:rgba(22,163,74,0.1);color:#16A34A">âœ“ Revealed</div>
-          <div class="hcard-avatar">ðŸ‘¤</div>
+          <div class="hcard-persona-badge" style="background:rgba(22,163,74,0.1);color:#16A34A">✓ Revealed</div>
+          <div class="hcard-avatar">👤</div>
           <div class="hcard-reveal-name">Kayra Mishra</div>
           <div class="hcard-reveal-role">Senior IT Auditor</div>
-          <div class="hcard-reveal-company">HDFC Bank Â· Pune</div>
+          <div class="hcard-reveal-company">HDFC Bank · Pune</div>
           <div class="hcard-reveal-email">kayram@joblounge.com</div>
         </div>
       </div>
@@ -837,44 +1003,44 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
   <a class="scroll-cue" href="#ch1" style="left:30%;transform:translateX(-50%)"><div class="scroll-cue-line"></div>Continue</a>
 </section>
 
-<!-- â•â• CH1: THE PROBLEM â•â• -->
+<!-- ══ CH1: THE PROBLEM ══ -->
 <section class="chapter" id="ch1">
   <div class="ch-inner">
     <div class="problem-grid">
       <div>
         <div class="ch-label rv">The problem</div>
         <h2 class="ch-head rv">Every platform asks you<br>to expose yourself<br><em>before you're ready.</em></h2>
-        <p class="ch-body rv d1">Upload your resume. Enter your salary. Add your employer. And then you're visible to everyone â€” including the person who sits two desks away from you. That's not a job search. That's an ambush.</p>
+        <p class="ch-body rv d1">Upload your resume. Enter your salary. Add your employer. And then you're visible to everyone — including the person who sits two desks away from you. That's not a job search. That's an ambush.</p>
       </div>
       <div class="prob-cards">
-        <div class="prob-card"><div class="prob-icon">ðŸ˜Ÿ</div><div class="prob-text"><strong>Your employer can see you're looking</strong>A subscription-based recruiter just told your manager you updated your profile this week.</div></div>
-        <div class="prob-card"><div class="prob-icon">ðŸ“‹</div><div class="prob-text"><strong>You reveal before you're informed</strong>Resume sent. No idea which company. No salary shared. Exposed before you even knew who was asking.</div></div>
-        <div class="prob-card"><div class="prob-icon">ðŸ”‡</div><div class="prob-text"><strong>You never know why you were rejected</strong>Screened out by an algorithm you didn't know existed. No feedback. No reason. No closure.</div></div>
-        <div class="prob-card"><div class="prob-icon">ðŸ“Š</div><div class="prob-text"><strong>Your salary benchmark is guesswork</strong>Aggregated job portal data is months old and based on what people claimed â€” not what they actually earn in your role today.</div></div>
+        <div class="prob-card"><div class="prob-icon">😟</div><div class="prob-text"><strong>Your employer can see you're looking</strong>A subscription-based recruiter just told your manager you updated your profile this week.</div></div>
+        <div class="prob-card"><div class="prob-icon">📋</div><div class="prob-text"><strong>You reveal before you're informed</strong>Resume sent. No idea which company. No salary shared. Exposed before you even knew who was asking.</div></div>
+        <div class="prob-card"><div class="prob-icon">🔇</div><div class="prob-text"><strong>You never know why you were rejected</strong>Screened out by an algorithm you didn't know existed. No feedback. No reason. No closure.</div></div>
+        <div class="prob-card"><div class="prob-icon">📊</div><div class="prob-text"><strong>Your salary benchmark is guesswork</strong>Aggregated job portal data is months old and based on what people claimed — not what they actually earn in your role today.</div></div>
       </div>
     </div>
   </div>
   <a class="scroll-cue" href="#ch2"><div class="scroll-cue-line"></div>Continue</a>
 </section>
 
-<!-- â•â• CH2: THE IDEA â•â• -->
+<!-- ══ CH2: THE IDEA ══ -->
 <section class="chapter" id="ch2">
   <canvas id="ch2-canvas"></canvas>
   <div class="ch-inner" style="position:relative;z-index:2">
     <div class="idea-content">
       <div class="idea-eyebrow rv">A different idea</div>
       <h2 class="idea-head rv">What if you could know<br>your market value<br><em>without becoming visible?</em></h2>
-      <p class="idea-sub rv d1">You get a <strong style="color:white">Private ID â€” non-identifiable until you choose to reveal.</strong> The market tells you where you stand. Opportunities find you. You decide if you're interested. Identity crosses only when both sides agree â€” simultaneously.</p>
+      <p class="idea-sub rv d1">You get a <strong style="color:white">Private ID — non-identifiable until you choose to reveal.</strong> The market tells you where you stand. Opportunities find you. You decide if you're interested. Identity crosses only when both sides agree — simultaneously.</p>
 
       <div class="private-id-box rv d2">
         <div>
           <div class="pid-label">Your Private ID</div>
           <div class="pid-value">JL-R83Z7Z</div>
         </div>
-        <div class="pid-arrow">â†’</div>
+        <div class="pid-arrow">→</div>
         <div class="pid-right">
           <div class="pid-label">What the market sees</div>
-          <div class="pid-desc">Senior IT Auditor Â· BFSI Â· Pune Â· CISA Â· 6â€“10 yrs Â· At market salary</div>
+          <div class="pid-desc">Senior IT Auditor · BFSI · Pune · CISA · 6–10 yrs · At market salary</div>
         </div>
       </div>
 
@@ -888,9 +1054,9 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
       </div>
 
       <div class="idea-stats rv d3">
-        <div class="idea-stat"><div class="idea-stat-num">70%</div><div class="idea-stat-label">of real opportunities fill through private referral â€” never publicly posted</div></div>
-        <div class="idea-stat"><div class="idea-stat-num">2</div><div class="idea-stat-label">profiles returned per search â€” not 200. Precision is the product.</div></div>
-        <div class="idea-stat"><div class="idea-stat-num">â‚¹0</div><div class="idea-stat-label">recruiter fee for Peers. Direct access to passive talent.</div></div>
+        <div class="idea-stat"><div class="idea-stat-num">70%</div><div class="idea-stat-label">of real opportunities fill through private referral — never publicly posted</div></div>
+        <div class="idea-stat"><div class="idea-stat-num">2</div><div class="idea-stat-label">profiles returned per search — not 200. Precision is the product.</div></div>
+        <div class="idea-stat"><div class="idea-stat-num">₹0</div><div class="idea-stat-label">recruiter fee for Peers. Direct access to passive talent.</div></div>
         <div class="idea-stat"><div class="idea-stat-num">0</div><div class="idea-stat-label">CVs shared without mutual consent. Ever.</div></div>
       </div>
     </div>
@@ -898,33 +1064,33 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
   <a class="scroll-cue" href="#ch3" style="color:rgba(255,255,255,0.35)"><div class="scroll-cue-line" style="background:linear-gradient(to bottom,rgba(255,255,255,0.4),transparent)"></div>Continue</a>
 </section>
 
-<!-- â•â• CH3: WHO IS THIS FOR â•â• -->
+<!-- ══ CH3: WHO IS THIS FOR ══ -->
 <section class="chapter" id="ch3">
   <div class="ch-inner who-inner">
     <div class="ch-label rv">This is for you</div>
     <h2 class="ch-head rv" style="margin-bottom:48px">Job Lounge is for anyone<br>who has never had <em>the right introduction.</em></h2>
     <div class="who-grid">
-      <div class="who-card"><div class="who-icon">ðŸ’¼</div><h3 class="who-title">The Quiet Achiever</h3><p class="who-quote">"I'm not looking. But if the right thing came, I'd move."</p><p class="who-body">Doing well where you are. Not on any job board. Not updating your profile. But the right opportunity at the right moment would change everything.</p></div>
-      <div class="who-card"><div class="who-icon">ðŸŽ“</div><h3 class="who-title">The Student</h3><p class="who-quote">"I have skills nobody knows about yet."</p><p class="who-body">Final year. Strong foundation. But no alumni referral, no warm introduction. Job Lounge gives you a verified Private ID before your career even begins.</p></div>
-      <div class="who-card"><div class="who-icon">ðŸ </div><h3 class="who-title">The Homemaker Returning</h3><p class="who-quote">"I took a break. My skills didn't."</p><p class="who-body">A career gap doesn't erase 8 years of expertise. Job Lounge evaluates your skill and domain â€” not your last active date on a job portal.</p></div>
-      <div class="who-card"><div class="who-icon">ðŸ”„</div><h3 class="who-title">The Career Switcher</h3><p class="who-quote">"My skills apply here, but nobody connects the dots."</p><p class="who-body">Moving from banking to fintech. Audit to risk consulting. The skills transfer â€” but automated screening never sees it. Here, a human Peer reads your profile.</p></div>
-      <div class="who-card"><div class="who-icon">ðŸŒ</div><h3 class="who-title">The Cross-Domain Talent</h3><p class="who-quote">"I've worked BFSI, GCC and Big 4. Nobody has a box for that."</p><p class="who-body">Platform expanding across all domains and industries. If you have verified skills and no platform that does you justice â€” this is that platform.</p></div>
-      <div class="who-card"><div class="who-icon">ðŸ’¡</div><h3 class="who-title">The Hidden Expert</h3><p class="who-quote">"I know things people pay consultants â‚¹5L/day to explain."</p><p class="who-body">Niche credentials. Deep domain. The market doesn't know you exist because you've never needed to look. Job Lounge surfaces your rarity â€” anonymously.</p></div>
+      <div class="who-card"><div class="who-icon">💼</div><h3 class="who-title">The Quiet Achiever</h3><p class="who-quote">"I'm not looking. But if the right thing came, I'd move."</p><p class="who-body">Doing well where you are. Not on any job board. Not updating your profile. But the right opportunity at the right moment would change everything.</p></div>
+      <div class="who-card"><div class="who-icon">🎓</div><h3 class="who-title">The Student</h3><p class="who-quote">"I have skills nobody knows about yet."</p><p class="who-body">Final year. Strong foundation. But no alumni referral, no warm introduction. Job Lounge gives you a verified Private ID before your career even begins.</p></div>
+      <div class="who-card"><div class="who-icon">🏠</div><h3 class="who-title">The Homemaker Returning</h3><p class="who-quote">"I took a break. My skills didn't."</p><p class="who-body">A career gap doesn't erase 8 years of expertise. Job Lounge evaluates your skill and domain — not your last active date on a job portal.</p></div>
+      <div class="who-card"><div class="who-icon">🔄</div><h3 class="who-title">The Career Switcher</h3><p class="who-quote">"My skills apply here, but nobody connects the dots."</p><p class="who-body">Moving from banking to fintech. Audit to risk consulting. The skills transfer — but automated screening never sees it. Here, a human Peer reads your profile.</p></div>
+      <div class="who-card"><div class="who-icon">🌍</div><h3 class="who-title">The Cross-Domain Talent</h3><p class="who-quote">"I've worked BFSI, GCC and Big 4. Nobody has a box for that."</p><p class="who-body">Platform expanding across all domains and industries. If you have verified skills and no platform that does you justice — this is that platform.</p></div>
+      <div class="who-card"><div class="who-icon">💡</div><h3 class="who-title">The Hidden Expert</h3><p class="who-quote">"I know things people pay consultants ₹5L/day to explain."</p><p class="who-body">Niche credentials. Deep domain. The market doesn't know you exist because you've never needed to look. Job Lounge surfaces your rarity — anonymously.</p></div>
     </div>
   </div>
   <a class="scroll-cue" href="#ch3b"><div class="scroll-cue-line"></div>Continue</a>
 </section>
 
-<!-- â•â• CH3.5: WHICH ONE IS YOURS â€” Persona Tabs â•â• -->
+<!-- ══ CH3.5: WHICH ONE IS YOURS — Persona Tabs ══ -->
 <section class="chapter" id="ch3b">
   <div class="ch-inner">
     <div class="s-label reveal">Three doors. One platform.</div>
     <h2 class="s-title reveal">Which one is yours?</h2>
 
     <div class="tab-bar reveal">
-      <button class="tab-btn active" data-tab="lounger">ðŸ”µ Lounger</button>
-      <button class="tab-btn" data-tab="peer">ðŸŸ¡ Peer</button>
-      <button class="tab-btn" data-tab="recruiter">ðŸŸ£ Recruiter</button>
+      <button class="tab-btn active" data-tab="lounger">🔵 Lounger</button>
+      <button class="tab-btn" data-tab="peer">🟡 Peer</button>
+      <button class="tab-btn" data-tab="recruiter">🟣 Recruiter</button>
     </div>
 
     <div class="tab-panels">
@@ -932,18 +1098,18 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
       <!-- LOUNGER -->
       <div class="tab-panel active" id="tab-lounger">
         <div class="tab-copy">
-          <p class="tab-quote">"Pehli baar koi mujhe refer karega â€” sirf mere kaam ki wajah se."</p>
-          <p class="tab-body">You are employed, performing, and not broadcasting. But the market has a value for your exact profile right now â€” and you deserve to know it without anyone knowing you looked.</p>
+          <p class="tab-quote">"Pehli baar koi mujhe refer karega — sirf mere kaam ki wajah se."</p>
+          <p class="tab-body">You are employed, performing, and not broadcasting. But the market has a value for your exact profile right now — and you deserve to know it without anyone knowing you looked.</p>
           <ul class="tab-features">
-            <li><div class="tab-check blue">âœ“</div>See live opportunities before revealing anything</li>
-            <li><div class="tab-check blue">âœ“</div>Your employer is never notified â€” by design, not by promise</li>
-            <li><div class="tab-check blue">âœ“</div>Market Pulse shows your demand tier in real time</li>
-            <li><div class="tab-check blue">âœ“</div>Raise your hand only when you choose to</li>
+            <li><div class="tab-check blue">✓</div>See live opportunities before revealing anything</li>
+            <li><div class="tab-check blue">✓</div>Your employer is never notified — by design, not by promise</li>
+            <li><div class="tab-check blue">✓</div>Market Pulse shows your demand tier in real time</li>
+            <li><div class="tab-check blue">✓</div>Raise your hand only when you choose to</li>
           </ul>
-          <a href="/request-access" class="tab-cta">Join as Lounger â†’</a>
+          <a href="/request-access" class="tab-cta">Join as Lounger →</a>
         </div>
 
-        <!-- MARKET VALUE CARD â€” light theme -->
+        <!-- MARKET VALUE CARD — light theme -->
         <div class="tab-visual">
           <div class="mvc">
             <div class="mvc-top">
@@ -958,21 +1124,21 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
               <div class="mvc-id-col">
                 <div class="mvc-field-label">Identity</div>
                 <div class="mvc-jlid">JL-R83Z7Z</div>
-                <div class="mvc-meta">Senior IT Auditor Â· BFSI Â· Pune</div>
+                <div class="mvc-meta">Senior IT Auditor · BFSI · Pune</div>
               </div>
               <div class="mvc-pulse-col">
                 <div class="mvc-field-label" style="text-align:right">Pulse</div>
                 <div class="mvc-pulse-badge">
                   <span class="mvc-pulse-ring"></span>HIGH
                 </div>
-                <div class="mvc-trend">â†— +14% w/w</div>
+                <div class="mvc-trend">↗ +14% w/w</div>
               </div>
             </div>
 
             <div class="mvc-salary">
               <div class="mvc-salary-head">
                 <span class="mvc-field-label">Salary Percentile</span>
-                <span class="mvc-salary-range">â‚¹ 42 â€“ 58 L Â· p72</span>
+                <span class="mvc-salary-range">₹ 42 – 58 L · p72</span>
               </div>
               <div class="mvc-track">
                 <div class="mvc-fill"></div>
@@ -984,7 +1150,7 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
             </div>
 
             <div class="mvc-creds">
-              <div class="mvc-creds-head">âœ¦ Rare Credentials</div>
+              <div class="mvc-creds-head">✦ Rare Credentials</div>
               <div class="mvc-chips">
                 <span class="mvc-chip">CISA</span>
                 <span class="mvc-chip">DISA (ICAI)</span>
@@ -996,7 +1162,7 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
             <div class="mvc-hr"></div>
             <div class="mvc-footer">
               <div class="mvc-shortlist"><em>1 of 6</em> profiles being considered this week</div>
-              <div class="mvc-verified">Verified Â· Scarce</div>
+              <div class="mvc-verified">Verified · Scarce</div>
             </div>
           </div>
         </div>
@@ -1005,38 +1171,38 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
       <!-- PEER -->
       <div class="tab-panel" id="tab-peer">
         <div class="tab-copy">
-          <p class="tab-quote">"Coffee pe poochha 'koi jaanta hai?' â€” ab phone pe dhundh leta hoon. 2 profiles. Exact fit."</p>
-          <p class="tab-body">You have an open seat and know exactly who you need. Type it in plain language. Get 2 verified anonymous profiles â€” not 200. The interview becomes a formality.</p>
+          <p class="tab-quote">"Coffee pe poochha 'koi jaanta hai?' — ab phone pe dhundh leta hoon. 2 profiles. Exact fit."</p>
+          <p class="tab-body">You have an open seat and know exactly who you need. Type it in plain language. Get 2 verified anonymous profiles — not 200. The interview becomes a formality.</p>
           <ul class="tab-features">
-            <li><div class="tab-check amber">âœ“</div>Natural language search â€” type like you talk</li>
-            <li><div class="tab-check amber">âœ“</div>2 profiles returned, not 200. Precision is the product.</li>
-            <li><div class="tab-check amber">âœ“</div>Flash brief in 220 characters â€” not a job description</li>
-            <li><div class="tab-check amber">âœ“</div>Zero recruiter fee. Direct access to passive talent.</li>
+            <li><div class="tab-check amber">✓</div>Natural language search — type like you talk</li>
+            <li><div class="tab-check amber">✓</div>2 profiles returned, not 200. Precision is the product.</li>
+            <li><div class="tab-check amber">✓</div>Flash brief in 220 characters — not a job description</li>
+            <li><div class="tab-check amber">✓</div>Zero recruiter fee. Direct access to passive talent.</li>
           </ul>
-          <a href="/request-access" class="tab-cta">Join as Peer â†’</a>
+          <a href="/request-access" class="tab-cta">Join as Peer →</a>
         </div>
         <div class="tab-visual">
-          <div class="search-label">Search results Â· 2 profiles found</div>
+          <div class="search-label">Search results · 2 profiles found</div>
           <div class="search-query">"CISA audit NBFC 6 years Pune"</div>
           <div class="search-result">
             <div class="sr-id">JL-R83Z7Z</div>
             <div class="sr-tags">
               <span class="sr-tag blue">CISA</span>
               <span class="sr-tag blue">IT Audit</span>
-              <span class="sr-tag blue">6â€“10 yrs</span>
+              <span class="sr-tag blue">6–10 yrs</span>
               <span class="sr-tag blue">Pune</span>
             </div>
-            <div class="sr-meta">Salary: At market Â· Big 4 background Â· Open to NBFC</div>
+            <div class="sr-meta">Salary: At market · Big 4 background · Open to NBFC</div>
           </div>
           <div class="search-result">
             <div class="sr-id">JL-K72M4X</div>
             <div class="sr-tags">
               <span class="sr-tag amber">CISA</span>
               <span class="sr-tag amber">IT Audit</span>
-              <span class="sr-tag amber">8â€“12 yrs</span>
+              <span class="sr-tag amber">8–12 yrs</span>
               <span class="sr-tag amber">Pune</span>
             </div>
-            <div class="sr-meta">Salary: Above market Â· NBFC experience Â· Pune only</div>
+            <div class="sr-meta">Salary: Above market · NBFC experience · Pune only</div>
           </div>
         </div>
       </div>
@@ -1044,15 +1210,15 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
       <!-- RECRUITER -->
       <div class="tab-panel" id="tab-recruiter">
         <div class="tab-copy">
-          <p class="tab-quote">"Pehli baar woh inventory jo kisi ke paas nahi â€” passive, verified, genuinely open."</p>
-          <p class="tab-body">The professionals you need are not missing. They just don't surface on open platforms. They are here â€” verified and quietly open. Inventory no competing recruiter has.</p>
+          <p class="tab-quote">"Pehli baar woh inventory jo kisi ke paas nahi — passive, verified, genuinely open."</p>
+          <p class="tab-body">The professionals you need are not missing. They just don't surface on open platforms. They are here — verified and quietly open. Inventory no competing recruiter has.</p>
           <ul class="tab-features">
-            <li><div class="tab-check purple">âœ“</div>Founder-verified access â€” not self-serve</li>
-            <li><div class="tab-check purple">âœ“</div>Pre-scored anonymous profiles matched to your mandate</li>
-            <li><div class="tab-check purple">âœ“</div>No CV changes hands without mutual consent</li>
-            <li><div class="tab-check purple">âœ“</div>Genuinely passive â€” not being shopped to 6 others</li>
+            <li><div class="tab-check purple">✓</div>Founder-verified access — not self-serve</li>
+            <li><div class="tab-check purple">✓</div>Pre-scored anonymous profiles matched to your mandate</li>
+            <li><div class="tab-check purple">✓</div>No CV changes hands without mutual consent</li>
+            <li><div class="tab-check purple">✓</div>Genuinely passive — not being shopped to 6 others</li>
           </ul>
-          <a href="/request-access" class="tab-cta">Apply for Recruiter access â†’</a>
+          <a href="/request-access" class="tab-cta">Apply for Recruiter access →</a>
         </div>
         <div class="tab-visual">
           <div class="rec-stat">1 in 8</div>
@@ -1077,7 +1243,7 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
   <a class="scroll-cue" href="#ch4"><div class="scroll-cue-line"></div>Continue</a>
 </section>
 
-<!-- â•â• CH4: WHY NOT OTHERS â•â• -->
+<!-- ══ CH4: WHY NOT OTHERS ══ -->
 <section class="chapter" id="ch4">
   <div class="ch-inner">
     <div class="ch-label rv">Why not others</div>
@@ -1092,19 +1258,19 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
         </tr>
       </thead>
       <tbody>
-        <tr><td>Your employer knows you're looking</td><td><span style="color:var(--red);font-weight:600">High risk</span></td><td><span style="color:var(--red);font-weight:600">Very high risk</span></td><td class="jl-cell"><span class="tick">âœ—</span> Impossible by design</td></tr>
-        <tr><td>You see salary before revealing yourself</td><td><span class="cross">âœ—</span></td><td><span class="cross">âœ—</span></td><td class="jl-cell"><span class="tick">âœ“</span> Always. Before any interest.</td></tr>
-        <tr><td>Identity shared only by mutual consent</td><td><span class="cross">âœ—</span></td><td><span class="cross">âœ—</span></td><td class="jl-cell"><span class="tick">âœ“</span> Architecture, not policy</td></tr>
-        <tr><td>Real-time salary from people in your exact role</td><td><span class="partial">Aggregated Â· Stale</span></td><td><span class="cross">âœ—</span></td><td class="jl-cell"><span class="tick">âœ“</span> Live Â· Same domain Â· Same city</td></tr>
-        <tr><td>Passive talent â€” not actively looking</td><td><span class="cross">âœ—</span></td><td><span class="partial">Rarely</span></td><td class="jl-cell"><span class="tick">âœ“</span> 100% of the platform</td></tr>
-        <tr><td>Natural language search â€” 2 results, not 200</td><td><span class="cross">âœ—</span></td><td><span class="cross">âœ—</span></td><td class="jl-cell"><span class="tick">âœ“</span> Precision is the product</td></tr>
+        <tr><td>Your employer knows you're looking</td><td><span style="color:var(--red);font-weight:600">High risk</span></td><td><span style="color:var(--red);font-weight:600">Very high risk</span></td><td class="jl-cell"><span class="tick">✗</span> Impossible by design</td></tr>
+        <tr><td>You see salary before revealing yourself</td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td class="jl-cell"><span class="tick">✓</span> Always. Before any interest.</td></tr>
+        <tr><td>Identity shared only by mutual consent</td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td class="jl-cell"><span class="tick">✓</span> Architecture, not policy</td></tr>
+        <tr><td>Real-time salary from people in your exact role</td><td><span class="partial">Aggregated · Stale</span></td><td><span class="cross">✗</span></td><td class="jl-cell"><span class="tick">✓</span> Live · Same domain · Same city</td></tr>
+        <tr><td>Passive talent — not actively looking</td><td><span class="cross">✗</span></td><td><span class="partial">Rarely</span></td><td class="jl-cell"><span class="tick">✓</span> 100% of the platform</td></tr>
+        <tr><td>Natural language search — 2 results, not 200</td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td class="jl-cell"><span class="tick">✓</span> Precision is the product</td></tr>
       </tbody>
     </table>
   </div>
   <a class="scroll-cue" href="#ch5"><div class="scroll-cue-line"></div>Continue</a>
 </section>
 
-<!-- â•â• CH5: IDENTITY REVEAL â•â• -->
+<!-- ══ CH5: IDENTITY REVEAL ══ -->
 <section class="chapter" id="ch5">
   <div class="ch-inner">
     <div class="identity-grid">
@@ -1113,61 +1279,61 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
         <h2 class="ch-head rv">Your name is revealed<br>as a <em>ceremony.</em><br>Not a database flag.</h2>
         <div class="identity-flow">
           <div class="id-step"><div><div class="id-step-num">Step 01</div><h3 class="id-step-title">A Peer signals interest</h3><p class="id-step-body">They searched your profile. The search query is visible to you. You see what they were looking for before deciding anything.</p></div></div>
-          <div class="id-step"><div><div class="id-step-num">Step 02</div><h3 class="id-step-title">You raise your hand</h3><p class="id-step-body">If interested, you raise your hand. Before doing so, you can request confirmation of the industry â€” to ensure it's not your current employer.</p></div></div>
-          <div class="id-step"><div><div class="id-step-num">Step 03</div><h3 class="id-step-title">Both parties consent</h3><p class="id-step-body">The Peer also agrees to reveal. Until both sides agree independently â€” nobody's name crosses. Not a setting. The system will not permit it.</p></div></div>
+          <div class="id-step"><div><div class="id-step-num">Step 02</div><h3 class="id-step-title">You raise your hand</h3><p class="id-step-body">If interested, you raise your hand. Before doing so, you can request confirmation of the industry — to ensure it's not your current employer.</p></div></div>
+          <div class="id-step"><div><div class="id-step-num">Step 03</div><h3 class="id-step-title">Both parties consent</h3><p class="id-step-body">The Peer also agrees to reveal. Until both sides agree independently — nobody's name crosses. Not a setting. The system will not permit it.</p></div></div>
           <div class="id-step"><div><div class="id-step-num">Step 04</div><h3 class="id-step-title">Simultaneous introduction</h3><p class="id-step-body">Both receive the same message at the same moment. Names, contact, and the query that started it. The platform recedes. The conversation is yours.</p></div></div>
         </div>
       </div>
       <div class="identity-card rv d1">
-        <div class="ic-label">Identity reveal Â· Interactive demo</div>
+        <div class="ic-label">Identity reveal · Interactive demo</div>
         <div class="ic-profiles">
           <div class="ic-profile" id="ic-profile-a">
-            <div class="ic-avatar" style="background:rgba(55,138,221,0.1)">ðŸ‘¤</div>
+            <div class="ic-avatar" style="background:rgba(55,138,221,0.1)">👤</div>
             <div class="ic-id">JL-R83Z7Z</div>
             <div class="ic-role">Senior IT Auditor</div>
             <div class="ic-industry">Private Banking</div>
             <div class="ic-reveal-overlay" id="reveal-a">
-              <div class="reveal-badge">âœ“ Identity revealed</div>
+              <div class="reveal-badge">✓ Identity revealed</div>
               <div class="reveal-name">Priya Sharma</div>
-              <div class="reveal-detail">priya.s@â€¢â€¢â€¢â€¢.com</div>
-              <div class="reveal-detail" style="margin-top:2px;color:var(--blue);font-weight:500">HDFC Bank Â· Pune</div>
+              <div class="reveal-detail">priya.s@••••.com</div>
+              <div class="reveal-detail" style="margin-top:2px;color:var(--blue);font-weight:500">HDFC Bank · Pune</div>
             </div>
           </div>
-          <div class="ic-divider">âŸ·</div>
+          <div class="ic-divider">⟷</div>
           <div class="ic-profile" id="ic-profile-b">
-            <div class="ic-avatar" style="background:rgba(186,117,23,0.1)">ðŸ’¼</div>
+            <div class="ic-avatar" style="background:rgba(186,117,23,0.1)">💼</div>
             <div class="ic-id">Ankit M.</div>
             <div class="ic-role">Risk Head</div>
             <div class="ic-industry">Private Banking</div>
             <div class="ic-reveal-overlay" id="reveal-b">
-              <div class="reveal-badge">âœ“ Identity revealed</div>
+              <div class="reveal-badge">✓ Identity revealed</div>
               <div class="reveal-name">Ankit Mehta</div>
-              <div class="reveal-detail">a.mehta@â€¢â€¢â€¢â€¢.com</div>
-              <div class="reveal-detail" style="margin-top:2px;color:var(--amber);font-weight:500">Kotak Mahindra Bank Â· Mumbai</div>
+              <div class="reveal-detail">a.mehta@••••.com</div>
+              <div class="reveal-detail" style="margin-top:2px;color:var(--amber);font-weight:500">Kotak Mahindra Bank · Mumbai</div>
             </div>
           </div>
         </div>
-        <div class="ic-consent-note">Both have expressed interest. The moment both consent â€” identities reveal simultaneously. Neither goes first.</div>
-        <button class="ic-btn" id="reveal-btn">See what happens when both consent â†’</button>
-        <p class="ic-small-note">This demo shows the outcome. In the platform, both sides consent independently â€” the system orchestrates the reveal.</p>
+        <div class="ic-consent-note">Both have expressed interest. The moment both consent — identities reveal simultaneously. Neither goes first.</div>
+        <button class="ic-btn" id="reveal-btn">See what happens when both consent →</button>
+        <p class="ic-small-note">This demo shows the outcome. In the platform, both sides consent independently — the system orchestrates the reveal.</p>
       </div>
     </div>
   </div>
   <a class="scroll-cue" href="#ch6"><div class="scroll-cue-line"></div>Continue</a>
 </section>
 
-<!-- â•â• CH6: SALARY BENCHMARK â•â• -->
+<!-- ══ CH6: SALARY BENCHMARK ══ -->
 <section class="chapter" id="ch6">
   <div class="ch-inner">
     <div class="bench-grid">
       <div>
         <div class="ch-label rv">Salary benchmark</div>
         <h2 class="ch-head rv">Not a survey.<br>Not aggregated data.<br><em>Real people. Your domain.</em></h2>
-        <p class="ch-body rv d1" style="margin-top:18px;margin-bottom:28px">Every data point on Job Lounge comes from verified professionals actually on the platform â€” in your domain, city, and experience band. The people sitting in the same chair as you, right now.</p>
+        <p class="ch-body rv d1" style="margin-top:18px;margin-bottom:28px">Every data point on Job Lounge comes from verified professionals actually on the platform — in your domain, city, and experience band. The people sitting in the same chair as you, right now.</p>
         <div class="source-compare rv d2">
-          <div class="source-row"><span class="source-name">Aggregated job portals</span><span class="source-verdict red">Self-reported Â· 6â€“18 months old</span></div>
-          <div class="source-row"><span class="source-name">Professional network salary tool</span><span class="source-verdict amber">Broad Â· Not domain-specific</span></div>
-          <div class="source-row"><span class="source-name">Job Lounge</span><span class="source-verdict green">Verified Â· Live Â· Same role Â· Same city</span></div>
+          <div class="source-row"><span class="source-name">Aggregated job portals</span><span class="source-verdict red">Self-reported · 6–18 months old</span></div>
+          <div class="source-row"><span class="source-name">Professional network salary tool</span><span class="source-verdict amber">Broad · Not domain-specific</span></div>
+          <div class="source-row"><span class="source-name">Job Lounge</span><span class="source-verdict green">Verified · Live · Same role · Same city</span></div>
         </div>
       </div>
       <div class="bench-card rv d1">
@@ -1175,16 +1341,16 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
           <div class="bench-title">Salary distribution</div>
           <div class="bench-live"><span class="bench-live-dot"></span>Live platform data</div>
         </div>
-        <div class="bench-domain">IT Audit Â· BFSI Â· Pune</div>
-        <div class="bench-meta">6â€“12 years Â· CISA certified Â· 47 verified profiles</div>
+        <div class="bench-domain">IT Audit · BFSI · Pune</div>
+        <div class="bench-meta">6–12 years · CISA certified · 47 verified profiles</div>
         <div class="bench-dist-label">Distribution</div>
-        <div class="bench-bar-row"><span class="bench-range">20â€“35L</span><div class="bench-bar-track"><div class="bench-bar-fill c1" style="width:18%"></div></div><span class="bench-count">8</span></div>
-        <div class="bench-bar-row"><span class="bench-range">35â€“50L</span><div class="bench-bar-track"><div class="bench-bar-fill c2" style="width:55%"></div></div><span class="bench-count">26</span></div>
-        <div class="bench-bar-row"><span class="bench-range">50â€“65L</span><div class="bench-bar-track"><div class="bench-bar-fill c3" style="width:38%"></div></div><span class="bench-count">18</span></div>
+        <div class="bench-bar-row"><span class="bench-range">20–35L</span><div class="bench-bar-track"><div class="bench-bar-fill c1" style="width:18%"></div></div><span class="bench-count">8</span></div>
+        <div class="bench-bar-row"><span class="bench-range">35–50L</span><div class="bench-bar-track"><div class="bench-bar-fill c2" style="width:55%"></div></div><span class="bench-count">26</span></div>
+        <div class="bench-bar-row"><span class="bench-range">50–65L</span><div class="bench-bar-track"><div class="bench-bar-fill c3" style="width:38%"></div></div><span class="bench-count">18</span></div>
         <div class="bench-bar-row"><span class="bench-range">65L+</span><div class="bench-bar-track"><div class="bench-bar-fill c4" style="width:22%"></div></div><span class="bench-count">10</span></div>
         <div class="bench-marker">
-          <div><div class="bench-marker-label">Your Private ID position</div><div class="bench-marker-value">â‚¹ 42 â€“ 58 L</div></div>
-          <div class="bench-marker-badge">p72 Â· Top 28%</div>
+          <div><div class="bench-marker-label">Your Private ID position</div><div class="bench-marker-value">₹ 42 – 58 L</div></div>
+          <div class="bench-marker-badge">p72 · Top 28%</div>
         </div>
         <div class="bench-footnote">Data from 47 verified IT Audit professionals in Pune BFSI. Updates as new profiles join.</div>
       </div>
@@ -1193,37 +1359,37 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
   <a class="scroll-cue" href="#ch7"><div class="scroll-cue-line"></div>Continue</a>
 </section>
 
-<!-- â•â• CH7: HUMAN SEARCH â•â• -->
+<!-- ══ CH7: HUMAN SEARCH ══ -->
 <section class="chapter" id="ch7">
   <div class="ch-inner">
     <div class="search-demo-grid">
       <div class="search-card rv">
         <div class="search-card-label">How a Peer finds you</div>
         <div class="search-input">
-          <span class="search-input-icon">ðŸ”</span>
+          <span class="search-input-icon">🔍</span>
           <span class="search-typed-text" id="s-typed"></span>
           <span id="s-cursor"></span>
         </div>
-        <div class="search-res-label" id="s-res-label">2 profiles found Â· Exact match</div>
+        <div class="search-res-label" id="s-res-label">2 profiles found · Exact match</div>
         <div id="s-results">
-          <div class="s-result"><div class="s-id">JL-R83Z7Z</div><div class="s-tags"><span class="s-tag b">CISA</span><span class="s-tag b">IT Audit</span><span class="s-tag b">6â€“10 yrs</span><span class="s-tag b">Pune</span></div><div class="s-meta">At market salary Â· Big 4 background Â· Open to NBFC</div></div>
-          <div class="s-result"><div class="s-id">JL-K72M4X</div><div class="s-tags"><span class="s-tag a">CISA</span><span class="s-tag a">IT Audit</span><span class="s-tag a">8â€“12 yrs</span><span class="s-tag a">Pune</span></div><div class="s-meta">Above market Â· NBFC experience Â· Pune preferred</div></div>
+          <div class="s-result"><div class="s-id">JL-R83Z7Z</div><div class="s-tags"><span class="s-tag b">CISA</span><span class="s-tag b">IT Audit</span><span class="s-tag b">6–10 yrs</span><span class="s-tag b">Pune</span></div><div class="s-meta">At market salary · Big 4 background · Open to NBFC</div></div>
+          <div class="s-result"><div class="s-id">JL-K72M4X</div><div class="s-tags"><span class="s-tag a">CISA</span><span class="s-tag a">IT Audit</span><span class="s-tag a">8–12 yrs</span><span class="s-tag a">Pune</span></div><div class="s-meta">Above market · NBFC experience · Pune preferred</div></div>
         </div>
       </div>
       <div>
         <div class="ch-label rv">Human search</div>
         <h2 class="ch-head rv">Type how you'd describe<br>the person<br><em>to a friend.</em></h2>
-        <p class="ch-body rv d1" style="margin-top:16px;margin-bottom:26px">Peers don't fill job description forms. They describe the person they need, the way they'd say it on a call. The platform understands intent, domain, and experience â€” and returns exactly 2 matched profiles.</p>
-        <div class="search-feature rv d2"><div class="sf-icon">ðŸŽ¯</div><div class="sf-text"><strong>2 profiles. Not 200.</strong>If you get 2 right profiles, the interview is already a formality.</div></div>
-        <div class="search-feature rv d2"><div class="sf-icon">ðŸ—£</div><div class="sf-text"><strong>Natural language</strong>"CISA audit NBFC 6 years Pune" â€” no filters, no dropdowns. Just describe the person.</div></div>
-        <div class="search-feature rv d2"><div class="sf-icon">â˜•</div><div class="sf-text"><strong>The referral conversation â€” democratised</strong>This is "do you know someone?" â€” made available to everyone, not just those with the right coffee meetings.</div></div>
+        <p class="ch-body rv d1" style="margin-top:16px;margin-bottom:26px">Peers don't fill job description forms. They describe the person they need, the way they'd say it on a call. The platform understands intent, domain, and experience — and returns exactly 2 matched profiles.</p>
+        <div class="search-feature rv d2"><div class="sf-icon">🎯</div><div class="sf-text"><strong>2 profiles. Not 200.</strong>If you get 2 right profiles, the interview is already a formality.</div></div>
+        <div class="search-feature rv d2"><div class="sf-icon">🗣</div><div class="sf-text"><strong>Natural language</strong>"CISA audit NBFC 6 years Pune" — no filters, no dropdowns. Just describe the person.</div></div>
+        <div class="search-feature rv d2"><div class="sf-icon">☕</div><div class="sf-text"><strong>The referral conversation — democratised</strong>This is "do you know someone?" — made available to everyone, not just those with the right coffee meetings.</div></div>
       </div>
     </div>
   </div>
   <a class="scroll-cue" href="#ch8"><div class="scroll-cue-line"></div>Continue</a>
 </section>
 
-<!-- â•â• CH8: COMPANY FIREWALL â•â• -->
+<!-- ══ CH8: COMPANY FIREWALL ══ -->
 <section class="chapter" id="ch8">
   <div class="ch-inner">
     <div class="fw-grid">
@@ -1232,35 +1398,35 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
         <h2 class="ch-head rv">Your employer<br>cannot see you here.<br><em>By design. Not policy.</em></h2>
         <p class="ch-body rv d1" style="margin-top:18px;margin-bottom:32px">The moment someone from your company enters the platform, the system identifies the employer conflict and hides your profile from them entirely. Not just your name. Your existence on the platform.</p>
         <div class="fw-features rv d2">
-          <div class="fw-feature"><div class="fw-feature-icon">ðŸ¢</div><div class="fw-feature-text"><strong>Employer conflict detection</strong>Your company active on platform? You're invisible to them. Hard block â€” not a checkbox.</div></div>
-          <div class="fw-feature"><div class="fw-feature-icon">ðŸ”</div><div class="fw-feature-text"><strong>No trace. No notification.</strong>If someone from your company searches and you don't match â€” they never know you were here. No "viewed" receipts.</div></div>
-          <div class="fw-feature"><div class="fw-feature-icon">âœ…</div><div class="fw-feature-text"><strong>Pre-consent industry reveal</strong>Before raising your hand, you can confirm the industry â€” to ensure you're not engaging with your current employer.</div></div>
+          <div class="fw-feature"><div class="fw-feature-icon">🏢</div><div class="fw-feature-text"><strong>Employer conflict detection</strong>Your company active on platform? You're invisible to them. Hard block — not a checkbox.</div></div>
+          <div class="fw-feature"><div class="fw-feature-icon">🔐</div><div class="fw-feature-text"><strong>No trace. No notification.</strong>If someone from your company searches and you don't match — they never know you were here. No "viewed" receipts.</div></div>
+          <div class="fw-feature"><div class="fw-feature-icon">✅</div><div class="fw-feature-text"><strong>Pre-consent industry reveal</strong>Before raising your hand, you can confirm the industry — to ensure you're not engaging with your current employer.</div></div>
         </div>
       </div>
       <div class="fw-visual rv d1">
         <canvas id="fw-canvas"></canvas>
         <div class="fw-center">
           <div class="fw-shield-box">
-            <div class="fw-shield-icon">ðŸ›¡</div>
+            <div class="fw-shield-icon">🛡</div>
             <div class="fw-shield-label">Firewall</div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Closing CTA â€” simple, no repetition of 3-door framing already shown above -->
+    <!-- Closing CTA — simple, no repetition of 3-door framing already shown above -->
     <div class="final-cta rv d3">
       <span class="final-cta-text">Ready to see where you stand?</span>
-      <a href="/request-access" class="final-cta-btn">Request access â†’</a>
+      <a href="/request-access" class="final-cta-btn">Request access →</a>
     </div>
   </div>
 </section>
 
 <script>
-// â•â• NAV SCROLL â•â•
+// ══ NAV SCROLL ══
 window.addEventListener('scroll', () => document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 10));
 
-// â•â• PROGRESS + DOTS â•â•
+// ══ PROGRESS + DOTS ══
 const chapters = Array.from(document.querySelectorAll('.chapter'));
 const dots = document.querySelectorAll('.cdot');
 const pFill = document.getElementById('progress-fill');
@@ -1275,7 +1441,7 @@ function updateNav() {
 window.addEventListener('scroll', updateNav);
 dots.forEach(dot => dot.addEventListener('click', () => document.getElementById(dot.dataset.ch).scrollIntoView({ behavior: 'smooth' })));
 
-// â•â• PARTICLE ENGINE â•â•
+// ══ PARTICLE ENGINE ══
 function createParticleCanvas(id, opts = {}) {
   const canvas = document.getElementById(id);
   if (!canvas) return;
@@ -1346,7 +1512,7 @@ function createParticleCanvas(id, opts = {}) {
   window.addEventListener('resize', () => { resize(); init(); });
 }
 
-// â•â• HERO â€” Circular Carousel with Identity Reveal (Narrated, smooth) â•â•
+// ══ HERO — Circular Carousel with Identity Reveal (Narrated, smooth) ══
 (function() {
   const cards = [
     document.getElementById('hcard-lounger'),    // 0 = Kayra (Lounger)
@@ -1365,7 +1531,7 @@ function createParticleCanvas(id, opts = {}) {
 
   const EASE = 'cubic-bezier(0.22,0.61,0.36,1)';  // smooth ease-out, no overshoot
 
-  // â”€â”€ 3 orbital positions â”€â”€
+  // ── 3 orbital positions ──
   const POS = {
     front: { tx:  0,   ty:  0,  rot:  0,  scale: 1.00, opacity: 1,    z: 3, shadow: '0 24px 64px rgba(0,0,0,0.16)' },
     right: { tx:  112, ty: 28,  rot:  8,  scale: 0.87, opacity: 0.80, z: 2, shadow: '0 8px 28px rgba(0,0,0,0.08)'  },
@@ -1421,7 +1587,7 @@ function createParticleCanvas(id, opts = {}) {
     });
   }
 
-  // Rotate positions only â€” does NOT touch reveal state (caller handles sequencing)
+  // Rotate positions only — does NOT touch reveal state (caller handles sequencing)
   const CYCLE = { front: 'left', right: 'front', left: 'right' };
   function rotatePositions() {
     slots = slots.map(s => CYCLE[s]);
@@ -1438,8 +1604,8 @@ function createParticleCanvas(id, opts = {}) {
     }, 280);
   }
 
-  // â”€â”€ TIMELINE â€” paced for clarity, smooth handoffs â”€â”€
-  // Each "un-reveal â†’ wait 650ms (let flip finish) â†’ rotate" pattern
+  // ── TIMELINE — paced for clarity, smooth handoffs ──
+  // Each "un-reveal → wait 650ms (let flip finish) → rotate" pattern
   // prevents the card flip and position move from fighting each other.
   //
   // 0        stacked
@@ -1447,15 +1613,15 @@ function createParticleCanvas(id, opts = {}) {
   // 3200     reveal Kayra
   // 5500     narrate consent (still showing Kayra revealed)
   // 8200     un-reveal Kayra
-  // 8850     rotate â†’ Ankit now front
+  // 8850     rotate → Ankit now front
   // 9700     reveal Ankit
   // 12000    narrate consent
   // 14700    un-reveal Ankit
-  // 15350    rotate â†’ Recruiter now front
+  // 15350    rotate → Recruiter now front
   // 16200    reveal Recruiter
   // 18500    narrate consent
   // 21200    un-reveal Recruiter
-  // 21850    rotate â†’ Kayra front again
+  // 21850    rotate → Kayra front again
   // 22600    narrate reset message
   // 23600    stack back
   // 25000    restart
@@ -1532,18 +1698,18 @@ function createParticleCanvas(id, opts = {}) {
     setTimeout(runTimeline, TOTAL);
   }
 
-  // Init â€” instant stacked state, then begin after a short pause
+  // Init — instant stacked state, then begin after a short pause
   setStacked(true);
   setTimeout(() => cards.forEach(c => { c.style.transition = ''; }), 50);
   setTimeout(runTimeline, 900);
 })();
 
-// â•â• CH2 particles â•â•
+// ══ CH2 particles ══
 createParticleCanvas('ch2-canvas', { count: 60, color: '#378ADD', opacity: 0.15, speed: 0.3, maxDist: 130 });
-// â•â• CTA particles â•â•
-// CH9 removed â€” particle call no longer needed
+// ══ CTA particles ══
+// CH9 removed — particle call no longer needed
 
-// â•â• FIREWALL CANVAS â•â•
+// ══ FIREWALL CANVAS ══
 (function() {
   const canvas = document.getElementById('fw-canvas');
   if (!canvas) return;
@@ -1611,7 +1777,7 @@ createParticleCanvas('ch2-canvas', { count: 60, color: '#378ADD', opacity: 0.15,
         ctx.fillStyle = node.blocked ? '#DC2626' : '#042C53';
         ctx.font = `${node.blocked ? '600' : '500'} 11px Inter, sans-serif`;
         ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.fillText(node.label + (node.blocked ? ' ðŸš«' : ''), nx, ny);
+        ctx.fillText(node.label + (node.blocked ? ' 🚫' : ''), nx, ny);
       });
     });
 
@@ -1622,7 +1788,7 @@ createParticleCanvas('ch2-canvas', { count: 60, color: '#378ADD', opacity: 0.15,
   window.addEventListener('resize', resize);
 })();
 
-// â•â• PERSONA TABS â€” "Which one is yours?" â•â•
+// ══ PERSONA TABS — "Which one is yours?" ══
 function activateTab(name) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
@@ -1669,7 +1835,7 @@ if (ch3bSection) {
   ch3bObs.observe(ch3bSection);
 }
 
-// â•â• SCROLL REVEALS â•â•
+// ══ SCROLL REVEALS ══
 const rvObs = new IntersectionObserver(entries => {
   entries.forEach((e, i) => { if (e.isIntersecting) setTimeout(() => e.target.classList.add('in'), i * 60); });
 }, { threshold: 0.12 });
@@ -1700,7 +1866,7 @@ const pillObs = new IntersectionObserver(entries => {
 const pillRow = document.querySelector('.idea-pills-row');
 if (pillRow) pillObs.observe(pillRow);
 
-// â•â• IDENTITY REVEAL DEMO â•â•
+// ══ IDENTITY REVEAL DEMO ══
 let revealed = false;
 document.getElementById('reveal-btn')?.addEventListener('click', function() {
   if (!revealed) {
@@ -1710,17 +1876,17 @@ document.getElementById('reveal-btn')?.addEventListener('click', function() {
       document.getElementById('reveal-b').classList.add('show');
       document.getElementById('ic-profile-b').classList.add('revealed');
     }, 120);
-    this.textContent = 'Reset demo â†º';
+    this.textContent = 'Reset demo ↺';
     revealed = true;
   } else {
     ['reveal-a','reveal-b'].forEach(id => document.getElementById(id).classList.remove('show'));
     ['ic-profile-a','ic-profile-b'].forEach(id => document.getElementById(id).classList.remove('revealed'));
-    this.textContent = 'See what happens when both consent â†’';
+    this.textContent = 'See what happens when both consent →';
     revealed = false;
   }
 });
 
-// â•â• TYPEWRITER SEARCH â•â•
+// ══ TYPEWRITER SEARCH ══
 const query = '"CISA audit NBFC 6 years Pune"';
 let typeStarted = false;
 const searchObs = new IntersectionObserver(entries => {
@@ -1745,6 +1911,719 @@ const searchObs = new IntersectionObserver(entries => {
 const sCard = document.querySelector('.search-card');
 if (sCard) searchObs.observe(sCard);
 </script>
+
+  <!-- ═══ SUPABASE + MODAL SCRIPTS ═══ -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script>
+  // ── FILL THESE IN from your .env.local ──
+  const SUPABASE_URL  = 'https://ltrjnrktjbmchggmtltr.supabase.co'
+  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impwb3RyZHBiY2VpdXlucG5jcnBwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3NTg3NDgsImV4cCI6MjA5NzMzNDc0OH0.qAn64_jEVTcN1jZArcUHddzl3AsyKIzwi1BjUp78pTo'
+  const _sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON)
+  </script>
+
+<!-- ═══════════════════════════════════════════
+     LOGIN MODAL
+═══════════════════════════════════════════ -->
+<div class="jl-modal-backdrop" id="login-modal">
+  <div class="jl-modal-sheet">
+    <button class="jl-modal-close" onclick="closeModal('login-modal')">✕</button>
+    <div class="jl-modal-body">
+      <div style="text-align:center;padding:24px 0 8px">
+        <div style="font-size:15px;font-weight:600;color:#0f172a">Job Lounge</div>
+        <div style="font-size:12px;color:#94a3b8;margin-top:4px">Opportunity First. Identity Later.</div>
+      </div>
+
+      <!-- Email step -->
+      <div class="mc" id="login-email-step">
+        <h2 class="mc-title">Log in</h2>
+        <p class="mc-sub">Enter your registered email. We'll send you a one-time code.</p>
+        <label class="mc-label">Email address</label>
+        <input id="login-email" type="email" class="mc-input" placeholder="you@gmail.com"
+          onkeydown="if(event.key==='Enter') loginSendOtp()" />
+        <div id="login-email-error" style="display:none" class="mc-error"></div>
+        <div id="login-warn-notregistered" style="display:none" class="mc-warn">
+          This email is not registered on Job Lounge.
+          <br><button onclick="closeModal('login-modal');openModal('onboarding-modal')" style="margin-top:8px;font-size:12px;font-weight:600;color:#854F0B;background:#FEF3C7;border:1px solid #D97706;border-radius:6px;padding:5px 12px;cursor:pointer;font-family:Inter,sans-serif">Request access →</button>
+        </div>
+        <div id="login-warn-pending" style="display:none" class="mc-warn">Your access request is under review. We'll get back to you within 24 hours.</div>
+        <div id="login-warn-rejected" style="display:none" class="mc-warn" style="background:#FEE2E2;border-color:#991B1B;color:#991B1B">Your access was not approved. Contact Job Lounge for more information.</div>
+        <button class="mc-btn-primary" id="login-otp-btn" onclick="loginSendOtp()">Send OTP</button>
+        <p class="mc-footer">Don't have access? <span class="mc-link" onclick="closeModal('login-modal');openModal('onboarding-modal')">Request access</span></p>
+      </div>
+
+      <!-- OTP step -->
+      <div class="mc" id="login-otp-step" style="display:none">
+        <div style="width:44px;height:44px;border-radius:50%;background:#E6F1FB;display:flex;align-items:center;justify-content:center;margin:0 auto 16px">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0C447C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+            <polyline points="22,6 12,13 2,6"/>
+          </svg>
+        </div>
+        <h2 class="mc-title">Enter your code</h2>
+        <p class="mc-sub">We sent an 8-digit code to<br><strong id="login-email-display" style="color:#0f172a"></strong></p>
+        <label class="mc-label">One-time code</label>
+        <input id="login-otp" type="text" inputmode="numeric" maxlength="8" class="mc-input mc-otp"
+          placeholder="00000000" onkeydown="if(event.key==='Enter') loginVerifyOtp()" />
+        <div id="login-otp-error" style="display:none" class="mc-error"></div>
+        <div id="login-otp-success" style="display:none" class="mc-success"></div>
+        <button class="mc-btn-primary" id="login-verify-btn" onclick="loginVerifyOtp()" style="margin-bottom:12px">Verify &amp; log in</button>
+        <div class="mc-row">
+          <button class="mc-ghost" onclick="loginBack()">← Change email</button>
+          <button class="mc-ghost" onclick="loginResend()">Resend code</button>
+        </div>
+      </div>
+
+      <p style="font-size:12px;color:#94a3b8;text-align:center;margin:0 0 16px">Your identity is never shared without your consent.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     ONBOARDING MODAL
+═══════════════════════════════════════════ -->
+<div class="jl-modal-backdrop" id="onboarding-modal">
+  <div class="jl-modal-sheet">
+    <button class="jl-modal-close" onclick="closeModal('onboarding-modal')">✕</button>
+    <div class="jl-modal-body" id="ob-body">
+      <!-- Rendered by JS: ob_render() -->
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// MODAL HELPERS
+// ═══════════════════════════════════════════════════════
+function openModal(id) {
+  document.getElementById(id).classList.add('open')
+  document.body.style.overflow = 'hidden'
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open')
+  document.body.style.overflow = ''
+}
+
+// Close on backdrop click
+document.querySelectorAll('.jl-modal-backdrop').forEach(el => {
+  el.addEventListener('click', function(e) {
+    if (e.target === this) closeModal(this.id)
+  })
+})
+
+// Wire ALL request access buttons
+document.querySelectorAll('a[href="/request-access"], a[href="#ch9"], a[href="#ch8"]').forEach(el => {
+  el.addEventListener('click', function(e) {
+    e.preventDefault()
+    openModal('onboarding-modal')
+  })
+})
+
+// Wire log in button
+document.querySelectorAll('a[href="/login"]').forEach(el => {
+  el.addEventListener('click', function(e) {
+    e.preventDefault()
+    openModal('login-modal')
+  })
+})
+
+// ═══════════════════════════════════════════════════════
+// LOGIN MODAL LOGIC
+// ═══════════════════════════════════════════════════════
+function loginSetLoading(btn, loading, text, loadingText) {
+  btn.disabled = loading
+  btn.textContent = loading ? loadingText : text
+  btn.style.opacity = loading ? '0.7' : '1'
+}
+function loginHideAllWarnings() {
+  ['login-email-error','login-warn-notregistered','login-warn-pending','login-warn-rejected'].forEach(id => {
+    const el = document.getElementById(id)
+    if (el) el.style.display = 'none'
+  })
+}
+
+async function loginSendOtp() {
+  const email = document.getElementById('login-email').value.trim().toLowerCase()
+  const btn = document.getElementById('login-otp-btn')
+  loginHideAllWarnings()
+
+  if (!email || !email.includes('@')) {
+    const err = document.getElementById('login-email-error')
+    err.textContent = 'Please enter a valid email address.'
+    err.style.display = 'block'
+    return
+  }
+
+  loginSetLoading(btn, true, 'Send OTP', 'Checking…')
+
+  const { data: entry } = await _sb.from('waitlist').select('status').eq('email', email).maybeSingle()
+
+  if (!entry) {
+    loginSetLoading(btn, false, 'Send OTP', '')
+    document.getElementById('login-warn-notregistered').style.display = 'block'
+    return
+  }
+  if (entry.status === 'pending') {
+    loginSetLoading(btn, false, 'Send OTP', '')
+    document.getElementById('login-warn-pending').style.display = 'block'
+    return
+  }
+  if (entry.status === 'held' || entry.status === 'rejected') {
+    loginSetLoading(btn, false, 'Send OTP', '')
+    document.getElementById('login-warn-rejected').style.display = 'block'
+    return
+  }
+
+  const { error } = await _sb.auth.signInWithOtp({ email, options: { shouldCreateUser: true } })
+  loginSetLoading(btn, false, 'Send OTP', '')
+
+  if (error) {
+    const err = document.getElementById('login-email-error')
+    err.textContent = 'Failed to send OTP. Please try again.'
+    err.style.display = 'block'
+    return
+  }
+
+  document.getElementById('login-email-display').textContent = email
+  document.getElementById('login-email-step').style.display = 'none'
+  document.getElementById('login-otp-step').style.display = 'block'
+  document.getElementById('login-otp').focus()
+}
+
+async function loginVerifyOtp() {
+  const email = document.getElementById('login-email').value.trim().toLowerCase()
+  const otp   = document.getElementById('login-otp').value.trim()
+  const btn   = document.getElementById('login-verify-btn')
+  const errEl = document.getElementById('login-otp-error')
+  errEl.style.display = 'none'
+
+  if (otp.length !== 8) {
+    errEl.textContent = 'Please enter the 8-digit code.'
+    errEl.style.display = 'block'
+    return
+  }
+
+  loginSetLoading(btn, true, 'Verify & log in', 'Verifying…')
+
+  const { data, error } = await _sb.auth.verifyOtp({ email, token: otp, type: 'email' })
+
+  if (error || !data.user) {
+    errEl.textContent = 'Invalid or expired code. Please try again.'
+    errEl.style.display = 'block'
+    loginSetLoading(btn, false, 'Verify & log in', '')
+    return
+  }
+
+  // Wait for DB trigger to create users row
+  let userData = null
+  for (let i = 0; i < 5; i++) {
+    const { data: row } = await _sb.from('users').select('roles, onboarding_done').eq('id', data.user.id).maybeSingle()
+    if (row) { userData = row; break }
+    await new Promise(r => setTimeout(r, 500))
+  }
+
+  loginSetLoading(btn, false, 'Verify & log in', '')
+  const role = userData?.roles?.[0] || 'lounger'
+  window.location.href = `/dashboard/${role}`
+}
+
+function loginBack() {
+  document.getElementById('login-otp-step').style.display = 'none'
+  document.getElementById('login-email-step').style.display = 'block'
+  document.getElementById('login-otp').value = ''
+  document.getElementById('login-otp-error').style.display = 'none'
+}
+
+async function loginResend() {
+  const email = document.getElementById('login-email').value.trim().toLowerCase()
+  await _sb.auth.signInWithOtp({ email, options: { shouldCreateUser: true } })
+  const suc = document.getElementById('login-otp-success')
+  suc.textContent = 'A new code has been sent.'
+  suc.style.display = 'block'
+  setTimeout(() => { suc.style.display = 'none' }, 4000)
+}
+
+// ═══════════════════════════════════════════════════════
+// ONBOARDING MODAL — STATE
+// ═══════════════════════════════════════════════════════
+const OB = {
+  step: 0,
+  industry: '',
+  skills: [],
+  certs: [],
+  contribution: '',
+  expBand: '',
+  city: '',
+  currentSalary: '',
+  expectedSalary: '',
+  jlId: '',
+  saving: false,
+  error: '',
+  extraIndustries: [],
+  extraSkills: [],
+  extraCerts: [],
+  extraCities: [],
+}
+
+const SPECIAL = ['Student', 'Homemaker / Homecommander']
+
+const IND_SKILLS = {
+  'Student': ['Academic Research','Data Analysis','Presentation Skills','Project Management','Critical Thinking','Communication','Problem Solving','Teamwork','Time Management'],
+  'Homemaker / Homecommander': ['Budget Management','Vendor Negotiation','Scheduling & Planning','People Management','Crisis Management','Leadership','Multitasking','Resource Allocation','Emotional Intelligence'],
+  'Banking': ['Retail Banking','Credit Analysis','Risk Management','AML/KYC','Treasury','Financial Analysis','Regulatory Compliance','Credit Risk'],
+  'NBFC': ['Lending Operations','Collections','Credit Underwriting','RBI Compliance','Risk Assessment','Loan Management','Analytics'],
+  'Insurance': ['Underwriting','Claims Management','Actuarial Analysis','Risk Modeling','Compliance','Customer Service'],
+  'IT Services': ['Software Development','Cloud','DevOps','Cybersecurity','Programming','Automation','Project Delivery'],
+  'Software Product': ['Product Management','Agile','Engineering','Product Thinking','UX','Scalable Architecture'],
+  'Cybersecurity': ['SOC','VAPT','IAM','SIEM','GRC','Threat Analysis','Security Governance'],
+  'FinTech': ['Payments','APIs','Digital Lending','Innovation','Financial Technology'],
+  'Data & AI': ['Machine Learning','Data Engineering','Analytics','Model Development','Data Science'],
+  'Consulting': ['Problem Solving','Strategy','Analysis','Stakeholder Management','Advisory Skills'],
+  'Healthcare': ['Clinical Operations','Healthcare IT','Compliance','Patient Care Processes'],
+  'Manufacturing': ['Production Planning','Lean','Six Sigma','Quality','Process Optimization'],
+  'Retail': ['Merchandising','Inventory Management','Sales','Customer Engagement'],
+  'E-commerce': ['Digital Marketing','Supply Chain','Data Analytics','Customer Analytics'],
+  'Government / Public Sector': ['Policy','Governance','Procurement','Public Administration'],
+}
+
+const IND_CERTS = {
+  'Student': ['NPTEL','Coursera Specialisation','Google Certifications','Microsoft Learn','AWS Cloud Practitioner','CFA Level 1'],
+  'Homemaker / Homecommander': ['PMP','Financial Planning Certificate','Digital Marketing Basics','Tally','Google Workspace'],
+  'Banking': ['CAIIB','JAIIB','CFP','CFA','FRM','CAMS'],
+  'NBFC': ['CAIIB','FRM','CFP','CAMS'],
+  'Insurance': ['FIII','AIII','Licentiate','ACII','FLMI','CFP'],
+  'IT Services': ['AWS','Azure','GCP','PMP','ITIL','CISSP'],
+  'Software Product': ['AWS','Azure','Agile/Scrum','PMP','CAPM'],
+  'Cybersecurity': ['CISSP','CISM','CEH','OSCP','CompTIA Security+','CISA'],
+  'FinTech': ['CFA','FRM','AWS','PMP','CAMS'],
+  'Data & AI': ['AWS ML Specialty','Google ML','Azure AI','Databricks','TensorFlow Developer'],
+  'Consulting': ['PMP','CFA','MBA','Six Sigma'],
+  'Healthcare': ['CPHQ','NABH Auditor','PMP','HIPAA Certification'],
+  'Manufacturing': ['Six Sigma Green Belt','Six Sigma Black Belt','PMP','ISO 9001 Lead Auditor'],
+  'Government / Public Sector': ['CSS','IAS','UPSC','PMP'],
+}
+
+const ALL_INDUSTRIES = ['Student','Homemaker / Homecommander','Banking','NBFC','Insurance','IT Services','Software Product','Cybersecurity','Manufacturing','Automotive','Healthcare','Pharmaceuticals','Shipping & Logistics','E-commerce','Retail','Telecom','Energy & Utilities','Oil & Gas','Construction','Real Estate','Education','Media & Entertainment','Hospitality','Consulting','BPO / KPO','Data & AI','FinTech','Government / Public Sector','Aviation','Agriculture','Mining & Metals','Travel & Tourism']
+const CITIES = ['Mumbai','Delhi NCR','Bangalore','Pune','Chennai','Hyderabad','Kolkata','Ahmedabad','Surat','Jaipur','Lucknow','Chandigarh','Bhopal','Nagpur','Indore','Kochi','Coimbatore','Visakhapatnam']
+const EXP_BANDS = ['0–1 yrs','1–3 yrs','3–6 yrs','6–10 yrs','10–15 yrs','15–20 yrs','20+ yrs']
+const CONTRIBUTIONS = [
+  {id:'ic', label:'Individual Contributor', desc:'I deliver work independently — no direct reports'},
+  {id:'team', label:'Team Handling', desc:'I lead a small team (2–10 people)'},
+  {id:'management', label:'Management Role', desc:'I manage managers and multiple teams'},
+  {id:'strategic', label:'Strategic Role', desc:'I set direction and own outcomes at org level'},
+  {id:'consulting', label:'Consulting / Advisory', desc:'I advise organisations without being on payroll'},
+  {id:'student', label:'Student / Learner', desc:'I am currently studying or in training'},
+  {id:'returning', label:'Returning to Work', desc:'I am re-entering the workforce after a break'},
+]
+
+function generateJLId() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
+  let id = 'JL-'
+  for (let i = 0; i < 6; i++) id += chars[Math.floor(Math.random() * chars.length)]
+  return id
+}
+
+// ── Load custom options from Supabase ──
+async function ob_loadCustomOptions() {
+  const { data } = await _sb.from('custom_options').select('category,value').eq('approved', true)
+  if (data) {
+    OB.extraIndustries = data.filter(d => d.category === 'industry').map(d => d.value)
+    OB.extraSkills     = data.filter(d => d.category === 'skill').map(d => d.value)
+    OB.extraCerts      = data.filter(d => d.category === 'certification').map(d => d.value)
+    OB.extraCities     = data.filter(d => d.category === 'city').map(d => d.value)
+  }
+}
+
+async function ob_saveCustom(category, value) {
+  await _sb.from('custom_options').upsert({category, value}, {onConflict: 'category,value'})
+}
+
+// ── Render the current step ──
+function ob_render() {
+  const body = document.getElementById('ob-body')
+  const steps = ['Welcome','Profile','Skills','Certifications','Contribution','Experience & Salary']
+  const totalSteps = steps.length - 1
+
+  let html = ''
+
+  if (OB.step > 0 && OB.step < 6) {
+    const pct = (OB.step / totalSteps) * 100
+    html += `<div style="padding:16px 20px 0">
+      <div class="mc-progress"><div class="mc-progress-fill" style="width:${pct}%"></div></div>
+      <div style="font-size:11px;color:#64748b;margin-bottom:4px">Step ${OB.step} of ${totalSteps}</div>
+    </div>`
+  }
+
+  if (OB.step === 0) html += ob_stepWelcome()
+  else if (OB.step === 1) html += ob_stepIndustry()
+  else if (OB.step === 2) html += ob_stepSkills()
+  else if (OB.step === 3) html += ob_stepCerts()
+  else if (OB.step === 4) html += ob_stepContribution()
+  else if (OB.step === 5) html += ob_stepExpSalary()
+  else if (OB.step === 6) html += ob_stepDone()
+
+  body.innerHTML = html
+  ob_attachHandlers()
+}
+
+function ob_privacy() {
+  return `<div class="mc-privacy">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0C447C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+    </svg>
+    <span><strong>Nothing here can identify you.</strong> No name, no employer. Used only for matching. You are known by your Private ID until you choose otherwise.</span>
+  </div>`
+}
+
+function ob_stepWelcome() {
+  return `<div class="mc">
+    <div style="text-align:center;margin-bottom:20px">
+      <div style="font-size:26px;margin-bottom:10px">👋</div>
+      <h2 class="mc-title">Welcome to Job Lounge</h2>
+      <p class="mc-sub">Let's set up your Private ID profile. About 2 minutes.</p>
+    </div>
+    <div style="background:#042C53;border-radius:12px;padding:18px 20px;margin-bottom:20px">
+      <div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#85B7EB;margin-bottom:10px">Your privacy commitment</div>
+      <p style="font-size:13px;color:#B5D4F4;line-height:1.7;margin:0 0 12px">Job Lounge does not collect your name, employer, or resume. Information shared is used <strong style="color:#fff">only</strong> by our matching engine.</p>
+      <p style="font-size:13px;color:#B5D4F4;line-height:1.7;margin:0;border-top:0.5px solid rgba(255,255,255,0.1);padding-top:12px">You will be known exclusively by a <strong style="color:#5DCAA5">Private ID</strong> — non-identifiable until you choose to reveal it with explicit, mutual consent.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px">
+      ${['No name or employer ever collected during setup','Your Private ID replaces your identity on the platform','Salary and skills visible only to the matching engine','Identity revealed only with your explicit, mutual consent'].map(pt =>
+        `<div style="display:flex;align-items:flex-start;gap:8px;font-size:12px;color:#475569">
+          <span style="color:#5DCAA5;font-weight:700;flex-shrink:0;margin-top:1px">✓</span>${pt}
+        </div>`).join('')}
+    </div>
+    <button class="mc-btn-primary" onclick="OB.step=1;ob_render()">I understand — let's begin →</button>
+  </div>`
+}
+
+function ob_stepIndustry() {
+  const allInds = [...ALL_INDUSTRIES, ...OB.extraIndustries.filter(e => !ALL_INDUSTRIES.includes(e))]
+  return `<div class="mc">
+    <h2 class="mc-title" style="text-align:left;margin-bottom:4px">What best describes you?</h2>
+    <p class="mc-sub" style="text-align:left">Select your industry, or if you're a student or homemaker, pick that — we'll tailor the next steps.</p>
+    ${ob_privacy()}
+    <label class="mc-label">Your industry / profile type</label>
+    <select class="mc-select" id="ob-industry" onchange="OB.industry=this.value;OB.skills=[];OB.certs=[]">
+      <option value="">Select…</option>
+      ${allInds.map(i => `<option value="${i}" ${OB.industry===i?'selected':''}>${SPECIAL.includes(i)?'★ '+i:i}</option>`).join('')}
+    </select>
+    <div style="display:flex;gap:8px;margin-bottom:8px">
+      <input id="ob-industry-other" class="mc-input" placeholder="Don't see yours? Type it here…" style="margin-bottom:0;flex:1" />
+      <button onclick="ob_addCustomIndustry()" style="font-size:12px;font-weight:600;padding:8px 14px;border-radius:8px;border:none;cursor:pointer;background:#185FA5;color:#fff;font-family:Inter,sans-serif;white-space:nowrap">+ Add</button>
+    </div>
+    <div class="mc-nav">
+      <button class="mc-back" onclick="OB.step=0;ob_render()">← Back</button>
+      <button class="mc-next" ${!OB.industry?'disabled':''} onclick="if(OB.industry){OB.step=2;ob_render()}">Next →</button>
+    </div>
+  </div>`
+}
+
+function ob_stepSkills() {
+  const base = (IND_SKILLS[OB.industry] || [])
+  const all  = [...new Set([...base, ...OB.extraSkills])]
+  return `<div class="mc">
+    <h2 class="mc-title" style="text-align:left;margin-bottom:4px">Key skills</h2>
+    <p class="mc-sub" style="text-align:left">Based on <strong style="color:#0f172a">${OB.industry}</strong>. Select all that apply.</p>
+    ${ob_privacy()}
+    <label class="mc-label">Select skills</label>
+    <select class="mc-select" multiple size="6" id="ob-skills-select" style="height:160px">
+      ${all.map(s => `<option value="${s}" ${OB.skills.includes(s)?'selected':''}>${s}</option>`).join('')}
+    </select>
+    <div id="ob-skills-tags" class="mc-tags">${OB.skills.map(s => `<span class="mc-tag">${s}<span class="mc-tag-x" onclick="ob_removeSkill('${s}')">×</span></span>`).join('')}</div>
+    <div style="display:flex;gap:8px;margin-top:8px;margin-bottom:4px">
+      <input id="ob-skill-other" class="mc-input" placeholder="Add a skill not in the list…" style="margin-bottom:0;flex:1" />
+      <button onclick="ob_addCustomSkill()" style="font-size:12px;font-weight:600;padding:8px 14px;border-radius:8px;border:none;cursor:pointer;background:#185FA5;color:#fff;font-family:Inter,sans-serif;white-space:nowrap">+ Add</button>
+    </div>
+    <div class="mc-nav">
+      <button class="mc-back" onclick="OB.step=1;ob_render()">← Back</button>
+      <button class="mc-next" ${OB.skills.length===0?'disabled':''} onclick="if(OB.skills.length>0){OB.step=3;ob_render()}">Next →</button>
+    </div>
+  </div>`
+}
+
+function ob_stepCerts() {
+  const base = (IND_CERTS[OB.industry] || [])
+  const all  = [...new Set([...base, ...OB.extraCerts])]
+  return `<div class="mc">
+    <h2 class="mc-title" style="text-align:left;margin-bottom:4px">Certifications</h2>
+    <p class="mc-sub" style="text-align:left">Based on <strong style="color:#0f172a">${OB.industry}</strong>. Select what you hold — or skip.</p>
+    ${ob_privacy()}
+    <label class="mc-label">Select certifications (optional)</label>
+    <select class="mc-select" multiple size="6" id="ob-certs-select" style="height:${all.length>4?'160px':'120px'}">
+      ${all.map(c => `<option value="${c}" ${OB.certs.includes(c)?'selected':''}>${c}</option>`).join('')}
+    </select>
+    <div id="ob-certs-tags" class="mc-tags">${OB.certs.map(c => `<span class="mc-tag">${c}<span class="mc-tag-x" onclick="ob_removeCert('${c}')">×</span></span>`).join('')}</div>
+    <div style="display:flex;gap:8px;margin-top:8px;margin-bottom:4px">
+      <input id="ob-cert-other" class="mc-input" placeholder="Add a certification not in the list…" style="margin-bottom:0;flex:1" />
+      <button onclick="ob_addCustomCert()" style="font-size:12px;font-weight:600;padding:8px 14px;border-radius:8px;border:none;cursor:pointer;background:#185FA5;color:#fff;font-family:Inter,sans-serif;white-space:nowrap">+ Add</button>
+    </div>
+    <div class="mc-nav">
+      <button class="mc-back" onclick="OB.step=2;ob_render()">← Back</button>
+      <div style="display:flex;gap:10px">
+        <button class="mc-back" style="color:#94a3b8" onclick="OB.step=4;ob_render()">Skip</button>
+        <button class="mc-next" onclick="OB.step=4;ob_render()">Next →</button>
+      </div>
+    </div>
+  </div>`
+}
+
+function ob_stepContribution() {
+  return `<div class="mc">
+    <h2 class="mc-title" style="text-align:left;margin-bottom:4px">How do you contribute?</h2>
+    <p class="mc-sub" style="text-align:left">Select the option that best describes your current situation.</p>
+    ${ob_privacy()}
+    ${CONTRIBUTIONS.map(c => `
+      <div class="mc-radio ${OB.contribution===c.id?'sel':''}" onclick="OB.contribution='${c.id}';ob_render()">
+        <div class="mc-radio-dot"></div>
+        <div>
+          <div class="mc-radio-label">${c.label}</div>
+          <div class="mc-radio-desc">${c.desc}</div>
+        </div>
+      </div>`).join('')}
+    <div class="mc-nav" style="margin-top:16px">
+      <button class="mc-back" onclick="OB.step=3;ob_render()">← Back</button>
+      <button class="mc-next" ${!OB.contribution?'disabled':''} onclick="if(OB.contribution){OB.step=5;ob_render()}">Next →</button>
+    </div>
+  </div>`
+}
+
+function ob_stepExpSalary() {
+  const allCities = [...CITIES, ...OB.extraCities.filter(c => !CITIES.includes(c))]
+  return `<div class="mc">
+    <h2 class="mc-title" style="text-align:left;margin-bottom:4px">Experience, location &amp; salary</h2>
+    <p class="mc-sub" style="text-align:left">Helps calibrate your market position. Salary is never shown to anyone.</p>
+    ${ob_privacy()}
+
+    <label class="mc-label">Current city</label>
+    <select class="mc-select" id="ob-city" onchange="ob_handleCityChange(this.value)">
+      <option value="">Select city…</option>
+      ${allCities.map(c => `<option value="${c}" ${OB.city===c?'selected':''}>${c}</option>`).join('')}
+      <option value="__other__">Other — type my city</option>
+    </select>
+    <div id="ob-city-other-wrap" style="display:${OB.city&&!CITIES.includes(OB.city)&&OB.city!==''?'flex':'none'};gap:8px;margin-bottom:8px">
+      <input id="ob-city-other" class="mc-input" placeholder="Type your city…" style="margin-bottom:0;flex:1" value="${!CITIES.includes(OB.city)?OB.city:''}" />
+      <button onclick="ob_addCustomCity()" style="font-size:12px;font-weight:600;padding:8px 14px;border-radius:8px;border:none;cursor:pointer;background:#185FA5;color:#fff;font-family:Inter,sans-serif;white-space:nowrap">Set</button>
+    </div>
+
+    <label class="mc-label">Total years of experience</label>
+    <select class="mc-select" id="ob-exp" onchange="OB.expBand=this.value">
+      <option value="">Select…</option>
+      ${EXP_BANDS.map(b => `<option value="${b}" ${OB.expBand===b?'selected':''}>${b}</option>`).join('')}
+    </select>
+
+    <label class="mc-label">Current annual salary (₹ in Lakhs)</label>
+    <div class="mc-salary-wrap">
+      <span class="mc-salary-sym">₹</span>
+      <input type="number" id="ob-cur-salary" class="mc-input mc-salary-input" placeholder="e.g. 24" value="${OB.currentSalary}" oninput="OB.currentSalary=this.value;document.getElementById('ob-error').style.display='none'" style="margin-bottom:0" />
+      <span class="mc-salary-unit">Lakhs/yr</span>
+    </div>
+    <div style="height:12px"></div>
+
+    <label class="mc-label">Expected annual salary (₹ in Lakhs)</label>
+    <div class="mc-salary-wrap">
+      <span class="mc-salary-sym">₹</span>
+      <input type="number" id="ob-exp-salary" class="mc-input mc-salary-input" placeholder="e.g. 32" value="${OB.expectedSalary}" oninput="OB.expectedSalary=this.value;document.getElementById('ob-error').style.display='none'" style="margin-bottom:0" />
+      <span class="mc-salary-unit">Lakhs/yr</span>
+    </div>
+    <div style="height:12px"></div>
+
+    <div id="ob-error" class="mc-error" style="display:${OB.error?'block':'none'}">${OB.error}</div>
+
+    <div style="font-size:12px;color:#94a3b8;line-height:1.6;margin-bottom:20px;padding:10px 12px;background:#f8fafc;border-radius:8px">
+      Salary figures are used only by the matching engine. Never visible to any Peer, Recruiter, or other Lounger.
+    </div>
+
+    <div class="mc-nav">
+      <button class="mc-back" onclick="OB.step=4;ob_render()">← Back</button>
+      <button class="mc-next" id="ob-submit-btn" onclick="ob_submit()">Complete setup →</button>
+    </div>
+  </div>`
+}
+
+function ob_stepDone() {
+  return `<div class="mc" style="text-align:center">
+    <div style="width:56px;height:56px;border-radius:50%;background:#E1F5EE;display:flex;align-items:center;justify-content:center;margin:0 auto 16px">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0F6E56" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <h2 class="mc-title">You're on the platform</h2>
+    <p class="mc-sub">Your anonymous profile is live. Here is your Private ID:</p>
+    <div class="mc-done-id">
+      <div class="mc-id-label">Your Private ID</div>
+      <div class="mc-id-value">${OB.jlId}</div>
+      <div class="mc-id-sub">This is the only identity anyone will ever see — until you choose to reveal yourself.</div>
+    </div>
+    <div class="mc-summary">
+      ${[
+        {label:'Profile type', value:OB.industry},
+        {label:'Location', value:OB.city},
+        {label:'Skills', value:OB.skills.length+' selected'},
+        {label:'Experience', value:OB.expBand},
+        {label:'Certifications', value:OB.certs.length>0?OB.certs.length+' selected':'None'},
+        {label:'Salary band', value:'₹'+OB.currentSalary+'L – ₹'+OB.expectedSalary+'L'},
+      ].map(s => `<div class="mc-summary-cell"><div class="mc-summary-label">${s.label}</div><div class="mc-summary-value">${s.value}</div></div>`).join('')}
+    </div>
+    <button class="mc-btn-primary" onclick="window.location.href='/dashboard/lounger'">Go to my dashboard →</button>
+  </div>`
+}
+
+// ── Handlers ──
+function ob_attachHandlers() {
+  // Skills multi-select change
+  const skillsSel = document.getElementById('ob-skills-select')
+  if (skillsSel) {
+    skillsSel.addEventListener('change', function() {
+      OB.skills = Array.from(this.selectedOptions).map(o => o.value)
+      const tags = document.getElementById('ob-skills-tags')
+      if (tags) tags.innerHTML = OB.skills.map(s => `<span class="mc-tag">${s}<span class="mc-tag-x" onclick="ob_removeSkill('${s}')">×</span></span>`).join('')
+      // Update next btn
+      const nb = document.querySelector('.mc-next')
+      if (nb) nb.disabled = OB.skills.length === 0
+    })
+  }
+  // Certs multi-select change
+  const certsSel = document.getElementById('ob-certs-select')
+  if (certsSel) {
+    certsSel.addEventListener('change', function() {
+      OB.certs = Array.from(this.selectedOptions).map(o => o.value)
+      const tags = document.getElementById('ob-certs-tags')
+      if (tags) tags.innerHTML = OB.certs.map(c => `<span class="mc-tag">${c}<span class="mc-tag-x" onclick="ob_removeCert('${c}')">×</span></span>`).join('')
+    })
+  }
+}
+
+function ob_removeSkill(s) {
+  OB.skills = OB.skills.filter(x => x !== s)
+  ob_render()
+}
+function ob_removeCert(c) {
+  OB.certs = OB.certs.filter(x => x !== c)
+  ob_render()
+}
+
+function ob_handleCityChange(val) {
+  if (val === '__other__') {
+    OB.city = ''
+    document.getElementById('ob-city-other-wrap').style.display = 'flex'
+    document.getElementById('ob-city-other').focus()
+  } else {
+    OB.city = val
+    document.getElementById('ob-city-other-wrap').style.display = 'none'
+  }
+}
+
+async function ob_addCustomCity() {
+  const val = document.getElementById('ob-city-other').value.trim()
+  if (!val) return
+  OB.city = val
+  OB.extraCities = [...new Set([...OB.extraCities, val])]
+  await ob_saveCustom('city', val)
+  ob_render()
+}
+async function ob_addCustomIndustry() {
+  const val = document.getElementById('ob-industry-other').value.trim()
+  if (!val) return
+  OB.industry = val
+  OB.extraIndustries = [...new Set([...OB.extraIndustries, val])]
+  OB.skills = []; OB.certs = []
+  await ob_saveCustom('industry', val)
+  ob_render()
+}
+async function ob_addCustomSkill() {
+  const val = document.getElementById('ob-skill-other').value.trim()
+  if (!val) return
+  OB.extraSkills = [...new Set([...OB.extraSkills, val])]
+  OB.skills = [...new Set([...OB.skills, val])]
+  await ob_saveCustom('skill', val)
+  ob_render()
+}
+async function ob_addCustomCert() {
+  const val = document.getElementById('ob-cert-other').value.trim()
+  if (!val) return
+  OB.extraCerts = [...new Set([...OB.extraCerts, val])]
+  OB.certs = [...new Set([...OB.certs, val])]
+  await ob_saveCustom('certification', val)
+  ob_render()
+}
+
+async function ob_submit() {
+  // Read salary values from DOM in case state not synced
+  const curSalInput = document.getElementById('ob-cur-salary')
+  const expSalInput = document.getElementById('ob-exp-salary')
+  const citySelect  = document.getElementById('ob-city')
+  const expSelect   = document.getElementById('ob-exp')
+
+  if (curSalInput) OB.currentSalary = curSalInput.value
+  if (expSalInput) OB.expectedSalary = expSalInput.value
+  if (citySelect && citySelect.value && citySelect.value !== '__other__') OB.city = citySelect.value
+  if (expSelect) OB.expBand = expSelect.value
+
+  const curL = parseFloat(OB.currentSalary)
+  const expL = parseFloat(OB.expectedSalary)
+  const errEl = document.getElementById('ob-error')
+
+  if (!OB.city) { errEl.textContent='Please select your city.'; errEl.style.display='block'; return }
+  if (!OB.expBand) { errEl.textContent='Please select your experience band.'; errEl.style.display='block'; return }
+  if (!curL || curL <= 0) { errEl.textContent='Please enter a valid current salary.'; errEl.style.display='block'; return }
+  if (!expL || expL <= 0) { errEl.textContent='Please enter a valid expected salary.'; errEl.style.display='block'; return }
+
+  const btn = document.getElementById('ob-submit-btn')
+  btn.disabled = true
+  btn.textContent = 'Saving…'
+
+  const { data: { user } } = await _sb.auth.getUser()
+  if (!user) {
+    // Not logged in — need to collect email first
+    errEl.textContent = 'Please log in first to complete setup.'
+    errEl.style.display = 'block'
+    btn.disabled = false
+    btn.textContent = 'Complete setup →'
+    return
+  }
+
+  const jlId = generateJLId()
+
+  const { error: profileErr } = await _sb.from('lounger_profiles').upsert({
+    user_id: user.id,
+    domain: [OB.industry],
+    skills: OB.skills,
+    certifications: OB.certs,
+    contribution_type: OB.contribution,
+    experience_years: OB.expBand,
+    salary_min_paise: Math.round(curL * 100000 * 100),
+    salary_max_paise: Math.round(expL * 100000 * 100),
+    jl_id: jlId,
+    current_city: OB.city,
+  }, { onConflict: 'user_id' })
+
+  if (profileErr) {
+    errEl.textContent = 'Failed to save: ' + profileErr.message
+    errEl.style.display = 'block'
+    btn.disabled = false
+    btn.textContent = 'Complete setup →'
+    return
+  }
+
+  await _sb.from('users').update({ onboarding_done: true }).eq('id', user.id)
+  OB.jlId = jlId
+  OB.step = 6
+  ob_render()
+}
+
+// ── Open onboarding modal and init ──
+const _origOpenModal = openModal
+window.openModal = function(id) {
+  _origOpenModal(id)
+  if (id === 'onboarding-modal') {
+    ob_loadCustomOptions().then(() => {
+      OB.step = 0
+      ob_render()
+    })
+  }
+}
+
+// Also init onboarding if opened via original openModal
+document.getElementById('onboarding-modal').addEventListener('click', function(){})
+</script>
+
 </body>
 </html>
-
