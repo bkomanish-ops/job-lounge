@@ -2616,10 +2616,11 @@ const _origOpenModal = openModal
 window.openModal = function(id) {
   _origOpenModal(id)
   if (id === 'onboarding-modal') {
-    ob_loadCustomOptions().then(() => {
-      OB.step = 0
-      ob_render()
-    })
+    // Render welcome screen immediately — no network wait
+    OB.step = 0
+    ob_render()
+    // Load custom options in background for later steps
+    ob_loadCustomOptions()
   }
 }
 
