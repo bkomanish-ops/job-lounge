@@ -1108,7 +1108,7 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
             <li><div class="tab-check blue">✓</div>Market Pulse shows your demand tier in real time</li>
             <li><div class="tab-check blue">✓</div>Raise your hand only when you choose to</li>
           </ul>
-          <a href="/request-access" class="tab-cta">Join as Lounger →</a>
+          <a href="/request-access" class="tab-cta" data-role-cta="lounger">Join as Lounger →</a>
         </div>
 
         <!-- MARKET VALUE CARD — light theme -->
@@ -1181,7 +1181,7 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
             <li><div class="tab-check amber">✓</div>Flash brief in 220 characters — not a job description</li>
             <li><div class="tab-check amber">✓</div>Zero recruiter fee. Direct access to passive talent.</li>
           </ul>
-          <a href="/request-access" class="tab-cta">Join as Peer →</a>
+          <a href="/request-access" class="tab-cta" data-role-cta="peer">Join as Peer →</a>
         </div>
         <div class="tab-visual">
           <div class="search-label">Search results · 2 profiles found</div>
@@ -1220,7 +1220,7 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
             <li><div class="tab-check purple">✓</div>No CV changes hands without mutual consent</li>
             <li><div class="tab-check purple">✓</div>Genuinely passive — not being shopped to 6 others</li>
           </ul>
-          <a href="/request-access" class="tab-cta">Apply for Recruiter access →</a>
+          <a href="/request-access" class="tab-cta" data-role-cta="recruiter">Apply for Recruiter access →</a>
         </div>
         <div class="tab-visual">
           <div class="rec-stat">1 in 8</div>
@@ -1945,12 +1945,12 @@ if (sCard) searchObs.observe(sCard);
         <div id="login-email-error" style="display:none" class="mc-error"></div>
         <div id="login-warn-notregistered" style="display:none" class="mc-warn">
           This email is not registered on Job Lounge.
-          <br><button onclick="closeModal('login-modal');openModal('onboarding-modal')" style="margin-top:8px;font-size:12px;font-weight:600;color:#854F0B;background:#FEF3C7;border:1px solid #D97706;border-radius:6px;padding:5px 12px;cursor:pointer;font-family:Inter,sans-serif">Request access →</button>
+          <br><button onclick="closeModal('login-modal');document.getElementById('ch3b').scrollIntoView({behavior:'smooth',block:'start'})" style="margin-top:8px;font-size:12px;font-weight:600;color:#854F0B;background:#FEF3C7;border:1px solid #D97706;border-radius:6px;padding:5px 12px;cursor:pointer;font-family:Inter,sans-serif">Request access →</button>
         </div>
         <div id="login-warn-pending" style="display:none" class="mc-warn">Your access request is under review. We'll get back to you within 24 hours.</div>
         <div id="login-warn-rejected" style="display:none" class="mc-warn" style="background:#FEE2E2;border-color:#991B1B;color:#991B1B">Your access was not approved. Contact Job Lounge for more information.</div>
         <button class="mc-btn-primary" id="login-otp-btn" onclick="loginSendOtp()">Send OTP</button>
-        <p class="mc-footer">Don't have access? <span class="mc-link" onclick="closeModal('login-modal');openModal('onboarding-modal')">Request access</span></p>
+        <p class="mc-footer">Don't have access? <span class="mc-link" onclick="closeModal('login-modal');document.getElementById('ch3b').scrollIntoView({behavior:'smooth',block:'start'})">Choose your door</span></p>
       </div>
 
       <!-- OTP step -->
@@ -2012,12 +2012,28 @@ document.querySelectorAll('.jl-modal-backdrop').forEach(el => {
   })
 })
 
-// Wire ALL request access buttons
+// Wire ALL request access buttons → scroll to 3-door section
 document.querySelectorAll('a[href="/request-access"], a[href="#ch9"], a[href="#ch8"]').forEach(el => {
   el.addEventListener('click', function(e) {
     e.preventDefault()
-    openModal('onboarding-modal')
+    const ch3b = document.getElementById('ch3b')
+    if (ch3b) {
+      ch3b.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
   })
+})
+
+// Wire 3-door CTA buttons → open role-specific onboarding modal
+document.addEventListener('click', function(e) {
+  const btn = e.target.closest('[data-role-cta]')
+  if (!btn) return
+  e.preventDefault()
+  const role = btn.getAttribute('data-role-cta')
+  OB.roleRequested = role
+  OB.step = 0
+  openModal('onboarding-modal')
+  ob_render()
+  ob_loadCustomOptions()
 })
 
 // Wire log in button
@@ -2149,6 +2165,7 @@ async function loginResend() {
 // ═══════════════════════════════════════════════════════
 const OB = {
   step: 0,
+  roleRequested: 'lounger',
   industry: '',
   skills: [],
   certs: [],
@@ -2605,7 +2622,17 @@ async function ob_submit() {
     return
   }
 
-  await _sb.from('users').update({ onboarding_done: true }).eq('id', user.id)
+  // Save role_requested so admin can see and approve
+  await _sb.from('users').update({
+    onboarding_done: true,
+    role_requested: OB.roleRequested,
+  }).eq('id', user.id)
+
+  // Update waitlist status to onboarded
+  await _sb.from('waitlist').update({
+    status: 'onboarded',
+    role_requested: OB.roleRequested,
+  }).eq('email', user.email)
   OB.jlId = jlId
   OB.step = 6
   ob_render()
@@ -2615,13 +2642,7 @@ async function ob_submit() {
 const _origOpenModal = openModal
 window.openModal = function(id) {
   _origOpenModal(id)
-  if (id === 'onboarding-modal') {
-    // Render welcome screen immediately — no network wait
-    OB.step = 0
-    ob_render()
-    // Load custom options in background for later steps
-    ob_loadCustomOptions()
-  }
+  // ob_render() is called by the data-role-cta handler with role already set
 }
 
 // Also init onboarding if opened via original openModal
