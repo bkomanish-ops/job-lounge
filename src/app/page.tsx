@@ -1,512 +1,25 @@
 'use client'
 
 import { useEffect } from 'react'
-import Link from 'next/link'
-
-// ─── Job Lounge Landing Page — Experience v3 ──────────────────────────────────
-// Converted from job_lounge_experience_v3.html
-// All animations run client-side via useEffect after mount.
 
 export default function HomePage() {
   useEffect(() => {
-    // Inject Google Fonts
-    const link = document.createElement('link')
-    link.href = 'https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap'
-    link.rel = 'stylesheet'
-    document.head.appendChild(link)
-
-    // All page JS runs after DOM is ready
-    // ══ NAV SCROLL ══
-window.addEventListener('scroll', () => document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 10));
-
-// ══ PROGRESS + DOTS ══
-const chapters = Array.from(document.querySelectorAll('.chapter'));
-const dots = document.querySelectorAll('.cdot');
-const pFill = document.getElementById('progress-fill');
-
-function updateNav() {
-  const scrolled = window.scrollY, total = document.body.scrollHeight - window.innerHeight;
-  pFill.style.width = Math.min(100, (scrolled / total) * 100) + '%';
-  let active = 0;
-  chapters.forEach((ch, i) => { if (ch.getBoundingClientRect().top <= window.innerHeight * 0.45) active = i; });
-  dots.forEach((d, i) => d.classList.toggle('active', i === active));
-}
-window.addEventListener('scroll', updateNav);
-dots.forEach(dot => dot.addEventListener('click', () => document.getElementById(dot.dataset.ch).scrollIntoView({ behavior: 'smooth' })));
-
-// ══ PARTICLE ENGINE ══
-function createParticleCanvas(id, opts = {}) {
-  const canvas = document.getElementById(id);
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  let W, H, particles = [];
-
-  const config = {
-    count: opts.count || 55,
-    color: opts.color || '#042C53',
-    opacity: opts.opacity || 0.12,
-    speed: opts.speed || 0.3,
-    maxDist: opts.maxDist || 120,
-    radius: opts.radius || 1.5
-  };
-
-  function resize() {
-    W = canvas.width = canvas.parentElement.offsetWidth;
-    H = canvas.height = canvas.parentElement.offsetHeight;
-  }
-
-  function init() {
-    particles = [];
-    for (let i = 0; i < config.count; i++) {
-      particles.push({
-        x: Math.random() * W, y: Math.random() * H,
-        vx: (Math.random() - 0.5) * config.speed,
-        vy: (Math.random() - 0.5) * config.speed,
-        r: Math.random() * config.radius + 0.5
-      });
+    // ── Inject Google Fonts ──
+    if (!document.querySelector('link[data-jl-fonts]')) {
+      const link = document.createElement('link')
+      link.setAttribute('data-jl-fonts', '1')
+      link.href = 'https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap'
+      link.rel = 'stylesheet'
+      document.head.appendChild(link)
     }
-  }
 
-  function hexToRGB(hex) {
-    const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
-    return { r, g, b };
-  }
-  const rgb = hexToRGB(config.color);
+    // ── Inject page JS via script element (avoids all escaping issues) ──
+    const script = document.createElement('script')
+    script.textContent = "// \u2550\u2550 NAV SCROLL \u2550\u2550\nwindow.addEventListener('scroll', () => document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 10));\n\n// \u2550\u2550 PROGRESS + DOTS \u2550\u2550\nconst chapters = Array.from(document.querySelectorAll('.chapter'));\nconst dots = document.querySelectorAll('.cdot');\nconst pFill = document.getElementById('progress-fill');\n\nfunction updateNav() {\n  const scrolled = window.scrollY, total = document.body.scrollHeight - window.innerHeight;\n  pFill.style.width = Math.min(100, (scrolled / total) * 100) + '%';\n  let active = 0;\n  chapters.forEach((ch, i) => { if (ch.getBoundingClientRect().top <= window.innerHeight * 0.45) active = i; });\n  dots.forEach((d, i) => d.classList.toggle('active', i === active));\n}\nwindow.addEventListener('scroll', updateNav);\ndots.forEach(dot => dot.addEventListener('click', () => document.getElementById(dot.dataset.ch).scrollIntoView({ behavior: 'smooth' })));\n\n// \u2550\u2550 PARTICLE ENGINE \u2550\u2550\nfunction createParticleCanvas(id, opts = {}) {\n  const canvas = document.getElementById(id);\n  if (!canvas) return;\n  const ctx = canvas.getContext('2d');\n  let W, H, particles = [];\n\n  const config = {\n    count: opts.count || 55,\n    color: opts.color || '#042C53',\n    opacity: opts.opacity || 0.12,\n    speed: opts.speed || 0.3,\n    maxDist: opts.maxDist || 120,\n    radius: opts.radius || 1.5\n  };\n\n  function resize() {\n    W = canvas.width = canvas.parentElement.offsetWidth;\n    H = canvas.height = canvas.parentElement.offsetHeight;\n  }\n\n  function init() {\n    particles = [];\n    for (let i = 0; i < config.count; i++) {\n      particles.push({\n        x: Math.random() * W, y: Math.random() * H,\n        vx: (Math.random() - 0.5) * config.speed,\n        vy: (Math.random() - 0.5) * config.speed,\n        r: Math.random() * config.radius + 0.5\n      });\n    }\n  }\n\n  function hexToRGB(hex) {\n    const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);\n    return { r, g, b };\n  }\n  const rgb = hexToRGB(config.color);\n\n  function draw() {\n    ctx.clearRect(0, 0, W, H);\n    particles.forEach(p => {\n      p.x += p.vx; p.y += p.vy;\n      if (p.x < 0 || p.x > W) p.vx *= -1;\n      if (p.y < 0 || p.y > H) p.vy *= -1;\n      ctx.beginPath();\n      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);\n      ctx.fillStyle = `rgba(${rgb.r},${rgb.g},${rgb.b},${config.opacity * 2})`;\n      ctx.fill();\n    });\n    for (let i = 0; i < particles.length; i++) {\n      for (let j = i + 1; j < particles.length; j++) {\n        const dx = particles[i].x - particles[j].x, dy = particles[i].y - particles[j].y;\n        const dist = Math.sqrt(dx*dx + dy*dy);\n        if (dist < config.maxDist) {\n          ctx.beginPath();\n          ctx.moveTo(particles[i].x, particles[i].y);\n          ctx.lineTo(particles[j].x, particles[j].y);\n          ctx.strokeStyle = `rgba(${rgb.r},${rgb.g},${rgb.b},${config.opacity * (1 - dist / config.maxDist)})`;\n          ctx.lineWidth = 0.6;\n          ctx.stroke();\n        }\n      }\n    }\n    requestAnimationFrame(draw);\n  }\n\n  resize(); init(); draw();\n  window.addEventListener('resize', () => { resize(); init(); });\n}\n\n// \u2550\u2550 HERO \u2014 Circular Carousel with Identity Reveal (Narrated, smooth) \u2550\u2550\n(function() {\n  const cards = [\n    document.getElementById('hcard-lounger'),    // 0 = Kayra (Lounger)\n    document.getElementById('hcard-peer'),        // 1 = Ankit  (Peer)\n    document.getElementById('hcard-recruiter'),   // 2 = Recruiter\n  ];\n  const narratorEl  = document.getElementById('narrator-label');\n  const narratorTxt = document.getElementById('narrator-text');\n  const dots = [\n    document.getElementById('dot-0'),\n    document.getElementById('dot-1'),\n    document.getElementById('dot-2'),\n  ];\n\n  if (!cards[0] || !cards[1] || !cards[2]) return;\n\n  const EASE = 'cubic-bezier(0.22,0.61,0.36,1)';  // smooth ease-out, no overshoot\n\n  // \u2500\u2500 3 orbital positions \u2500\u2500\n  const POS = {\n    front: { tx:  0,   ty:  0,  rot:  0,  scale: 1.00, opacity: 1,    z: 3, shadow: '0 24px 64px rgba(0,0,0,0.16)' },\n    right: { tx:  112, ty: 28,  rot:  8,  scale: 0.87, opacity: 0.80, z: 2, shadow: '0 8px 28px rgba(0,0,0,0.08)'  },\n    left:  { tx: -86,  ty: 44,  rot: -7,  scale: 0.79, opacity: 0.52, z: 1, shadow: '0 4px 16px rgba(0,0,0,0.05)'  },\n  };\n\n  let slots = ['front', 'right', 'left'];  // slots[i] = position of card i\n\n  function applyPos(cardEl, posKey, instant) {\n    const p = POS[posKey];\n    cardEl.style.transition = instant\n      ? 'none'\n      : `transform 1s ${EASE}, opacity 0.8s ease, box-shadow 0.8s ease`;\n    cardEl.style.transform  = `translateX(${p.tx}px) translateY(${p.ty}px) rotate(${p.rot}deg) scale(${p.scale})`;\n    cardEl.style.opacity    = p.opacity;\n    cardEl.style.zIndex     = p.z;\n    cardEl.style.boxShadow  = p.shadow;\n  }\n\n  function setStacked(instant) {\n    const s = [\n      { tx: 0,  ty: 0,  rot: 0, scale: 1.00, opacity: 1.00, z: 3 },\n      { tx: 9,  ty: 11, rot: 4, scale: 0.96, opacity: 0.74, z: 2 },\n      { tx: 17, ty: 20, rot: 7, scale: 0.93, opacity: 0.50, z: 1 },\n    ];\n    cards.forEach((card, i) => {\n      card.style.transition = instant ? 'none' : `transform 1s ${EASE}, opacity 0.8s ease`;\n      card.style.transform  = `translateX(${s[i].tx}px) translateY(${s[i].ty}px) rotate(${s[i].rot}deg) scale(${s[i].scale})`;\n      card.style.opacity    = s[i].opacity;\n      card.style.zIndex     = s[i].z;\n    });\n  }\n\n  function fanOut() {\n    cards.forEach((c, i) => applyPos(c, slots[i], false));\n  }\n\n  function revealFront() {\n    const fi = slots.indexOf('front');\n    if (fi !== -1) cards[fi].classList.add('is-revealed');\n  }\n\n  function unRevealAll() {\n    cards.forEach(c => c.classList.remove('is-revealed'));\n  }\n\n  function updateDots() {\n    const fi = slots.indexOf('front');\n    dots.forEach((d, i) => {\n      d.classList.remove('active', 'done');\n      if (i === fi) d.classList.add('active');\n      else if (slots[i] === 'right') d.classList.add('done');\n    });\n  }\n\n  // Rotate positions only \u2014 does NOT touch reveal state (caller handles sequencing)\n  const CYCLE = { front: 'left', right: 'front', left: 'right' };\n  function rotatePositions() {\n    slots = slots.map(s => CYCLE[s]);\n    cards.forEach((c, i) => applyPos(c, slots[i], false));\n    updateDots();\n  }\n\n  function narrate(text, isConsent) {\n    narratorEl.classList.toggle('consent-moment', !!isConsent);\n    narratorTxt.style.opacity = '0';\n    setTimeout(() => {\n      narratorTxt.innerHTML = text;\n      narratorTxt.style.opacity = '1';\n    }, 280);\n  }\n\n  // \u2500\u2500 TIMELINE \u2014 paced for clarity, smooth handoffs \u2500\u2500\n  // Each \"un-reveal \u2192 wait 650ms (let flip finish) \u2192 rotate\" pattern\n  // prevents the card flip and position move from fighting each other.\n  //\n  // 0        stacked\n  // 1400     fan out\n  // 3200     reveal Kayra\n  // 5500     narrate consent (still showing Kayra revealed)\n  // 8200     un-reveal Kayra\n  // 8850     rotate \u2192 Ankit now front\n  // 9700     reveal Ankit\n  // 12000    narrate consent\n  // 14700    un-reveal Ankit\n  // 15350    rotate \u2192 Recruiter now front\n  // 16200    reveal Recruiter\n  // 18500    narrate consent\n  // 21200    un-reveal Recruiter\n  // 21850    rotate \u2192 Kayra front again\n  // 22600    narrate reset message\n  // 23600    stack back\n  // 25000    restart\n\n  const TOTAL = 25000;\n\n  function runTimeline() {\n    slots = ['front', 'right', 'left'];\n    dots.forEach((d, i) => { d.classList.remove('active','done'); if (i === 0) d.classList.add('active'); });\n\n    // Phase 0: stacked intro\n    setStacked(false);\n    narrate('3 professionals. All anonymous. All verified.');\n\n    // Phase 1: fan out\n    setTimeout(() => {\n      fanOut();\n      narrate('Each holds a <strong>Private ID</strong> &mdash; non-identifiable until they choose to reveal.');\n    }, 1400);\n\n    // Phase 2: reveal Kayra\n    setTimeout(() => {\n      revealFront();\n      narrate('Kayra is a Senior IT Auditor in BFSI. You see her role &mdash; not her name. Not yet.');\n    }, 3200);\n\n    setTimeout(() => {\n      narrate(\"<strong>Both consented.</strong> Identity revealed simultaneously. That's the ceremony.\", true);\n    }, 5500);\n\n    // Phase 3: un-reveal Kayra, THEN rotate (sequenced, not simultaneous)\n    setTimeout(() => unRevealAll(), 8200);\n    setTimeout(() => {\n      rotatePositions();\n      narrate('Ankit has an open seat. He posted a flash brief &mdash; 220 characters. No JD.');\n    }, 8850);\n\n    // Phase 4: reveal Ankit\n    setTimeout(() => {\n      revealFront();\n      narrate('Ankit is a Risk Head at Kotak. You see his name &mdash; because <strong>he chose to be seen</strong>.', true);\n    }, 9700);\n\n    setTimeout(() => {\n      narrate('<strong>Mutual consent.</strong> Neither side went first.', true);\n    }, 12000);\n\n    // Phase 5: un-reveal Ankit, THEN rotate\n    setTimeout(() => unRevealAll(), 14700);\n    setTimeout(() => {\n      rotatePositions();\n      narrate('A founder-verified Recruiter has an active mandate. Passive talent. No other platform has them.');\n    }, 15350);\n\n    // Phase 6: reveal Recruiter\n    setTimeout(() => {\n      revealFront();\n      narrate('The Recruiter sees <strong>2 matched profiles</strong>. Not 200. The right conversation starts here.', true);\n    }, 16200);\n\n    setTimeout(() => {\n      narrate('Precision over volume. That\\u2019s the difference.', true);\n    }, 18500);\n\n    // Phase 7: un-reveal, rotate back to Kayra\n    setTimeout(() => unRevealAll(), 21200);\n    setTimeout(() => {\n      rotatePositions();\n      narrate('3 professionals. All anonymous. All verified.');\n    }, 21850);\n\n    // Phase 8: stack back, then loop\n    setTimeout(() => setStacked(false), 23600);\n    setTimeout(runTimeline, TOTAL);\n  }\n\n  // Init \u2014 instant stacked state, then begin after a short pause\n  setStacked(true);\n  setTimeout(() => cards.forEach(c => { c.style.transition = ''; }), 50);\n  setTimeout(runTimeline, 900);\n})();\n\n// \u2550\u2550 CH2 particles \u2550\u2550\ncreateParticleCanvas('ch2-canvas', { count: 60, color: '#378ADD', opacity: 0.15, speed: 0.3, maxDist: 130 });\n// \u2550\u2550 CTA particles \u2550\u2550\n// CH9 removed \u2014 particle call no longer needed\n\n// \u2550\u2550 FIREWALL CANVAS \u2550\u2550\n(function() {\n  const canvas = document.getElementById('fw-canvas');\n  if (!canvas) return;\n  const ctx = canvas.getContext('2d');\n  let W, H, t = 0;\n\n  const orbits = [\n    { r: 90, speed: 0.004, nodes: [{label:'Private Banking',blocked:false},{label:'Insurance',blocked:false},{label:'Fintech',blocked:false}] },\n    { r: 145, speed: -0.003, nodes: [{label:'Your Company',blocked:true},{label:'NBFC',blocked:false},{label:'GCC',blocked:false},{label:'Big 4',blocked:false}] },\n  ];\n\n  function resize() {\n    W = canvas.width = canvas.parentElement.offsetWidth;\n    H = canvas.height = canvas.parentElement.offsetHeight;\n  }\n\n  function draw() {\n    ctx.clearRect(0, 0, W, H);\n    const cx = W/2, cy = H/2;\n    t += 0.008;\n\n    // Orbit rings\n    orbits.forEach(orb => {\n      ctx.beginPath();\n      ctx.arc(cx, cy, orb.r, 0, Math.PI*2);\n      ctx.strokeStyle = 'rgba(4,44,83,0.08)';\n      ctx.setLineDash([4,8]);\n      ctx.lineWidth = 1;\n      ctx.stroke();\n      ctx.setLineDash([]);\n    });\n\n    // Center shield glow\n    const grad = ctx.createRadialGradient(cx,cy,0, cx,cy,70);\n    grad.addColorStop(0, 'rgba(4,44,83,0.06)');\n    grad.addColorStop(1, 'rgba(4,44,83,0)');\n    ctx.beginPath(); ctx.arc(cx,cy,70,0,Math.PI*2);\n    ctx.fillStyle = grad; ctx.fill();\n\n    // Orbiting nodes\n    orbits.forEach((orb, oi) => {\n      const angle = t * orb.speed * 100;\n      orb.nodes.forEach((node, ni) => {\n        const a = angle + (ni / orb.nodes.length) * Math.PI * 2;\n        const nx = cx + Math.cos(a) * orb.r;\n        const ny = cy + Math.sin(a) * orb.r;\n\n        // Connection line\n        ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(nx,ny);\n        ctx.strokeStyle = node.blocked ? 'rgba(220,38,38,0.12)' : 'rgba(4,44,83,0.07)';\n        ctx.lineWidth = 0.8; ctx.stroke();\n\n        // Node pill\n        const tw = ctx.measureText(node.label).width;\n        const pw = tw + 20, ph = 26;\n        const px = nx - pw/2, py = ny - ph/2;\n\n        ctx.beginPath();\n        ctx.roundRect(px, py, pw, ph, 6);\n        ctx.fillStyle = node.blocked ? 'rgba(254,242,242,0.95)' : 'rgba(255,255,255,0.95)';\n        ctx.fill();\n        ctx.strokeStyle = node.blocked ? 'rgba(220,38,38,0.3)' : 'rgba(4,44,83,0.1)';\n        ctx.lineWidth = 1; ctx.stroke();\n\n        ctx.fillStyle = node.blocked ? '#DC2626' : '#042C53';\n        ctx.font = `${node.blocked ? '600' : '500'} 11px Inter, sans-serif`;\n        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';\n        ctx.fillText(node.label + (node.blocked ? ' \ud83d\udeab' : ''), nx, ny);\n      });\n    });\n\n    requestAnimationFrame(draw);\n  }\n\n  resize(); draw();\n  window.addEventListener('resize', resize);\n})();\n\n// \u2550\u2550 PERSONA TABS \u2014 \"Which one is yours?\" \u2550\u2550\nfunction activateTab(name) {\n  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));\n  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));\n  const btnEl = document.querySelector(`[data-tab=\"${name}\"]`);\n  const panelEl = document.getElementById('tab-' + name);\n  if (btnEl) btnEl.classList.add('active');\n  if (panelEl) panelEl.classList.add('active');\n\n  if (name === 'lounger') {\n    document.querySelectorAll('.mvc-fill, .mvc-thumb').forEach(el => {\n      el.classList.remove('animate');\n      setTimeout(() => el.classList.add('animate'), 80);\n    });\n  }\n  if (name === 'recruiter') {\n    document.querySelectorAll('.bar-fill').forEach(b => {\n      b.classList.remove('in');\n      setTimeout(() => b.classList.add('in'), 60);\n    });\n  }\n}\n\ndocument.querySelectorAll('.tab-btn').forEach(btn => {\n  let hoverTimer;\n  btn.addEventListener('mouseenter', () => {\n    hoverTimer = setTimeout(() => activateTab(btn.dataset.tab), 280);\n  });\n  btn.addEventListener('mouseleave', () => clearTimeout(hoverTimer));\n  btn.addEventListener('click', () => {\n    clearTimeout(hoverTimer);\n    activateTab(btn.dataset.tab);\n  });\n});\n\n// Trigger lounger MVC animation when CH3.5 enters view\nconst ch3bSection = document.getElementById('ch3b');\nif (ch3bSection) {\n  const ch3bObs = new IntersectionObserver(entries => {\n    if (entries[0].isIntersecting) {\n      document.querySelectorAll('.mvc-fill, .mvc-thumb').forEach(el => el.classList.add('animate'));\n      ch3bObs.disconnect();\n    }\n  }, { threshold: 0.3 });\n  ch3bObs.observe(ch3bSection);\n}\n\n// \u2550\u2550 SCROLL REVEALS \u2550\u2550\nconst rvObs = new IntersectionObserver(entries => {\n  entries.forEach((e, i) => { if (e.isIntersecting) setTimeout(() => e.target.classList.add('in'), i * 60); });\n}, { threshold: 0.12 });\ndocument.querySelectorAll('.rv, .prob-card, .who-card, .id-step, .idea-pill').forEach(el => rvObs.observe(el));\n\n// Compare table rows\nconst tableObs = new IntersectionObserver(entries => {\n  if (entries[0].isIntersecting) {\n    document.querySelectorAll('.compare-table tbody tr').forEach((r,i) => setTimeout(() => r.classList.add('in'), 80 + i * 110));\n  }\n}, { threshold: 0.2 });\nconst tBody = document.querySelector('.compare-table tbody');\nif (tBody) tableObs.observe(tBody);\n\n// Benchmark bars\nconst benchObs = new IntersectionObserver(entries => {\n  if (entries[0].isIntersecting) {\n    setTimeout(() => document.querySelectorAll('.bench-bar-fill').forEach((b,i) => setTimeout(() => b.classList.add('in'), i * 160)), 200);\n  }\n}, { threshold: 0.3 });\nconst bCard = document.querySelector('.bench-card');\nif (bCard) benchObs.observe(bCard);\n\n// Idea pills\nconst pillObs = new IntersectionObserver(entries => {\n  if (entries[0].isIntersecting) document.querySelectorAll('.idea-pill').forEach((p,i) => setTimeout(() => p.classList.add('in'), i * 90));\n}, { threshold: 0.3 });\nconst pillRow = document.querySelector('.idea-pills-row');\nif (pillRow) pillObs.observe(pillRow);\n\n// \u2550\u2550 IDENTITY REVEAL DEMO \u2550\u2550\nlet revealed = false;\ndocument.getElementById('reveal-btn')?.addEventListener('click', function() {\n  if (!revealed) {\n    document.getElementById('reveal-a').classList.add('show');\n    document.getElementById('ic-profile-a').classList.add('revealed');\n    setTimeout(() => {\n      document.getElementById('reveal-b').classList.add('show');\n      document.getElementById('ic-profile-b').classList.add('revealed');\n    }, 120);\n    this.textContent = 'Reset demo \u21ba';\n    revealed = true;\n  } else {\n    ['reveal-a','reveal-b'].forEach(id => document.getElementById(id).classList.remove('show'));\n    ['ic-profile-a','ic-profile-b'].forEach(id => document.getElementById(id).classList.remove('revealed'));\n    this.textContent = 'See what happens when both consent \u2192';\n    revealed = false;\n  }\n});\n\n// \u2550\u2550 TYPEWRITER SEARCH \u2550\u2550\nconst query = '\"CISA audit NBFC 6 years Pune\"';\nlet typeStarted = false;\nconst searchObs = new IntersectionObserver(entries => {\n  if (entries[0].isIntersecting && !typeStarted) {\n    typeStarted = true;\n    const el = document.getElementById('s-typed');\n    const label = document.getElementById('s-res-label');\n    const results = document.getElementById('s-results');\n    let i = 0;\n    const iv = setInterval(() => {\n      el.textContent = query.slice(0, ++i);\n      if (i >= query.length) {\n        clearInterval(iv);\n        setTimeout(() => {\n          label.style.opacity = '1';\n          results.querySelectorAll('.s-result').forEach((r,j) => setTimeout(() => r.classList.add('in'), j * 180));\n        }, 500);\n      }\n    }, 46);\n  }\n}, { threshold: 0.4 });\nconst sCard = document.querySelector('.search-card');\nif (sCard) searchObs.observe(sCard);"
+    document.body.appendChild(script)
 
-  function draw() {
-    ctx.clearRect(0, 0, W, H);
-    particles.forEach(p => {
-      p.x += p.vx; p.y += p.vy;
-      if (p.x < 0 || p.x > W) p.vx *= -1;
-      if (p.y < 0 || p.y > H) p.vy *= -1;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = \`rgba(\${rgb.r},\${rgb.g},\${rgb.b},\${config.opacity * 2})\`;
-      ctx.fill();
-    });
-    for (let i = 0; i < particles.length; i++) {
-      for (let j = i + 1; j < particles.length; j++) {
-        const dx = particles[i].x - particles[j].x, dy = particles[i].y - particles[j].y;
-        const dist = Math.sqrt(dx*dx + dy*dy);
-        if (dist < config.maxDist) {
-          ctx.beginPath();
-          ctx.moveTo(particles[i].x, particles[i].y);
-          ctx.lineTo(particles[j].x, particles[j].y);
-          ctx.strokeStyle = \`rgba(\${rgb.r},\${rgb.g},\${rgb.b},\${config.opacity * (1 - dist / config.maxDist)})\`;
-          ctx.lineWidth = 0.6;
-          ctx.stroke();
-        }
-      }
-    }
-    requestAnimationFrame(draw);
-  }
-
-  resize(); init(); draw();
-  window.addEventListener('resize', () => { resize(); init(); });
-}
-
-// ══ HERO — Circular Carousel with Identity Reveal (Narrated, smooth) ══
-(function() {
-  const cards = [
-    document.getElementById('hcard-lounger'),    // 0 = Kayra (Lounger)
-    document.getElementById('hcard-peer'),        // 1 = Ankit  (Peer)
-    document.getElementById('hcard-recruiter'),   // 2 = Recruiter
-  ];
-  const narratorEl  = document.getElementById('narrator-label');
-  const narratorTxt = document.getElementById('narrator-text');
-  const dots = [
-    document.getElementById('dot-0'),
-    document.getElementById('dot-1'),
-    document.getElementById('dot-2'),
-  ];
-
-  if (!cards[0] || !cards[1] || !cards[2]) return;
-
-  const EASE = 'cubic-bezier(0.22,0.61,0.36,1)';  // smooth ease-out, no overshoot
-
-  // ── 3 orbital positions ──
-  const POS = {
-    front: { tx:  0,   ty:  0,  rot:  0,  scale: 1.00, opacity: 1,    z: 3, shadow: '0 24px 64px rgba(0,0,0,0.16)' },
-    right: { tx:  112, ty: 28,  rot:  8,  scale: 0.87, opacity: 0.80, z: 2, shadow: '0 8px 28px rgba(0,0,0,0.08)'  },
-    left:  { tx: -86,  ty: 44,  rot: -7,  scale: 0.79, opacity: 0.52, z: 1, shadow: '0 4px 16px rgba(0,0,0,0.05)'  },
-  };
-
-  let slots = ['front', 'right', 'left'];  // slots[i] = position of card i
-
-  function applyPos(cardEl, posKey, instant) {
-    const p = POS[posKey];
-    cardEl.style.transition = instant
-      ? 'none'
-      : \`transform 1s \${EASE}, opacity 0.8s ease, box-shadow 0.8s ease\`;
-    cardEl.style.transform  = \`translateX(\${p.tx}px) translateY(\${p.ty}px) rotate(\${p.rot}deg) scale(\${p.scale})\`;
-    cardEl.style.opacity    = p.opacity;
-    cardEl.style.zIndex     = p.z;
-    cardEl.style.boxShadow  = p.shadow;
-  }
-
-  function setStacked(instant) {
-    const s = [
-      { tx: 0,  ty: 0,  rot: 0, scale: 1.00, opacity: 1.00, z: 3 },
-      { tx: 9,  ty: 11, rot: 4, scale: 0.96, opacity: 0.74, z: 2 },
-      { tx: 17, ty: 20, rot: 7, scale: 0.93, opacity: 0.50, z: 1 },
-    ];
-    cards.forEach((card, i) => {
-      card.style.transition = instant ? 'none' : \`transform 1s \${EASE}, opacity 0.8s ease\`;
-      card.style.transform  = \`translateX(\${s[i].tx}px) translateY(\${s[i].ty}px) rotate(\${s[i].rot}deg) scale(\${s[i].scale})\`;
-      card.style.opacity    = s[i].opacity;
-      card.style.zIndex     = s[i].z;
-    });
-  }
-
-  function fanOut() {
-    cards.forEach((c, i) => applyPos(c, slots[i], false));
-  }
-
-  function revealFront() {
-    const fi = slots.indexOf('front');
-    if (fi !== -1) cards[fi].classList.add('is-revealed');
-  }
-
-  function unRevealAll() {
-    cards.forEach(c => c.classList.remove('is-revealed'));
-  }
-
-  function updateDots() {
-    const fi = slots.indexOf('front');
-    dots.forEach((d, i) => {
-      d.classList.remove('active', 'done');
-      if (i === fi) d.classList.add('active');
-      else if (slots[i] === 'right') d.classList.add('done');
-    });
-  }
-
-  // Rotate positions only — does NOT touch reveal state (caller handles sequencing)
-  const CYCLE = { front: 'left', right: 'front', left: 'right' };
-  function rotatePositions() {
-    slots = slots.map(s => CYCLE[s]);
-    cards.forEach((c, i) => applyPos(c, slots[i], false));
-    updateDots();
-  }
-
-  function narrate(text, isConsent) {
-    narratorEl.classList.toggle('consent-moment', !!isConsent);
-    narratorTxt.style.opacity = '0';
-    setTimeout(() => {
-      narratorTxt.innerHTML = text;
-      narratorTxt.style.opacity = '1';
-    }, 280);
-  }
-
-  // ── TIMELINE — paced for clarity, smooth handoffs ──
-  // Each "un-reveal → wait 650ms (let flip finish) → rotate" pattern
-  // prevents the card flip and position move from fighting each other.
-  //
-  // 0        stacked
-  // 1400     fan out
-  // 3200     reveal Kayra
-  // 5500     narrate consent (still showing Kayra revealed)
-  // 8200     un-reveal Kayra
-  // 8850     rotate → Ankit now front
-  // 9700     reveal Ankit
-  // 12000    narrate consent
-  // 14700    un-reveal Ankit
-  // 15350    rotate → Recruiter now front
-  // 16200    reveal Recruiter
-  // 18500    narrate consent
-  // 21200    un-reveal Recruiter
-  // 21850    rotate → Kayra front again
-  // 22600    narrate reset message
-  // 23600    stack back
-  // 25000    restart
-
-  const TOTAL = 25000;
-
-  function runTimeline() {
-    slots = ['front', 'right', 'left'];
-    dots.forEach((d, i) => { d.classList.remove('active','done'); if (i === 0) d.classList.add('active'); });
-
-    // Phase 0: stacked intro
-    setStacked(false);
-    narrate('3 professionals. All anonymous. All verified.');
-
-    // Phase 1: fan out
-    setTimeout(() => {
-      fanOut();
-      narrate('Each holds a <strong>Private ID</strong> &mdash; non-identifiable until they choose to reveal.');
-    }, 1400);
-
-    // Phase 2: reveal Kayra
-    setTimeout(() => {
-      revealFront();
-      narrate('Kayra is a Senior IT Auditor in BFSI. You see her role &mdash; not her name. Not yet.');
-    }, 3200);
-
-    setTimeout(() => {
-      narrate("<strong>Both consented.</strong> Identity revealed simultaneously. That's the ceremony.", true);
-    }, 5500);
-
-    // Phase 3: un-reveal Kayra, THEN rotate (sequenced, not simultaneous)
-    setTimeout(() => unRevealAll(), 8200);
-    setTimeout(() => {
-      rotatePositions();
-      narrate('Ankit has an open seat. He posted a flash brief &mdash; 220 characters. No JD.');
-    }, 8850);
-
-    // Phase 4: reveal Ankit
-    setTimeout(() => {
-      revealFront();
-      narrate('Ankit is a Risk Head at Kotak. You see his name &mdash; because <strong>he chose to be seen</strong>.', true);
-    }, 9700);
-
-    setTimeout(() => {
-      narrate('<strong>Mutual consent.</strong> Neither side went first.', true);
-    }, 12000);
-
-    // Phase 5: un-reveal Ankit, THEN rotate
-    setTimeout(() => unRevealAll(), 14700);
-    setTimeout(() => {
-      rotatePositions();
-      narrate('A founder-verified Recruiter has an active mandate. Passive talent. No other platform has them.');
-    }, 15350);
-
-    // Phase 6: reveal Recruiter
-    setTimeout(() => {
-      revealFront();
-      narrate('The Recruiter sees <strong>2 matched profiles</strong>. Not 200. The right conversation starts here.', true);
-    }, 16200);
-
-    setTimeout(() => {
-      narrate('Precision over volume. That\\u2019s the difference.', true);
-    }, 18500);
-
-    // Phase 7: un-reveal, rotate back to Kayra
-    setTimeout(() => unRevealAll(), 21200);
-    setTimeout(() => {
-      rotatePositions();
-      narrate('3 professionals. All anonymous. All verified.');
-    }, 21850);
-
-    // Phase 8: stack back, then loop
-    setTimeout(() => setStacked(false), 23600);
-    setTimeout(runTimeline, TOTAL);
-  }
-
-  // Init — instant stacked state, then begin after a short pause
-  setStacked(true);
-  setTimeout(() => cards.forEach(c => { c.style.transition = ''; }), 50);
-  setTimeout(runTimeline, 900);
-})();
-
-// ══ CH2 particles ══
-createParticleCanvas('ch2-canvas', { count: 60, color: '#378ADD', opacity: 0.15, speed: 0.3, maxDist: 130 });
-// ══ CTA particles ══
-// CH9 removed — particle call no longer needed
-
-// ══ FIREWALL CANVAS ══
-(function() {
-  const canvas = document.getElementById('fw-canvas');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  let W, H, t = 0;
-
-  const orbits = [
-    { r: 90, speed: 0.004, nodes: [{label:'Private Banking',blocked:false},{label:'Insurance',blocked:false},{label:'Fintech',blocked:false}] },
-    { r: 145, speed: -0.003, nodes: [{label:'Your Company',blocked:true},{label:'NBFC',blocked:false},{label:'GCC',blocked:false},{label:'Big 4',blocked:false}] },
-  ];
-
-  function resize() {
-    W = canvas.width = canvas.parentElement.offsetWidth;
-    H = canvas.height = canvas.parentElement.offsetHeight;
-  }
-
-  function draw() {
-    ctx.clearRect(0, 0, W, H);
-    const cx = W/2, cy = H/2;
-    t += 0.008;
-
-    // Orbit rings
-    orbits.forEach(orb => {
-      ctx.beginPath();
-      ctx.arc(cx, cy, orb.r, 0, Math.PI*2);
-      ctx.strokeStyle = 'rgba(4,44,83,0.08)';
-      ctx.setLineDash([4,8]);
-      ctx.lineWidth = 1;
-      ctx.stroke();
-      ctx.setLineDash([]);
-    });
-
-    // Center shield glow
-    const grad = ctx.createRadialGradient(cx,cy,0, cx,cy,70);
-    grad.addColorStop(0, 'rgba(4,44,83,0.06)');
-    grad.addColorStop(1, 'rgba(4,44,83,0)');
-    ctx.beginPath(); ctx.arc(cx,cy,70,0,Math.PI*2);
-    ctx.fillStyle = grad; ctx.fill();
-
-    // Orbiting nodes
-    orbits.forEach((orb, oi) => {
-      const angle = t * orb.speed * 100;
-      orb.nodes.forEach((node, ni) => {
-        const a = angle + (ni / orb.nodes.length) * Math.PI * 2;
-        const nx = cx + Math.cos(a) * orb.r;
-        const ny = cy + Math.sin(a) * orb.r;
-
-        // Connection line
-        ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(nx,ny);
-        ctx.strokeStyle = node.blocked ? 'rgba(220,38,38,0.12)' : 'rgba(4,44,83,0.07)';
-        ctx.lineWidth = 0.8; ctx.stroke();
-
-        // Node pill
-        const tw = ctx.measureText(node.label).width;
-        const pw = tw + 20, ph = 26;
-        const px = nx - pw/2, py = ny - ph/2;
-
-        ctx.beginPath();
-        ctx.roundRect(px, py, pw, ph, 6);
-        ctx.fillStyle = node.blocked ? 'rgba(254,242,242,0.95)' : 'rgba(255,255,255,0.95)';
-        ctx.fill();
-        ctx.strokeStyle = node.blocked ? 'rgba(220,38,38,0.3)' : 'rgba(4,44,83,0.1)';
-        ctx.lineWidth = 1; ctx.stroke();
-
-        ctx.fillStyle = node.blocked ? '#DC2626' : '#042C53';
-        ctx.font = \`\${node.blocked ? '600' : '500'} 11px Inter, sans-serif\`;
-        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.fillText(node.label + (node.blocked ? ' 🚫' : ''), nx, ny);
-      });
-    });
-
-    requestAnimationFrame(draw);
-  }
-
-  resize(); draw();
-  window.addEventListener('resize', resize);
-})();
-
-// ══ PERSONA TABS — "Which one is yours?" ══
-function activateTab(name) {
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  const btnEl = document.querySelector(\`[data-tab="\${name}"]\`);
-  const panelEl = document.getElementById('tab-' + name);
-  if (btnEl) btnEl.classList.add('active');
-  if (panelEl) panelEl.classList.add('active');
-
-  if (name === 'lounger') {
-    document.querySelectorAll('.mvc-fill, .mvc-thumb').forEach(el => {
-      el.classList.remove('animate');
-      setTimeout(() => el.classList.add('animate'), 80);
-    });
-  }
-  if (name === 'recruiter') {
-    document.querySelectorAll('.bar-fill').forEach(b => {
-      b.classList.remove('in');
-      setTimeout(() => b.classList.add('in'), 60);
-    });
-  }
-}
-
-document.querySelectorAll('.tab-btn').forEach(btn => {
-  let hoverTimer;
-  btn.addEventListener('mouseenter', () => {
-    hoverTimer = setTimeout(() => activateTab(btn.dataset.tab), 280);
-  });
-  btn.addEventListener('mouseleave', () => clearTimeout(hoverTimer));
-  btn.addEventListener('click', () => {
-    clearTimeout(hoverTimer);
-    activateTab(btn.dataset.tab);
-  });
-});
-
-// Trigger lounger MVC animation when CH3.5 enters view
-const ch3bSection = document.getElementById('ch3b');
-if (ch3bSection) {
-  const ch3bObs = new IntersectionObserver(entries => {
-    if (entries[0].isIntersecting) {
-      document.querySelectorAll('.mvc-fill, .mvc-thumb').forEach(el => el.classList.add('animate'));
-      ch3bObs.disconnect();
-    }
-  }, { threshold: 0.3 });
-  ch3bObs.observe(ch3bSection);
-}
-
-// ══ SCROLL REVEALS ══
-const rvObs = new IntersectionObserver(entries => {
-  entries.forEach((e, i) => { if (e.isIntersecting) setTimeout(() => e.target.classList.add('in'), i * 60); });
-}, { threshold: 0.12 });
-document.querySelectorAll('.rv, .prob-card, .who-card, .id-step, .idea-pill').forEach(el => rvObs.observe(el));
-
-// Compare table rows
-const tableObs = new IntersectionObserver(entries => {
-  if (entries[0].isIntersecting) {
-    document.querySelectorAll('.compare-table tbody tr').forEach((r,i) => setTimeout(() => r.classList.add('in'), 80 + i * 110));
-  }
-}, { threshold: 0.2 });
-const tBody = document.querySelector('.compare-table tbody');
-if (tBody) tableObs.observe(tBody);
-
-// Benchmark bars
-const benchObs = new IntersectionObserver(entries => {
-  if (entries[0].isIntersecting) {
-    setTimeout(() => document.querySelectorAll('.bench-bar-fill').forEach((b,i) => setTimeout(() => b.classList.add('in'), i * 160)), 200);
-  }
-}, { threshold: 0.3 });
-const bCard = document.querySelector('.bench-card');
-if (bCard) benchObs.observe(bCard);
-
-// Idea pills
-const pillObs = new IntersectionObserver(entries => {
-  if (entries[0].isIntersecting) document.querySelectorAll('.idea-pill').forEach((p,i) => setTimeout(() => p.classList.add('in'), i * 90));
-}, { threshold: 0.3 });
-const pillRow = document.querySelector('.idea-pills-row');
-if (pillRow) pillObs.observe(pillRow);
-
-// ══ IDENTITY REVEAL DEMO ══
-let revealed = false;
-document.getElementById('reveal-btn')?.addEventListener('click', function() {
-  if (!revealed) {
-    document.getElementById('reveal-a').classList.add('show');
-    document.getElementById('ic-profile-a').classList.add('revealed');
-    setTimeout(() => {
-      document.getElementById('reveal-b').classList.add('show');
-      document.getElementById('ic-profile-b').classList.add('revealed');
-    }, 120);
-    this.textContent = 'Reset demo ↺';
-    revealed = true;
-  } else {
-    ['reveal-a','reveal-b'].forEach(id => document.getElementById(id).classList.remove('show'));
-    ['ic-profile-a','ic-profile-b'].forEach(id => document.getElementById(id).classList.remove('revealed'));
-    this.textContent = 'See what happens when both consent →';
-    revealed = false;
-  }
-});
-
-// ══ TYPEWRITER SEARCH ══
-const query = '"CISA audit NBFC 6 years Pune"';
-let typeStarted = false;
-const searchObs = new IntersectionObserver(entries => {
-  if (entries[0].isIntersecting && !typeStarted) {
-    typeStarted = true;
-    const el = document.getElementById('s-typed');
-    const label = document.getElementById('s-res-label');
-    const results = document.getElementById('s-results');
-    let i = 0;
-    const iv = setInterval(() => {
-      el.textContent = query.slice(0, ++i);
-      if (i >= query.length) {
-        clearInterval(iv);
-        setTimeout(() => {
-          label.style.opacity = '1';
-          results.querySelectorAll('.s-result').forEach((r,j) => setTimeout(() => r.classList.add('in'), j * 180));
-        }, 500);
-      }
-    }, 46);
-  }
-}, { threshold: 0.4 });
-const sCard = document.querySelector('.search-card');
-if (sCard) searchObs.observe(sCard);
-
-    // Cleanup
     return () => {
-      // Remove any intervals/observers if needed
+      if (script.parentNode) script.parentNode.removeChild(script)
     }
   }, [])
 
@@ -1195,7 +708,7 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
 }
 .final-cta-btn:hover { opacity: 0.88; transform: translateY(-1px); }` }} />
       <div>
-        
+        <!-- NAV -->
 <nav id="nav">
   <a href="#ch0" className="logo"><div className="logo-mark">JL</div>Job Lounge</a>
   <div className="nav-r">
@@ -1205,7 +718,7 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
 </nav>
 <div id="progress-bar"><div id="progress-fill"></div></div>
 
-
+<!-- CHAPTER DOTS -->
 <div id="chapter-dots">
   <div className="cdot active" data-ch="ch0"><span className="cdot-tip">Start</span></div>
   <div className="cdot" data-ch="ch1"><span className="cdot-tip">The Problem</span></div>
@@ -1219,10 +732,10 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
   <div className="cdot" data-ch="ch8"><span className="cdot-tip">Firewall · Access</span></div>
 </div>
 
-
+<!-- ══ CH0: HERO ══ -->
 <section className="chapter" id="ch0" style="flex-direction:row;justify-content:space-between;align-items:center;padding:0;">
 
-  
+  <!-- LEFT: headline -->
   <div className="hero-left-panel">
     <div className="hero-eyebrow"><span className="hero-pulse"></span>Verified · Anonymous · India's Professional Trust Network</div>
     <h1 className="hero-h1">The referral that<br />changed careers<br />was never on a<br />job board.<br /><em>Until now.</em></h1>
@@ -1238,11 +751,11 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
     </div>
   </div>
 
-  
+  <!-- RIGHT: animated card stack with identity reveal -->
   <div className="hero-right-panel">
     <div className="hero-card-stack">
 
-      
+      <!-- Card 3 — Recruiter (back) -->
       <div className="hcard hcard-3" id="hcard-recruiter">
         <div className="hcard-inner-before" id="hcard-recruiter-before">
           <div className="hcard-persona-badge" style="background:rgba(83,74,183,0.1);color:#534AB7">Recruiter</div>
@@ -1269,7 +782,7 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
         </div>
       </div>
 
-      
+      <!-- Card 2 — Peer (middle) -->
       <div className="hcard hcard-2" id="hcard-peer">
         <div className="hcard-inner-before" id="hcard-peer-before">
           <div className="hcard-persona-badge" style="background:rgba(186,117,23,0.1);color:#BA7517">Peer</div>
@@ -1296,7 +809,7 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
         </div>
       </div>
 
-      
+      <!-- Card 1 — Lounger (front) -->
       <div className="hcard hcard-1" id="hcard-lounger">
         <div className="hcard-inner-before" id="hcard-lounger-before">
           <div className="hcard-persona-badge" style="background:rgba(55,138,221,0.1);color:#378ADD">Lounger</div>
@@ -1340,7 +853,7 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
   <a className="scroll-cue" href="#ch1" style="left:30%;transform:translateX(-50%)"><div className="scroll-cue-line"></div>Continue</a>
 </section>
 
-
+<!-- ══ CH1: THE PROBLEM ══ -->
 <section className="chapter" id="ch1">
   <div className="ch-inner">
     <div className="problem-grid">
@@ -1360,7 +873,7 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
   <a className="scroll-cue" href="#ch2"><div className="scroll-cue-line"></div>Continue</a>
 </section>
 
-
+<!-- ══ CH2: THE IDEA ══ -->
 <section className="chapter" id="ch2">
   <canvas id="ch2-canvas"></canvas>
   <div className="ch-inner" style="position:relative;z-index:2">
@@ -1401,7 +914,7 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
   <a className="scroll-cue" href="#ch3" style="color:rgba(255,255,255,0.35)"><div className="scroll-cue-line" style="background:linear-gradient(to bottom,rgba(255,255,255,0.4),transparent)"></div>Continue</a>
 </section>
 
-
+<!-- ══ CH3: WHO IS THIS FOR ══ -->
 <section className="chapter" id="ch3">
   <div className="ch-inner who-inner">
     <div className="ch-label rv">This is for you</div>
@@ -1418,7 +931,7 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
   <a className="scroll-cue" href="#ch3b"><div className="scroll-cue-line"></div>Continue</a>
 </section>
 
-
+<!-- ══ CH3.5: WHICH ONE IS YOURS — Persona Tabs ══ -->
 <section className="chapter" id="ch3b">
   <div className="ch-inner">
     <div className="s-label reveal">Three doors. One platform.</div>
@@ -1432,7 +945,7 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
 
     <div className="tab-panels">
 
-      
+      <!-- LOUNGER -->
       <div className="tab-panel active" id="tab-lounger">
         <div className="tab-copy">
           <p className="tab-quote">"Pehli baar koi mujhe refer karega — sirf mere kaam ki wajah se."</p>
@@ -1446,7 +959,7 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
           <a href="/request-access" className="tab-cta">Join as Lounger →</a>
         </div>
 
-        
+        <!-- MARKET VALUE CARD — light theme -->
         <div className="tab-visual">
           <div className="mvc">
             <div className="mvc-top">
@@ -1505,7 +1018,7 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
         </div>
       </div>
 
-      
+      <!-- PEER -->
       <div className="tab-panel" id="tab-peer">
         <div className="tab-copy">
           <p className="tab-quote">"Coffee pe poochha 'koi jaanta hai?' — ab phone pe dhundh leta hoon. 2 profiles. Exact fit."</p>
@@ -1544,7 +1057,7 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
         </div>
       </div>
 
-      
+      <!-- RECRUITER -->
       <div className="tab-panel" id="tab-recruiter">
         <div className="tab-copy">
           <p className="tab-quote">"Pehli baar woh inventory jo kisi ke paas nahi — passive, verified, genuinely open."</p>
@@ -1580,7 +1093,7 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
   <a className="scroll-cue" href="#ch4"><div className="scroll-cue-line"></div>Continue</a>
 </section>
 
-
+<!-- ══ CH4: WHY NOT OTHERS ══ -->
 <section className="chapter" id="ch4">
   <div className="ch-inner">
     <div className="ch-label rv">Why not others</div>
@@ -1607,7 +1120,7 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
   <a className="scroll-cue" href="#ch5"><div className="scroll-cue-line"></div>Continue</a>
 </section>
 
-
+<!-- ══ CH5: IDENTITY REVEAL ══ -->
 <section className="chapter" id="ch5">
   <div className="ch-inner">
     <div className="identity-grid">
@@ -1659,7 +1172,7 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
   <a className="scroll-cue" href="#ch6"><div className="scroll-cue-line"></div>Continue</a>
 </section>
 
-
+<!-- ══ CH6: SALARY BENCHMARK ══ -->
 <section className="chapter" id="ch6">
   <div className="ch-inner">
     <div className="bench-grid">
@@ -1696,7 +1209,7 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
   <a className="scroll-cue" href="#ch7"><div className="scroll-cue-line"></div>Continue</a>
 </section>
 
-
+<!-- ══ CH7: HUMAN SEARCH ══ -->
 <section className="chapter" id="ch7">
   <div className="ch-inner">
     <div className="search-demo-grid">
@@ -1726,7 +1239,7 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
   <a className="scroll-cue" href="#ch8"><div className="scroll-cue-line"></div>Continue</a>
 </section>
 
-
+<!-- ══ CH8: COMPANY FIREWALL ══ -->
 <section className="chapter" id="ch8">
   <div className="ch-inner">
     <div className="fw-grid">
@@ -1751,7 +1264,7 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
       </div>
     </div>
 
-    
+    <!-- Closing CTA — simple, no repetition of 3-door framing already shown above -->
     <div className="final-cta rv d3">
       <span className="final-cta-text">Ready to see where you stand?</span>
       <a href="/request-access" className="final-cta-btn">Request access →</a>
