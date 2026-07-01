@@ -2392,8 +2392,24 @@ async function ob_verifyOtp() {
   }
 
   // Verified — now complete the save
+  btn.disabled = true
   btn.textContent = 'Saving your profile…'
-  await ob_submit()
+  
+  // Small delay to ensure auth session is fully established
+  await new Promise(r => setTimeout(r, 800))
+  
+  try {
+    await ob_submit()
+  } catch(e) {
+    console.error('Save error:', e)
+    const errEl = document.getElementById('ob-otp-error')
+    if (errEl) {
+      errEl.textContent = 'Save failed: ' + e.message
+      errEl.style.display = 'block'
+    }
+    btn.disabled = false
+    btn.textContent = 'Verify & save profile'
+  }
 }
 
 function ob_stepWelcome() {
@@ -2566,7 +2582,7 @@ function ob_stepExpSalary() {
     <label class="mc-label">Current annual salary (₹ in Lakhs)</label>
     <div class="mc-salary-wrap">
       <span class="mc-salary-sym">₹</span>
-      <input type="number" id="ob-cur-salary" class="mc-input mc-salary-input" placeholder="e.g. 24" value="${OB.currentSalary}" oninput="OB.currentSalary=this.value;document.getElementById('ob-error').style.display='none'" style="margin-bottom:0" />
+      <input type="number" id="ob-cur-salary" class="mc-input mc-salary-input" placeholder="e.g. 24" value="${OB.currentSalary}" oninput="OB.currentSalary=this.value;document.getElementById('ob-error').style.display='none'" onchange="OB.currentSalary=this.value" style="margin-bottom:0" />
       <span class="mc-salary-unit">Lakhs/yr</span>
     </div>
     <div style="height:12px"></div>
@@ -2574,7 +2590,7 @@ function ob_stepExpSalary() {
     <label class="mc-label">Expected annual salary (₹ in Lakhs)</label>
     <div class="mc-salary-wrap">
       <span class="mc-salary-sym">₹</span>
-      <input type="number" id="ob-exp-salary" class="mc-input mc-salary-input" placeholder="e.g. 32" value="${OB.expectedSalary}" oninput="OB.expectedSalary=this.value;document.getElementById('ob-error').style.display='none'" style="margin-bottom:0" />
+      <input type="number" id="ob-exp-salary" class="mc-input mc-salary-input" placeholder="e.g. 32" value="${OB.expectedSalary}" oninput="OB.expectedSalary=this.value;document.getElementById('ob-error').style.display='none'" onchange="OB.expectedSalary=this.value" style="margin-bottom:0" />
       <span class="mc-salary-unit">Lakhs/yr</span>
     </div>
     <div style="height:12px"></div>
@@ -2724,16 +2740,16 @@ async function ob_addCustomCert() {
 }
 
 async function ob_submit() {
-  // Read salary values from DOM in case state not synced
+  // Read salary values from DOM if available (step 5), else use stored OB values
   const curSalInput = document.getElementById('ob-cur-salary')
   const expSalInput = document.getElementById('ob-exp-salary')
   const citySelect  = document.getElementById('ob-city')
   const expSelect   = document.getElementById('ob-exp')
 
-  if (curSalInput) OB.currentSalary = curSalInput.value
-  if (expSalInput) OB.expectedSalary = expSalInput.value
+  if (curSalInput && curSalInput.value) OB.currentSalary = curSalInput.value
+  if (expSalInput && expSalInput.value) OB.expectedSalary = expSalInput.value
   if (citySelect && citySelect.value && citySelect.value !== '__other__') OB.city = citySelect.value
-  if (expSelect) OB.expBand = expSelect.value
+  if (expSelect && expSelect.value) OB.expBand = expSelect.value
 
   const curL = parseFloat(OB.currentSalary)
   const expL = parseFloat(OB.expectedSalary)
@@ -2748,19 +2764,24 @@ async function ob_submit() {
   btn.disabled = true
   btn.textContent = 'Saving…'
 
-  const { data: { user } } = await _sb.auth.getUser()
+  console.log('ob_submit: getting user...')
+  const { data: { user }, error: userErr } = await _sb.auth.getUser()
+  console.log('ob_submit: user =', user?.id, 'error =', userErr)
+  
   if (!user) {
     // Not logged in — show inline email capture before saving
-    btn.disabled = false
-    btn.textContent = 'Complete setup →'
+    const btn2 = document.getElementById('ob-submit-btn')
+    if (btn2) { btn2.disabled = false; btn2.textContent = 'Complete setup →' }
     OB.pendingSave = true
     OB.step = 'email'
     ob_render()
     return
   }
 
+  console.log('ob_submit: generating JL-ID...')
   const jlId = generateJLId()
 
+  console.log('ob_submit: saving profile with jlId =', jlId)
   const { error: profileErr } = await _sb.from('lounger_profiles').upsert({
     user_id: user.id,
     domain: [OB.industry],
@@ -2774,11 +2795,16 @@ async function ob_submit() {
     current_city: OB.city,
   }, { onConflict: 'user_id' })
 
+  console.log('ob_submit: profile save result:', profileErr)
   if (profileErr) {
-    errEl.textContent = 'Failed to save: ' + profileErr.message
-    errEl.style.display = 'block'
-    btn.disabled = false
-    btn.textContent = 'Complete setup →'
+    // errEl may not exist if we came from OTP flow — find it safely
+    const errDisplay = document.getElementById('ob-error') || document.getElementById('ob-otp-error')
+    if (errDisplay) {
+      errDisplay.textContent = 'Failed to save: ' + profileErr.message
+      errDisplay.style.display = 'block'
+    }
+    const btn2 = document.getElementById('ob-submit-btn') || document.getElementById('ob-otp-btn')
+    if (btn2) { btn2.disabled = false; btn2.textContent = 'Complete setup →' }
     return
   }
 
