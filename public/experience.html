@@ -704,12 +704,14 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
 
 .jl-modal-sheet {
   width: 100%; max-width: 560px;
+  min-height: 60vh;
   max-height: 92vh; overflow-y: auto;
   background: #f8fafc;
   border-radius: 18px 18px 0 0;
   animation: sheet-up 0.32s cubic-bezier(0.22,0.61,0.36,1);
   position: relative;
   font-family: 'Inter', sans-serif;
+  display: flex; flex-direction: column;
 }
 @keyframes sheet-up { from{transform:translateY(48px);opacity:0} to{transform:translateY(0);opacity:1} }
 
@@ -723,7 +725,7 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
 }
 .jl-modal-close:hover { background: rgba(0,0,0,0.12); }
 
-.jl-modal-body { padding: 0 0 40px; clear: both; }
+.jl-modal-body { padding: 0 0 40px; clear: both; flex: 1; }
 
 /* ── Modal inner card ── */
 .mc { background: #fff; border: 0.5px solid #e2e8f0; border-radius: 14px; padding: 24px; margin: 16px 20px; }
@@ -1984,7 +1986,7 @@ if (sCard) searchObs.observe(sCard);
 <div class="jl-modal-backdrop" id="onboarding-modal">
   <div class="jl-modal-sheet">
     <button class="jl-modal-close" onclick="closeModal('onboarding-modal')">✕</button>
-    <div class="jl-modal-body" id="ob-body">
+    <div class="jl-modal-body" id="ob-body" style="min-height:400px">
       <!-- Rendered by JS: ob_render() -->
     </div>
   </div>
