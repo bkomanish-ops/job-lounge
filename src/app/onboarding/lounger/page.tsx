@@ -246,6 +246,11 @@ export default function LoungerOnboardingPage() {
       return
     }
 
+    if (!expBand) {
+      setError('Please select your experience band.')
+      return
+    }
+
     setSaving(true)
     setError('')
 
@@ -309,7 +314,7 @@ export default function LoungerOnboardingPage() {
             <div style={{ textAlign: 'center', marginBottom: 24 }}>
               <div style={{ fontSize: 28, marginBottom: 12 }}>👋</div>
               <div style={{ fontSize: 18, fontWeight: 600, color: '#0f172a', marginBottom: 6 }}>Welcome to Job Lounge</div>
-              <div style={{ fontSize: 13, color: '#64748b', lineHeight: 1.6 }}>Let's set up your anonymous profile. This takes about 2 minutes.</div>
+              <div style={{ fontSize: 13, color: '#64748b', lineHeight: 1.6 }}>{"Let's set up your anonymous profile. This takes about 2 minutes."}</div>
             </div>
 
             <div style={{ background: '#042C53', borderRadius: 12, padding: '18px 20px', marginBottom: 24 }}>
@@ -317,7 +322,7 @@ export default function LoungerOnboardingPage() {
                 Your privacy commitment
               </div>
               <p style={{ fontSize: 13, color: '#B5D4F4', lineHeight: 1.7, margin: '0 0 12px' }}>
-                Job Lounge does not collect your name, employer, LinkedIn, or resume at any point during setup. The information you share — industry, skills, experience, and salary — is used <strong style={{ color: '#fff' }}>only</strong> by our matching engine to surface relevant opportunities.
+                Job Lounge does not collect your name, employer, or resume at any point during setup. The information you share — industry, skills, experience, and salary — is used <strong style={{ color: '#fff' }}>only</strong> by our matching engine to surface relevant opportunities.
               </p>
               <div style={{ paddingTop: 12, borderTop: '0.5px solid rgba(255,255,255,0.1)' }}>
                 <p style={{ fontSize: 13, color: '#B5D4F4', lineHeight: 1.7, margin: 0 }}>
@@ -344,7 +349,7 @@ export default function LoungerOnboardingPage() {
               onClick={() => setStep(1)}
               style={{ ...nextBtn, width: '100%', padding: '12px 0', fontSize: 14, background: '#185FA5' }}
             >
-              I understand — let's begin →
+              {"I understand — let's begin →"}
             </button>
           </div>
         )}
@@ -353,7 +358,7 @@ export default function LoungerOnboardingPage() {
         {step === 1 && (
           <div style={card}>
             <div style={title}>Which industry do you work in?</div>
-            <div style={sub}>Select the sector that best describes your current organisation.</div>
+            <div style={sub}>Select the sector that best describes your current or most recent organisation.</div>
             <PrivacyBadge />
 
             <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: 8, marginBottom: 16 }}>
@@ -516,13 +521,14 @@ export default function LoungerOnboardingPage() {
           </div>
         )}
 
-        {/* ── Step 5: Experience & Salary ── */}
+        {/* ── Step 5: Experience, Location & Salary ── */}
         {step === 5 && (
           <div style={card}>
             <div style={title}>Experience, location & salary</div>
             <div style={sub}>Helps calibrate your market pulse. Salary is never shown to anyone on the platform.</div>
             <PrivacyBadge />
 
+            {/* City */}
             <label style={labelStyle}>Current city</label>
             <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: 8, marginBottom: 20 }}>
               {CITIES.map(c => (
@@ -530,6 +536,7 @@ export default function LoungerOnboardingPage() {
               ))}
             </div>
 
+            {/* Experience */}
             <label style={labelStyle}>Total years of experience</label>
             <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: 8, marginBottom: 20 }}>
               {EXP_BANDS.map(b => (
@@ -537,6 +544,7 @@ export default function LoungerOnboardingPage() {
               ))}
             </div>
 
+            {/* Current salary */}
             <label style={labelStyle}>Current annual salary (₹ in Lakhs)</label>
             <div style={{ position: 'relative', marginBottom: 16 }}>
               <span style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', fontSize: 13, color: '#64748b' }}>₹</span>
@@ -550,6 +558,7 @@ export default function LoungerOnboardingPage() {
               <span style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', fontSize: 12, color: '#94a3b8' }}>Lakhs/yr</span>
             </div>
 
+            {/* Expected salary */}
             <label style={labelStyle}>Expected annual salary (₹ in Lakhs)</label>
             <div style={{ position: 'relative', marginBottom: error ? 8 : 16 }}>
               <span style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', fontSize: 13, color: '#64748b' }}>₹</span>
@@ -574,7 +583,11 @@ export default function LoungerOnboardingPage() {
               <button
                 onClick={handleFinish}
                 disabled={saving || !expBand || !city || !currentSalary || !expectedSalary}
-                style={{ ...nextBtn, background: saving || !expBand || !city || !currentSalary || !expectedSalary ? '#cbd5e1' : '#185FA5', opacity: saving ? 0.7 : 1 }}
+                style={{
+                  ...nextBtn,
+                  background: (saving || !expBand || !city || !currentSalary || !expectedSalary) ? '#cbd5e1' : '#185FA5',
+                  opacity: saving ? 0.7 : 1,
+                }}
               >
                 {saving ? 'Saving…' : 'Complete setup →'}
               </button>
@@ -590,14 +603,14 @@ export default function LoungerOnboardingPage() {
                 <polyline points="20 6 9 17 4 12" />
               </svg>
             </div>
-            <div style={{ fontSize: 18, fontWeight: 600, color: '#0f172a', marginBottom: 6 }}>You're on the platform</div>
+            <div style={{ fontSize: 18, fontWeight: 600, color: '#0f172a', marginBottom: 6 }}>{"You're on the platform"}</div>
             <div style={{ fontSize: 13, color: '#64748b', lineHeight: 1.6, marginBottom: 20 }}>Your anonymous profile is live. Here is your platform identity:</div>
 
             <div style={{ background: '#042C53', borderRadius: 12, padding: '20px 24px', marginBottom: 20 }}>
               <div style={{ fontSize: 11, color: '#85B7EB', letterSpacing: '1px', textTransform: 'uppercase' as const, marginBottom: 8 }}>Your Job Lounge ID</div>
               <div style={{ fontSize: 32, fontWeight: 700, color: '#5DCAA5', letterSpacing: 6, marginBottom: 8 }}>{jlId}</div>
               <div style={{ fontSize: 12, color: '#B5D4F4', lineHeight: 1.6 }}>
-                This is the only identity anyone on this platform will ever see — until you choose to reveal yourself.
+                {'This is the only identity anyone on this platform will ever see — until you choose to reveal yourself.'}
               </div>
             </div>
 
