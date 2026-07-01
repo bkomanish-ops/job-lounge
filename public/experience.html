@@ -2300,6 +2300,13 @@ function ob_stepWelcome() {
       <h2 class="mc-title">Welcome to Job Lounge</h2>
       <p class="mc-sub">Let's set up your Private ID profile. About 2 minutes.</p>
     </div>
+    <div style="background:#E6F1FB;border:1px solid #B5D4F4;border-radius:10px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:10px">
+      <span style="font-size:18px">${OB.roleRequested==='lounger'?'👤':OB.roleRequested==='peer'?'💼':'🛡'}</span>
+      <div>
+        <div style="font-size:12px;color:#64748b;margin-bottom:2px">You are joining as</div>
+        <div style="font-size:14px;font-weight:600;color:#0C447C;text-transform:capitalize">${OB.roleRequested === 'lounger' ? 'Lounger' : OB.roleRequested === 'peer' ? 'Peer' : 'Recruiter'}</div>
+      </div>
+    </div>
     <div style="background:#042C53;border-radius:12px;padding:18px 20px;margin-bottom:20px">
       <div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#85B7EB;margin-bottom:10px">Your privacy commitment</div>
       <p style="font-size:13px;color:#B5D4F4;line-height:1.7;margin:0 0 12px">Job Lounge does not collect your name, employer, or resume. Information shared is used <strong style="color:#fff">only</strong> by our matching engine.</p>
@@ -2322,13 +2329,36 @@ function ob_stepIndustry() {
     <p class="mc-sub" style="text-align:left">Select your industry, or if you're a student or homemaker, pick that — we'll tailor the next steps.</p>
     ${ob_privacy()}
     <label class="mc-label">Your industry / profile type</label>
-    <select class="mc-select" id="ob-industry" onchange="OB.industry=this.value;OB.skills=[];OB.certs=[]">
-      <option value="">Select…</option>
-      ${allInds.map(i => `<option value="${i}" ${OB.industry===i?'selected':''}>${SPECIAL.includes(i)?'★ '+i:i}</option>`).join('')}
-    </select>
-    <div style="display:flex;gap:8px;margin-bottom:8px">
-      <input id="ob-industry-other" class="mc-input" placeholder="Don't see yours? Type it here…" style="margin-bottom:0;flex:1" />
-      <button onclick="ob_addCustomIndustry()" style="font-size:12px;font-weight:600;padding:8px 14px;border-radius:8px;border:none;cursor:pointer;background:#185FA5;color:#fff;font-family:Inter,sans-serif;white-space:nowrap">+ Add</button>
+    <div style="position:relative;margin-bottom:8px">
+      <input
+        id="ob-industry-search"
+        class="mc-input"
+        placeholder="Type to search (e.g. Banking, IT, Student)…"
+        style="margin-bottom:0"
+        value="${OB.industry}"
+        oninput="ob_filterIndustry(this.value)"
+        onkeydown="ob_industryKeydown(event)"
+        autocomplete="off"
+      />
+      <div id="ob-industry-dropdown" style="display:none;position:absolute;top:100%;left:0;right:0;z-index:300;background:#fff;border:1px solid #e2e8f0;border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,0.12);max-height:220px;overflow-y:auto;margin-top:4px">
+        ${allInds.map(i => `
+          <div class="ob-ind-opt" data-val="${i}" onclick="ob_selectIndustry('${i.replace(/'/g,"&#39;")}')"
+            style="padding:10px 14px;font-size:13px;cursor:pointer;color:${SPECIAL.includes(i)?'#185FA5':'#0f172a'};font-weight:${SPECIAL.includes(i)?'600':'400'}"
+            onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background=''">
+            ${SPECIAL.includes(i)?'★ '+i:i}
+          </div>`).join('')}
+        <div style="padding:10px 14px;font-size:12px;color:#94a3b8;border-top:1px solid #f1f5f9;font-style:italic">
+          Don't see yours? Type it below and click Add.
+        </div>
+      </div>
+    </div>
+    ${OB.industry ? `<div style="display:inline-flex;align-items:center;gap:6px;background:#E6F1FB;border:1px solid #B5D4F4;border-radius:20px;padding:4px 12px;font-size:12px;font-weight:600;color:#0C447C;margin-bottom:12px">
+      ${OB.industry} <span onclick="OB.industry='';ob_render()" style="cursor:pointer;opacity:0.6;font-size:14px">×</span>
+    </div>` : ''}
+    <div id="ob-industry-other-wrap" style="display:flex;gap:8px;margin-bottom:12px">
+      <input id="ob-industry-other" class="mc-input" placeholder="Add your own industry…" style="margin-bottom:0;flex:1"
+        onkeydown="if(event.key==='Enter')ob_addCustomIndustry()" />
+      <button id="ob-industry-add-btn" onclick="ob_addCustomIndustry()" style="font-size:12px;font-weight:600;padding:8px 14px;border-radius:8px;border:none;cursor:pointer;background:#185FA5;color:#fff;font-family:Inter,sans-serif;white-space:nowrap">+ Add</button>
     </div>
     <div class="mc-nav">
       <button class="mc-back" onclick="OB.step=0;ob_render()">← Back</button>
@@ -2345,13 +2375,21 @@ function ob_stepSkills() {
     <p class="mc-sub" style="text-align:left">Based on <strong style="color:#0f172a">${OB.industry}</strong>. Select all that apply.</p>
     ${ob_privacy()}
     <label class="mc-label">Select skills</label>
+    <div style="font-size:11px;color:#94a3b8;margin-bottom:6px;display:flex;align-items:center;gap:5px">
+      <span>💡</span> Click to select one · Hold <kbd style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:3px;padding:1px 5px;font-size:10px">Ctrl</kbd> (or <kbd style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:3px;padding:1px 5px;font-size:10px">⌘</kbd> on Mac) to select multiple
+    </div>
     <select class="mc-select" multiple size="6" id="ob-skills-select" style="height:160px">
       ${all.map(s => `<option value="${s}" ${OB.skills.includes(s)?'selected':''}>${s}</option>`).join('')}
     </select>
     <div id="ob-skills-tags" class="mc-tags">${OB.skills.map(s => `<span class="mc-tag">${s}<span class="mc-tag-x" onclick="ob_removeSkill('${s}')">×</span></span>`).join('')}</div>
-    <div style="display:flex;gap:8px;margin-top:8px;margin-bottom:4px">
-      <input id="ob-skill-other" class="mc-input" placeholder="Add a skill not in the list…" style="margin-bottom:0;flex:1" />
-      <button onclick="ob_addCustomSkill()" style="font-size:12px;font-weight:600;padding:8px 14px;border-radius:8px;border:none;cursor:pointer;background:#185FA5;color:#fff;font-family:Inter,sans-serif;white-space:nowrap">+ Add</button>
+    <div style="margin-top:10px;margin-bottom:4px">
+      <label class="mc-label" style="margin-bottom:6px">Not in the list? Add your own:</label>
+      <div style="display:flex;gap:8px">
+        <input id="ob-skill-other" class="mc-input" placeholder="Type a skill and click Add…" style="margin-bottom:0;flex:1"
+          oninput="document.getElementById('ob-skill-add-btn').disabled=!this.value.trim()"
+          onkeydown="if(event.key==='Enter')ob_addCustomSkill()" />
+        <button id="ob-skill-add-btn" onclick="ob_addCustomSkill()" disabled style="font-size:12px;font-weight:600;padding:8px 14px;border-radius:8px;border:none;cursor:pointer;background:#185FA5;color:#fff;font-family:Inter,sans-serif;white-space:nowrap;opacity:0.4">+ Add</button>
+      </div>
     </div>
     <div class="mc-nav">
       <button class="mc-back" onclick="OB.step=1;ob_render()">← Back</button>
@@ -2368,13 +2406,18 @@ function ob_stepCerts() {
     <p class="mc-sub" style="text-align:left">Based on <strong style="color:#0f172a">${OB.industry}</strong>. Select what you hold — or skip.</p>
     ${ob_privacy()}
     <label class="mc-label">Select certifications (optional)</label>
+    <div style="font-size:11px;color:#94a3b8;margin-bottom:6px;display:flex;align-items:center;gap:5px">
+      <span>💡</span> Click to select one · Hold <kbd style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:3px;padding:1px 5px;font-size:10px">Ctrl</kbd> (or <kbd style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:3px;padding:1px 5px;font-size:10px">⌘</kbd> on Mac) to select multiple
+    </div>
     <select class="mc-select" multiple size="6" id="ob-certs-select" style="height:${all.length>4?'160px':'120px'}">
       ${all.map(c => `<option value="${c}" ${OB.certs.includes(c)?'selected':''}>${c}</option>`).join('')}
     </select>
     <div id="ob-certs-tags" class="mc-tags">${OB.certs.map(c => `<span class="mc-tag">${c}<span class="mc-tag-x" onclick="ob_removeCert('${c}')">×</span></span>`).join('')}</div>
     <div style="display:flex;gap:8px;margin-top:8px;margin-bottom:4px">
-      <input id="ob-cert-other" class="mc-input" placeholder="Add a certification not in the list…" style="margin-bottom:0;flex:1" />
-      <button onclick="ob_addCustomCert()" style="font-size:12px;font-weight:600;padding:8px 14px;border-radius:8px;border:none;cursor:pointer;background:#185FA5;color:#fff;font-family:Inter,sans-serif;white-space:nowrap">+ Add</button>
+      <input id="ob-cert-other" class="mc-input" placeholder="Type a certification and click Add…" style="margin-bottom:0;flex:1"
+          oninput="document.getElementById('ob-cert-add-btn').disabled=!this.value.trim()"
+          onkeydown="if(event.key==='Enter')ob_addCustomCert()" />
+      <button id="ob-cert-add-btn" onclick="ob_addCustomCert()" disabled style="font-size:12px;font-weight:600;padding:8px 14px;border-radius:8px;border:none;cursor:pointer;background:#185FA5;color:#fff;font-family:Inter,sans-serif;white-space:nowrap;opacity:0.4">+ Add</button>
     </div>
     <div class="mc-nav">
       <button class="mc-back" onclick="OB.step=2;ob_render()">← Back</button>
@@ -2494,9 +2537,11 @@ function ob_attachHandlers() {
       OB.skills = Array.from(this.selectedOptions).map(o => o.value)
       const tags = document.getElementById('ob-skills-tags')
       if (tags) tags.innerHTML = OB.skills.map(s => `<span class="mc-tag">${s}<span class="mc-tag-x" onclick="ob_removeSkill('${s}')">×</span></span>`).join('')
-      // Update next btn
+      // Update next btn immediately — no re-render lag
       const nb = document.querySelector('.mc-next')
       if (nb) nb.disabled = OB.skills.length === 0
+      if (nb && OB.skills.length > 0) nb.style.background = '#185FA5'
+      else if (nb) nb.style.background = '#cbd5e1'
     })
   }
   // Certs multi-select change
@@ -2509,6 +2554,56 @@ function ob_attachHandlers() {
     })
   }
 }
+
+// Industry search helpers
+function ob_filterIndustry(q) {
+  const dd = document.getElementById('ob-industry-dropdown')
+  const opts = dd.querySelectorAll('.ob-ind-opt')
+  const lq = q.toLowerCase()
+  let anyVisible = false
+  opts.forEach(o => {
+    const match = o.dataset.val.toLowerCase().includes(lq)
+    o.style.display = match ? '' : 'none'
+    if (match) anyVisible = true
+  })
+  dd.style.display = 'block'
+  // If typed value matches an option exactly, auto-select it
+  const ALL_INDS = [...ALL_INDUSTRIES, ...OB.extraIndustries]
+  const exact = ALL_INDS.find(i => i.toLowerCase() === lq)
+  if (exact) {
+    OB.industry = exact
+    // Update next btn
+    const nb = document.querySelector('.mc-next')
+    if (nb) nb.disabled = false
+  }
+}
+
+function ob_industryKeydown(e) {
+  if (e.key === 'Escape') {
+    document.getElementById('ob-industry-dropdown').style.display = 'none'
+  }
+  if (e.key === 'Enter') {
+    // Select first visible option
+    const dd = document.getElementById('ob-industry-dropdown')
+    const first = dd.querySelector('.ob-ind-opt:not([style*="none"])')
+    if (first) ob_selectIndustry(first.dataset.val)
+  }
+}
+
+function ob_selectIndustry(val) {
+  OB.industry = val
+  OB.skills = []
+  OB.certs = []
+  ob_render()
+}
+
+// Close industry dropdown on outside click
+document.addEventListener('click', function(e) {
+  const dd = document.getElementById('ob-industry-dropdown')
+  if (dd && !dd.contains(e.target) && e.target.id !== 'ob-industry-search') {
+    dd.style.display = 'none'
+  }
+})
 
 function ob_removeSkill(s) {
   OB.skills = OB.skills.filter(x => x !== s)
