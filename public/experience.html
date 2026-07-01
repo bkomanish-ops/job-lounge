@@ -2349,7 +2349,8 @@ async function ob_sendOtp() {
   btn.disabled = false; btn.textContent = 'Send verification code →'
 
   if (error) {
-    errEl.textContent = 'Failed to send code. Please try again.'
+    console.error('OTP error:', error)
+    errEl.textContent = 'Error: ' + (error.message || 'Failed to send code. Please try again.')
     errEl.style.display = 'block'
     return
   }
