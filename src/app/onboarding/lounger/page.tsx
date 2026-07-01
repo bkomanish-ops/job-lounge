@@ -1,12 +1,22 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 
 // ─── Static data ──────────────────────────────────────────────────────────────
 
 const INDUSTRY_SKILLS: Record<string, { needed: string[]; developed: string[] }> = {
+  // ── Special entry points ──
+  'Student': {
+    needed: ['Academic Research','Data Analysis','Presentation Skills','Project Management','Critical Thinking'],
+    developed: ['Communication','Problem Solving','Teamwork','Time Management','Learning Agility'],
+  },
+  'Homemaker / Homecommander': {
+    needed: ['Budget Management','Vendor Negotiation','Scheduling & Planning','People Management','Crisis Management'],
+    developed: ['Leadership','Multitasking','Stakeholder Management','Resource Allocation','Emotional Intelligence'],
+  },
+  // ── Industries ──
   'Banking': { needed: ['Retail Banking','Credit Analysis','Risk Management','AML/KYC','Treasury'], developed: ['Financial Analysis','Regulatory Compliance','Credit Risk'] },
   'NBFC': { needed: ['Lending Operations','Collections','Credit Underwriting','RBI Compliance'], developed: ['Risk Assessment','Loan Management','Analytics'] },
   'Insurance': { needed: ['Underwriting','Claims Management','Actuarial Analysis'], developed: ['Risk Modeling','Compliance','Customer Service'] },
@@ -40,6 +50,8 @@ const INDUSTRY_SKILLS: Record<string, { needed: string[]; developed: string[] }>
 }
 
 const INDUSTRY_CERTIFICATIONS: Record<string, string[]> = {
+  'Student': ['NPTEL','Coursera Specialisation','Google Certifications','Microsoft Learn','AWS Cloud Practitioner','CFA Level 1'],
+  'Homemaker / Homecommander': ['PMP','Financial Planning Certificate','Digital Marketing Basics','Tally','Google Workspace'],
   'Banking': ['CAIIB','JAIIB','CFP','CFA','FRM','CAMS'],
   'NBFC': ['CAIIB','FRM','CFP','CAMS'],
   'Insurance': ['FIII','AIII','Licentiate','ACII','FLMI','CFP'],
@@ -72,18 +84,21 @@ const CONTRIBUTION_TYPES = [
   { id: 'management', label: 'Management Role', desc: 'I manage managers and multiple teams' },
   { id: 'strategic', label: 'Strategic Role', desc: 'I set direction and own outcomes at org level' },
   { id: 'consulting', label: 'Consulting / Advisory', desc: 'I advise organisations without being on payroll' },
+  { id: 'student', label: 'Student / Learner', desc: 'I am currently studying or in training' },
+  { id: 'returning', label: 'Returning to Work', desc: 'I am re-entering the workforce after a break' },
 ]
 
-const EXP_BANDS = ['0–3 yrs','3–6 yrs','6–10 yrs','10–15 yrs','15–20 yrs','20+ yrs']
+const EXP_BANDS = ['0–1 yrs','1–3 yrs','3–6 yrs','6–10 yrs','10–15 yrs','15–20 yrs','20+ yrs']
 
 const CITIES = [
   'Mumbai','Delhi NCR','Bangalore','Pune','Chennai',
   'Hyderabad','Kolkata','Ahmedabad','Surat','Jaipur',
   'Lucknow','Chandigarh','Bhopal','Nagpur','Indore',
-  'Kochi','Coimbatore','Visakhapatnam','Other',
+  'Kochi','Coimbatore','Visakhapatnam',
 ]
 
-const STEPS = ['Welcome','Industry','Skills','Certifications','Contribution','Exp & Salary','Done']
+const SPECIAL_ENTRIES = ['Student','Homemaker / Homecommander']
+const STEPS = ['Welcome','Profile','Skills','Certifications','Contribution','Exp & City & Salary','Done']
 
 function generateJLId(): string {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
@@ -92,11 +107,265 @@ function generateJLId(): string {
   return id
 }
 
-// ─── Sub-components ───────────────────────────────────────────────────────────
+// ─── SearchableDropdown ───────────────────────────────────────────────────────
+// Single or multi-select dropdown with search, Other option, custom entry feed-back
+
+interface SearchableDropdownProps {
+  label: string
+  options: string[]
+  selected: string | string[]
+  multi?: boolean
+  placeholder?: string
+  onChange: (val: string | string[]) => void
+  onCustomAdd?: (val: string) => void
+  allowOther?: boolean
+  otherPlaceholder?: string
+}
+
+function SearchableDropdown({
+  label, options, selected, multi = false, placeholder = 'Search or select…',
+  onChange, onCustomAdd, allowOther = false, otherPlaceholder = 'Type here…',
+}: SearchableDropdownProps) {
+  const [open, setOpen] = useState(false)
+  const [query, setQuery] = useState('')
+  const [otherVal, setOtherVal] = useState('')
+  const [showOtherInput, setShowOtherInput] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+
+  // Close on outside click
+  useEffect(() => {
+    function handle(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
+    }
+    document.addEventListener('mousedown', handle)
+    return () => document.removeEventListener('mousedown', handle)
+  }, [])
+
+  const selectedArr = Array.isArray(selected) ? selected : (selected ? [selected] : [])
+
+  const filtered = options.filter(o =>
+    o.toLowerCase().includes(query.toLowerCase()) && o !== 'Other'
+  )
+
+  function toggleOption(opt: string) {
+    if (opt === 'Other') {
+      setShowOtherInput(true)
+      return
+    }
+    if (multi) {
+      const arr = selectedArr.includes(opt)
+        ? selectedArr.filter(x => x !== opt)
+        : [...selectedArr, opt]
+      onChange(arr)
+    } else {
+      onChange(opt)
+      setOpen(false)
+      setQuery('')
+    }
+  }
+
+  function handleOtherAdd() {
+    const trimmed = otherVal.trim()
+    if (!trimmed) return
+    if (onCustomAdd) onCustomAdd(trimmed)
+    if (multi) {
+      const arr = selectedArr.includes(trimmed) ? selectedArr : [...selectedArr, trimmed]
+      onChange(arr)
+    } else {
+      onChange(trimmed)
+      setOpen(false)
+    }
+    setOtherVal('')
+    setShowOtherInput(false)
+  }
+
+  // Display text
+  const displayText = selectedArr.length === 0
+    ? ''
+    : multi
+      ? selectedArr.length === 1 ? selectedArr[0] : `${selectedArr.length} selected`
+      : selectedArr[0]
+
+  return (
+    <div ref={ref} style={{ marginBottom: 20 }}>
+      <label style={labelStyle}>{label}</label>
+
+      {/* Trigger */}
+      <div
+        onClick={() => setOpen(o => !o)}
+        style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          padding: '10px 14px', borderRadius: 8, cursor: 'pointer',
+          border: open ? '1.5px solid #185FA5' : '0.5px solid #e2e8f0',
+          background: '#fff', fontSize: 13, color: displayText ? '#0f172a' : '#94a3b8',
+          fontFamily: 'Inter, sans-serif', transition: 'border-color 0.15s',
+          userSelect: 'none',
+        }}
+      >
+        <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          {displayText || placeholder}
+        </span>
+        <span style={{ marginLeft: 8, color: '#94a3b8', fontSize: 10, flexShrink: 0 }}>
+          {open ? '▲' : '▼'}
+        </span>
+      </div>
+
+      {/* Multi-select tags */}
+      {multi && selectedArr.length > 0 && (
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 8 }}>
+          {selectedArr.map(s => (
+            <span key={s} style={{
+              display: 'inline-flex', alignItems: 'center', gap: 5,
+              fontSize: 11, fontWeight: 500, padding: '3px 10px',
+              background: '#E6F1FB', color: '#0C447C',
+              border: '1px solid #B5D4F4', borderRadius: 12,
+            }}>
+              {s}
+              <span
+                onClick={() => onChange(selectedArr.filter(x => x !== s))}
+                style={{ cursor: 'pointer', fontSize: 12, lineHeight: 1, opacity: 0.6 }}
+              >×</span>
+            </span>
+          ))}
+        </div>
+      )}
+
+      {/* Dropdown panel */}
+      {open && (
+        <div style={{
+          position: 'absolute', zIndex: 200,
+          background: '#fff', border: '1px solid #e2e8f0',
+          borderRadius: 10, boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
+          marginTop: 4, width: '100%', maxHeight: 280, display: 'flex', flexDirection: 'column',
+        }}>
+          {/* Search box */}
+          <div style={{ padding: '8px 10px', borderBottom: '0.5px solid #f1f5f9' }}>
+            <input
+              autoFocus
+              type="text"
+              value={query}
+              onChange={e => setQuery(e.target.value)}
+              placeholder="Search…"
+              style={{
+                width: '100%', padding: '7px 10px', fontSize: 13,
+                border: '0.5px solid #e2e8f0', borderRadius: 6, outline: 'none',
+                fontFamily: 'Inter, sans-serif', color: '#0f172a', boxSizing: 'border-box',
+              }}
+            />
+          </div>
+
+          {/* Options list */}
+          <div style={{ overflowY: 'auto', flex: 1 }}>
+            {filtered.length === 0 && (
+              <div style={{ padding: '12px 14px', fontSize: 12, color: '#94a3b8' }}>
+                No results. Use &quot;Other&quot; below to add.
+              </div>
+            )}
+            {filtered.map(opt => {
+              const isSelected = selectedArr.includes(opt)
+              const isSpecial = SPECIAL_ENTRIES.includes(opt)
+              return (
+                <div
+                  key={opt}
+                  onClick={() => toggleOption(opt)}
+                  style={{
+                    padding: '10px 14px', fontSize: 13, cursor: 'pointer',
+                    display: 'flex', alignItems: 'center', gap: 10,
+                    background: isSelected ? '#E6F1FB' : 'transparent',
+                    color: isSpecial ? '#185FA5' : '#0f172a',
+                    fontWeight: isSpecial ? 600 : isSelected ? 500 : 400,
+                    borderTop: isSpecial && opt === SPECIAL_ENTRIES[0] ? '0.5px solid #f1f5f9' : 'none',
+                    transition: 'background 0.1s',
+                  }}
+                  onMouseEnter={e => { if (!isSelected) (e.currentTarget as HTMLDivElement).style.background = '#f8fafc' }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.background = isSelected ? '#E6F1FB' : 'transparent' }}
+                >
+                  {multi && (
+                    <div style={{
+                      width: 15, height: 15, borderRadius: 3, flexShrink: 0,
+                      border: isSelected ? '1.5px solid #185FA5' : '1.5px solid #cbd5e1',
+                      background: isSelected ? '#185FA5' : '#fff',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    }}>
+                      {isSelected && <span style={{ color: '#fff', fontSize: 9, fontWeight: 700 }}>✓</span>}
+                    </div>
+                  )}
+                  {!multi && isSelected && (
+                    <span style={{ color: '#185FA5', fontSize: 11, fontWeight: 700, flexShrink: 0 }}>✓</span>
+                  )}
+                  <span>{isSpecial ? `★ ${opt}` : opt}</span>
+                </div>
+              )
+            })}
+
+            {/* Other option */}
+            {allowOther && (
+              <div
+                onClick={() => toggleOption('Other')}
+                style={{
+                  padding: '10px 14px', fontSize: 13, cursor: 'pointer',
+                  color: '#64748b', borderTop: '0.5px solid #f1f5f9',
+                  display: 'flex', alignItems: 'center', gap: 8,
+                }}
+                onMouseEnter={e => (e.currentTarget as HTMLDivElement).style.background = '#f8fafc'}
+                onMouseLeave={e => (e.currentTarget as HTMLDivElement).style.background = 'transparent'}
+              >
+                <span style={{ fontSize: 12 }}>+</span>
+                <span>Other — add your own</span>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Other text input — pops inline when Other selected */}
+      {showOtherInput && (
+        <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
+          <input
+            autoFocus
+            type="text"
+            value={otherVal}
+            onChange={e => setOtherVal(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && handleOtherAdd()}
+            placeholder={otherPlaceholder}
+            style={{ ...inputStyle, flex: 1, marginBottom: 0 }}
+          />
+          <button
+            onClick={handleOtherAdd}
+            style={{ fontSize: 12, fontWeight: 600, padding: '8px 16px', borderRadius: 8, border: 'none', cursor: 'pointer', background: '#185FA5', color: '#fff', fontFamily: 'Inter, sans-serif', whiteSpace: 'nowrap' }}
+          >
+            Add
+          </button>
+          <button
+            onClick={() => { setShowOtherInput(false); setOtherVal('') }}
+            style={{ fontSize: 12, padding: '8px 10px', borderRadius: 8, border: '0.5px solid #e2e8f0', cursor: 'pointer', background: '#fff', color: '#64748b', fontFamily: 'Inter, sans-serif' }}
+          >
+            ✕
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ─── PrivacyBadge ─────────────────────────────────────────────────────────────
+
+function PrivacyBadge() {
+  return (
+    <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, background: '#E6F1FB', border: '0.5px solid #B5D4F4', borderRadius: 10, padding: '12px 14px', marginBottom: 20 }}>
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0C447C" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: 1 }}>
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+      </svg>
+      <span style={{ fontSize: 12, color: '#0C447C', lineHeight: 1.6 }}>
+        <strong>Nothing here can identify you.</strong> No name, no employer. Job Lounge uses this only for matching. You are known by your Private ID until you choose otherwise.
+      </span>
+    </div>
+  )
+}
 
 function ProgressBar({ step, total }: { step: number; total: number }) {
   return (
-    <div style={{ height: 3, background: '#f1f5f9', borderRadius: 2, marginBottom: 24 }}>
+    <div style={{ height: 3, background: '#f1f5f9', borderRadius: 2, marginBottom: 16 }}>
       <div style={{ height: 3, borderRadius: 2, background: '#185FA5', width: `${(step / total) * 100}%`, transition: 'width 0.3s' }} />
     </div>
   )
@@ -104,7 +373,7 @@ function ProgressBar({ step, total }: { step: number; total: number }) {
 
 function StepDots({ current, total }: { current: number; total: number }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 24 }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 20 }}>
       {Array.from({ length: total }).map((_, i) => (
         <div key={i} style={{
           height: 3, borderRadius: 2, transition: 'all 0.3s',
@@ -116,63 +385,7 @@ function StepDots({ current, total }: { current: number; total: number }) {
   )
 }
 
-function PrivacyBadge() {
-  return (
-    <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, background: '#E6F1FB', border: '0.5px solid #B5D4F4', borderRadius: 10, padding: '12px 14px', marginBottom: 20 }}>
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0C447C" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: 1 }}>
-        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-      </svg>
-      <span style={{ fontSize: 12, color: '#0C447C', lineHeight: 1.6 }}>
-        <strong>Nothing here can identify you.</strong> No name, no employer, no LinkedIn. Job Lounge uses this only for matching. You are known by your unique ID until you choose otherwise.
-      </span>
-    </div>
-  )
-}
-
-function Chip({ label, selected, onClick }: { label: string; selected: boolean; onClick: () => void }) {
-  return (
-    <button onClick={onClick} style={{
-      fontSize: 12, padding: '6px 14px', borderRadius: 20, cursor: 'pointer',
-      border: selected ? '1px solid #B5D4F4' : '0.5px solid #e2e8f0',
-      background: selected ? '#E6F1FB' : '#fff',
-      color: selected ? '#0C447C' : '#475569',
-      fontFamily: 'Inter, sans-serif', fontWeight: selected ? 600 : 400,
-      transition: 'all 0.15s',
-    }}>
-      {label}
-    </button>
-  )
-}
-
-function CustomAdder({ placeholder, onAdd, category }: { placeholder: string; onAdd: (val: string) => void; category: string }) {
-  const [val, setVal] = useState('')
-
-  async function handleAdd() {
-    const trimmed = val.trim()
-    if (!trimmed) return
-    onAdd(trimmed)
-    setVal('')
-    await supabase.from('custom_options').upsert({ category, value: trimmed }, { onConflict: 'category,value' })
-  }
-
-  return (
-    <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
-      <input
-        type="text"
-        value={val}
-        onChange={e => setVal(e.target.value)}
-        onKeyDown={e => e.key === 'Enter' && handleAdd()}
-        placeholder={placeholder}
-        style={{ ...inputStyle, flex: 1, marginBottom: 0 }}
-      />
-      <button onClick={handleAdd} style={{ fontSize: 12, fontWeight: 600, padding: '8px 16px', borderRadius: 8, border: 'none', cursor: 'pointer', background: '#185FA5', color: '#fff', fontFamily: 'Inter, sans-serif', whiteSpace: 'nowrap' as const }}>
-        + Add
-      </button>
-    </div>
-  )
-}
-
-// ─── Main ─────────────────────────────────────────────────────────────────────
+// ─── Main Page ────────────────────────────────────────────────────────────────
 
 export default function LoungerOnboardingPage() {
   const router = useRouter()
@@ -181,10 +394,13 @@ export default function LoungerOnboardingPage() {
   const [error, setError] = useState('')
   const [jlId, setJlId] = useState('')
 
+  // Custom options loaded from Supabase (approved=true, fed back by previous users)
   const [extraIndustries, setExtraIndustries] = useState<string[]>([])
   const [extraSkills, setExtraSkills] = useState<string[]>([])
   const [extraCerts, setExtraCerts] = useState<string[]>([])
+  const [extraCities, setExtraCities] = useState<string[]>([])
 
+  // Form state
   const [industry, setIndustry] = useState('')
   const [skills, setSkills] = useState<string[]>([])
   const [certifications, setCertifications] = useState<string[]>([])
@@ -209,16 +425,21 @@ export default function LoungerOnboardingPage() {
       .from('custom_options')
       .select('category, value')
       .eq('approved', true)
-
     if (data) {
       setExtraIndustries(data.filter(d => d.category === 'industry').map(d => d.value))
       setExtraSkills(data.filter(d => d.category === 'skill').map(d => d.value))
       setExtraCerts(data.filter(d => d.category === 'certification').map(d => d.value))
+      setExtraCities(data.filter(d => d.category === 'city').map(d => d.value))
     }
   }
 
-  const staticIndustries = Object.keys(INDUSTRY_SKILLS)
-  const allIndustries = [...new Set([...staticIndustries, ...extraIndustries])]
+  async function saveCustomOption(category: string, value: string) {
+    await supabase.from('custom_options').upsert({ category, value }, { onConflict: 'category,value' })
+  }
+
+  // Build dropdown option lists — special entries first, then alphabetical industry list, then user-added
+  const staticIndustries = Object.keys(INDUSTRY_SKILLS).filter(k => !SPECIAL_ENTRIES.includes(k)).sort()
+  const allIndustries = [...SPECIAL_ENTRIES, ...staticIndustries, ...extraIndustries.filter(e => !SPECIAL_ENTRIES.includes(e) && !staticIndustries.includes(e))]
 
   const staticSkills = industry
     ? [...(INDUSTRY_SKILLS[industry]?.needed ?? []), ...(INDUSTRY_SKILLS[industry]?.developed ?? [])]
@@ -228,28 +449,15 @@ export default function LoungerOnboardingPage() {
   const staticCerts = industry ? (INDUSTRY_CERTIFICATIONS[industry] ?? []) : []
   const allCerts = [...new Set([...staticCerts, ...extraCerts])]
 
-  function toggleItem(list: string[], setList: (v: string[]) => void, item: string) {
-    setList(list.includes(item) ? list.filter(x => x !== item) : [...list, item])
-  }
+  const allCities = [...CITIES, ...extraCities.filter(c => !CITIES.includes(c))]
 
   async function handleFinish() {
     const curL = parseFloat(currentSalary)
     const expL = parseFloat(expectedSalary)
 
-    if (!curL || !expL || curL <= 0 || expL <= 0) {
-      setError('Please enter valid salary figures.')
-      return
-    }
-
-    if (!city) {
-      setError('Please select your current city.')
-      return
-    }
-
-    if (!expBand) {
-      setError('Please select your experience band.')
-      return
-    }
+    if (!curL || !expL || curL <= 0 || expL <= 0) { setError('Please enter valid salary figures.'); return }
+    if (!city) { setError('Please select your current city.'); return }
+    if (!expBand) { setError('Please select your experience band.'); return }
 
     setSaving(true)
     setError('')
@@ -274,11 +482,7 @@ export default function LoungerOnboardingPage() {
         current_city: city,
       }, { onConflict: 'user_id' })
 
-    if (profileErr) {
-      setError(`Failed to save: ${profileErr.message}`)
-      setSaving(false)
-      return
-    }
+    if (profileErr) { setError(`Failed to save: ${profileErr.message}`); setSaving(false); return }
 
     await supabase.from('users').update({ onboarding_done: true }).eq('id', user.id)
 
@@ -294,17 +498,15 @@ export default function LoungerOnboardingPage() {
 
       <nav style={{ background: '#fff', borderBottom: '0.5px solid #e2e8f0', padding: '0 24px', height: 52, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <span style={{ fontSize: 15, fontWeight: 600, color: '#0f172a' }}>Job Lounge</span>
-        {step < 6 && (
-          <span style={{ fontSize: 11, color: '#64748b' }}>Step {step + 1} of {totalSteps}</span>
-        )}
+        {step > 0 && step < 6 && <span style={{ fontSize: 11, color: '#64748b' }}>Step {step} of {totalSteps - 2}</span>}
       </nav>
 
-      <div style={{ maxWidth: 580, margin: '0 auto', padding: '32px 20px 48px' }}>
+      <div style={{ maxWidth: 560, margin: '0 auto', padding: '32px 20px 48px', position: 'relative' }}>
 
         {step > 0 && step < 6 && (
           <>
-            <ProgressBar step={step + 1} total={totalSteps} />
-            <StepDots current={step} total={totalSteps} />
+            <ProgressBar step={step} total={totalSteps - 2} />
+            <StepDots current={step - 1} total={totalSteps - 2} />
           </>
         )}
 
@@ -314,19 +516,17 @@ export default function LoungerOnboardingPage() {
             <div style={{ textAlign: 'center', marginBottom: 24 }}>
               <div style={{ fontSize: 28, marginBottom: 12 }}>👋</div>
               <div style={{ fontSize: 18, fontWeight: 600, color: '#0f172a', marginBottom: 6 }}>Welcome to Job Lounge</div>
-              <div style={{ fontSize: 13, color: '#64748b', lineHeight: 1.6 }}>{"Let's set up your anonymous profile. This takes about 2 minutes."}</div>
+              <div style={{ fontSize: 13, color: '#64748b', lineHeight: 1.6 }}>{"Let's set up your Private ID profile. About 2 minutes."}</div>
             </div>
 
             <div style={{ background: '#042C53', borderRadius: 12, padding: '18px 20px', marginBottom: 24 }}>
-              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase' as const, color: '#85B7EB', marginBottom: 10 }}>
-                Your privacy commitment
-              </div>
+              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase' as const, color: '#85B7EB', marginBottom: 10 }}>Your privacy commitment</div>
               <p style={{ fontSize: 13, color: '#B5D4F4', lineHeight: 1.7, margin: '0 0 12px' }}>
-                Job Lounge does not collect your name, employer, or resume at any point during setup. The information you share — industry, skills, experience, and salary — is used <strong style={{ color: '#fff' }}>only</strong> by our matching engine to surface relevant opportunities.
+                Job Lounge does not collect your name, employer, or resume at any point during setup. The information you share — industry, skills, experience, and salary — is used <strong style={{ color: '#fff' }}>only</strong> by our matching engine.
               </p>
               <div style={{ paddingTop: 12, borderTop: '0.5px solid rgba(255,255,255,0.1)' }}>
                 <p style={{ fontSize: 13, color: '#B5D4F4', lineHeight: 1.7, margin: 0 }}>
-                  On this platform, you will be known exclusively by a <strong style={{ color: '#5DCAA5' }}>unique Job Lounge ID</strong> — for example, <strong style={{ color: '#5DCAA5' }}>JL-X7KR4M</strong>. No one can identify you from this ID. Your real identity is shared only when <strong style={{ color: '#fff' }}>you</strong> choose to reveal it, with explicit consent.
+                  You will be known exclusively by a <strong style={{ color: '#5DCAA5' }}>Private ID</strong> — non-identifiable until you choose to reveal it. Your identity is shared only when <strong style={{ color: '#fff' }}>you</strong> consent, simultaneously with the other party.
                 </p>
               </div>
             </div>
@@ -334,8 +534,8 @@ export default function LoungerOnboardingPage() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 24 }}>
               {[
                 'No name or employer ever collected during setup',
-                'Your unique ID replaces your identity on the platform',
-                'Salary and skills visible only to the Job Lounge matching engine',
+                'Your Private ID replaces your identity on the platform',
+                'Salary and skills visible only to the matching engine',
                 'Identity revealed only with your explicit, mutual consent',
               ].map(pt => (
                 <div key={pt} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, fontSize: 12, color: '#475569' }}>
@@ -345,46 +545,36 @@ export default function LoungerOnboardingPage() {
               ))}
             </div>
 
-            <button
-              onClick={() => setStep(1)}
-              style={{ ...nextBtn, width: '100%', padding: '12px 0', fontSize: 14, background: '#185FA5' }}
-            >
+            <button onClick={() => setStep(1)} style={{ ...nextBtn, width: '100%', padding: '12px 0', fontSize: 14, background: '#185FA5' }}>
               {"I understand — let's begin →"}
             </button>
           </div>
         )}
 
-        {/* ── Step 1: Industry ── */}
+        {/* ── Step 1: Industry / Profile type ── */}
         {step === 1 && (
           <div style={card}>
-            <div style={title}>Which industry do you work in?</div>
-            <div style={sub}>Select the sector that best describes your current or most recent organisation.</div>
+            <div style={title}>What best describes you?</div>
+            <div style={sub}>{"Select your industry, or if you're a student or homemaker, choose that — we'll tailor the next steps accordingly."}</div>
             <PrivacyBadge />
 
-            <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: 8, marginBottom: 16 }}>
-              {allIndustries.map(ind => (
-                <Chip key={ind} label={ind} selected={industry === ind} onClick={() => { setIndustry(ind); setSkills([]); setCertifications([]) }} />
-              ))}
-            </div>
-
-            <CustomAdder
-              placeholder="Don't see your industry? Add it here"
-              category="industry"
-              onAdd={val => {
+            <SearchableDropdown
+              label="Your industry / profile type"
+              options={allIndustries}
+              selected={industry}
+              placeholder="Search or select…"
+              onChange={v => { setIndustry(v as string); setSkills([]); setCertifications([]) }}
+              onCustomAdd={async val => {
                 setExtraIndustries(prev => [...new Set([...prev, val])])
-                setIndustry(val)
-                setSkills([])
-                setCertifications([])
+                await saveCustomOption('industry', val)
               }}
+              allowOther
+              otherPlaceholder="Type your industry…"
             />
 
-            <div style={{ ...btnRow, marginTop: 20 }}>
+            <div style={{ ...btnRow, marginTop: 8 }}>
               <button onClick={() => setStep(0)} style={backBtn}>← Back</button>
-              <button
-                onClick={() => industry && setStep(2)}
-                disabled={!industry}
-                style={{ ...nextBtn, background: !industry ? '#cbd5e1' : '#185FA5' }}
-              >
+              <button onClick={() => industry && setStep(2)} disabled={!industry} style={{ ...nextBtn, background: !industry ? '#cbd5e1' : '#185FA5' }}>
                 Next →
               </button>
             </div>
@@ -395,39 +585,28 @@ export default function LoungerOnboardingPage() {
         {step === 2 && (
           <div style={card}>
             <div style={title}>What are your key skills?</div>
-            <div style={sub}>Based on <strong style={{ color: '#0f172a' }}>{industry}</strong>. Select all that apply.</div>
+            <div style={sub}>Based on <strong style={{ color: '#0f172a' }}>{industry}</strong>. Select all that apply — or add your own.</div>
             <PrivacyBadge />
 
-            {allSkills.length > 0 && (
-              <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: 8, marginBottom: 12 }}>
-                {allSkills.map(s => (
-                  <Chip key={s} label={s} selected={skills.includes(s)} onClick={() => toggleItem(skills, setSkills, s)} />
-                ))}
-              </div>
-            )}
-
-            <CustomAdder
-              placeholder="Add a skill not in the list"
-              category="skill"
-              onAdd={val => {
+            <SearchableDropdown
+              label="Skills"
+              options={allSkills}
+              selected={skills}
+              multi
+              placeholder="Search or select skills…"
+              onChange={v => setSkills(v as string[])}
+              onCustomAdd={async val => {
                 setExtraSkills(prev => [...new Set([...prev, val])])
                 setSkills(prev => [...new Set([...prev, val])])
+                await saveCustomOption('skill', val)
               }}
+              allowOther
+              otherPlaceholder="Type a skill not in the list…"
             />
 
-            {skills.length > 0 && (
-              <div style={{ fontSize: 11, color: '#94a3b8', marginTop: 10 }}>
-                {skills.length} skill{skills.length > 1 ? 's' : ''} selected
-              </div>
-            )}
-
-            <div style={{ ...btnRow, marginTop: 20 }}>
+            <div style={{ ...btnRow, marginTop: 8 }}>
               <button onClick={() => setStep(1)} style={backBtn}>← Back</button>
-              <button
-                onClick={() => skills.length > 0 && setStep(3)}
-                disabled={skills.length === 0}
-                style={{ ...nextBtn, background: skills.length === 0 ? '#cbd5e1' : '#185FA5' }}
-              >
+              <button onClick={() => skills.length > 0 && setStep(3)} disabled={skills.length === 0} style={{ ...nextBtn, background: skills.length === 0 ? '#cbd5e1' : '#185FA5' }}>
                 Next →
               </button>
             </div>
@@ -438,39 +617,30 @@ export default function LoungerOnboardingPage() {
         {step === 3 && (
           <div style={card}>
             <div style={title}>Any certifications?</div>
-            <div style={sub}>Based on <strong style={{ color: '#0f172a' }}>{industry}</strong>. Select what you hold. You can skip this step.</div>
+            <div style={sub}>Based on <strong style={{ color: '#0f172a' }}>{industry}</strong>. Select what you hold — or skip.</div>
             <PrivacyBadge />
 
-            {allCerts.length > 0 && (
-              <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: 8, marginBottom: 12 }}>
-                {allCerts.map(c => (
-                  <Chip key={c} label={c} selected={certifications.includes(c)} onClick={() => toggleItem(certifications, setCertifications, c)} />
-                ))}
-              </div>
-            )}
-
-            <CustomAdder
-              placeholder="Add a certification not in the list"
-              category="certification"
-              onAdd={val => {
+            <SearchableDropdown
+              label="Certifications (optional)"
+              options={allCerts}
+              selected={certifications}
+              multi
+              placeholder="Search or select certifications…"
+              onChange={v => setCertifications(v as string[])}
+              onCustomAdd={async val => {
                 setExtraCerts(prev => [...new Set([...prev, val])])
                 setCertifications(prev => [...new Set([...prev, val])])
+                await saveCustomOption('certification', val)
               }}
+              allowOther
+              otherPlaceholder="Type a certification not in the list…"
             />
 
-            {certifications.length > 0 && (
-              <div style={{ fontSize: 11, color: '#94a3b8', marginTop: 10 }}>
-                {certifications.length} certification{certifications.length > 1 ? 's' : ''} selected
-              </div>
-            )}
-
-            <div style={{ ...btnRow, marginTop: 20 }}>
+            <div style={{ ...btnRow, marginTop: 8 }}>
               <button onClick={() => setStep(2)} style={backBtn}>← Back</button>
               <div style={{ display: 'flex', gap: 10 }}>
                 <button onClick={() => setStep(4)} style={{ ...backBtn, color: '#94a3b8' }}>Skip</button>
-                <button onClick={() => setStep(4)} style={{ ...nextBtn, background: '#185FA5' }}>
-                  Next →
-                </button>
+                <button onClick={() => setStep(4)} style={{ ...nextBtn, background: '#185FA5' }}>Next →</button>
               </div>
             </div>
           </div>
@@ -480,7 +650,7 @@ export default function LoungerOnboardingPage() {
         {step === 4 && (
           <div style={card}>
             <div style={title}>How do you contribute?</div>
-            <div style={sub}>Select the option that best describes your current role structure.</div>
+            <div style={sub}>Select the option that best describes your current situation.</div>
             <PrivacyBadge />
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 24 }}>
@@ -492,7 +662,7 @@ export default function LoungerOnboardingPage() {
                     padding: '12px 14px', borderRadius: 8, cursor: 'pointer',
                     border: contribution === c.id ? '1.5px solid #185FA5' : '0.5px solid #e2e8f0',
                     background: contribution === c.id ? '#E6F1FB' : '#fff',
-                    display: 'flex', alignItems: 'center', gap: 12,
+                    display: 'flex', alignItems: 'center', gap: 12, transition: 'all 0.15s',
                   }}
                 >
                   <div style={{
@@ -510,39 +680,44 @@ export default function LoungerOnboardingPage() {
 
             <div style={btnRow}>
               <button onClick={() => setStep(3)} style={backBtn}>← Back</button>
-              <button
-                onClick={() => contribution && setStep(5)}
-                disabled={!contribution}
-                style={{ ...nextBtn, background: !contribution ? '#cbd5e1' : '#185FA5' }}
-              >
+              <button onClick={() => contribution && setStep(5)} disabled={!contribution} style={{ ...nextBtn, background: !contribution ? '#cbd5e1' : '#185FA5' }}>
                 Next →
               </button>
             </div>
           </div>
         )}
 
-        {/* ── Step 5: Experience, Location & Salary ── */}
+        {/* ── Step 5: Experience, City & Salary ── */}
         {step === 5 && (
           <div style={card}>
             <div style={title}>Experience, location & salary</div>
-            <div style={sub}>Helps calibrate your market pulse. Salary is never shown to anyone on the platform.</div>
+            <div style={sub}>Helps calibrate your market position. Salary is never shown to anyone on the platform.</div>
             <PrivacyBadge />
 
-            {/* City */}
-            <label style={labelStyle}>Current city</label>
-            <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: 8, marginBottom: 20 }}>
-              {CITIES.map(c => (
-                <Chip key={c} label={c} selected={city === c} onClick={() => setCity(c)} />
-              ))}
-            </div>
+            {/* City — single select, Other pops text input */}
+            <SearchableDropdown
+              label="Current city"
+              options={allCities}
+              selected={city}
+              placeholder="Select your city…"
+              onChange={v => setCity(v as string)}
+              onCustomAdd={async val => {
+                setExtraCities(prev => [...new Set([...prev, val])])
+                setCity(val)
+                await saveCustomOption('city', val)
+              }}
+              allowOther
+              otherPlaceholder="Type your city…"
+            />
 
-            {/* Experience */}
-            <label style={labelStyle}>Total years of experience</label>
-            <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: 8, marginBottom: 20 }}>
-              {EXP_BANDS.map(b => (
-                <Chip key={b} label={b} selected={expBand === b} onClick={() => setExpBand(b)} />
-              ))}
-            </div>
+            {/* Experience — single select */}
+            <SearchableDropdown
+              label="Total years of experience"
+              options={EXP_BANDS}
+              selected={expBand}
+              placeholder="Select experience band…"
+              onChange={v => setExpBand(v as string)}
+            />
 
             {/* Current salary */}
             <label style={labelStyle}>Current annual salary (₹ in Lakhs)</label>
@@ -575,7 +750,7 @@ export default function LoungerOnboardingPage() {
             {error && <p style={{ fontSize: 12, color: '#e24b4a', margin: '0 0 12px' }}>{error}</p>}
 
             <div style={{ fontSize: 12, color: '#94a3b8', lineHeight: 1.6, marginBottom: 20, padding: '10px 12px', background: '#f8fafc', borderRadius: 8 }}>
-              Salary figures are used only by the Job Lounge matching engine. They are never visible to any Peer, Recruiter, or other Lounger.
+              Salary figures are used only by the Job Lounge matching engine. Never visible to any Peer, Recruiter, or other Lounger.
             </div>
 
             <div style={btnRow}>
@@ -583,11 +758,7 @@ export default function LoungerOnboardingPage() {
               <button
                 onClick={handleFinish}
                 disabled={saving || !expBand || !city || !currentSalary || !expectedSalary}
-                style={{
-                  ...nextBtn,
-                  background: (saving || !expBand || !city || !currentSalary || !expectedSalary) ? '#cbd5e1' : '#185FA5',
-                  opacity: saving ? 0.7 : 1,
-                }}
+                style={{ ...nextBtn, background: (saving || !expBand || !city || !currentSalary || !expectedSalary) ? '#cbd5e1' : '#185FA5', opacity: saving ? 0.7 : 1 }}
               >
                 {saving ? 'Saving…' : 'Complete setup →'}
               </button>
@@ -604,10 +775,10 @@ export default function LoungerOnboardingPage() {
               </svg>
             </div>
             <div style={{ fontSize: 18, fontWeight: 600, color: '#0f172a', marginBottom: 6 }}>{"You're on the platform"}</div>
-            <div style={{ fontSize: 13, color: '#64748b', lineHeight: 1.6, marginBottom: 20 }}>Your anonymous profile is live. Here is your platform identity:</div>
+            <div style={{ fontSize: 13, color: '#64748b', lineHeight: 1.6, marginBottom: 20 }}>Your anonymous profile is live. Here is your Private ID:</div>
 
             <div style={{ background: '#042C53', borderRadius: 12, padding: '20px 24px', marginBottom: 20 }}>
-              <div style={{ fontSize: 11, color: '#85B7EB', letterSpacing: '1px', textTransform: 'uppercase' as const, marginBottom: 8 }}>Your Job Lounge ID</div>
+              <div style={{ fontSize: 11, color: '#85B7EB', letterSpacing: '1px', textTransform: 'uppercase' as const, marginBottom: 8 }}>Your Private ID</div>
               <div style={{ fontSize: 32, fontWeight: 700, color: '#5DCAA5', letterSpacing: 6, marginBottom: 8 }}>{jlId}</div>
               <div style={{ fontSize: 12, color: '#B5D4F4', lineHeight: 1.6 }}>
                 {'This is the only identity anyone on this platform will ever see — until you choose to reveal yourself.'}
@@ -616,7 +787,7 @@ export default function LoungerOnboardingPage() {
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 24, textAlign: 'left' as const }}>
               {[
-                { label: 'Industry', value: industry },
+                { label: 'Profile type', value: industry },
                 { label: 'Location', value: city },
                 { label: 'Skills', value: `${skills.length} selected` },
                 { label: 'Experience', value: expBand },
